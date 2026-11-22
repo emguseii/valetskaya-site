@@ -434,13 +434,13 @@ ul{list-style:none}
 .h-fix .big__pv,.h-old .big__pv{display:block;position:absolute;left:2px;top:28px;width:326px;height:238px;overflow:hidden;border-radius:0 0 24px 24px}
 .h-fix .big__pv .big__img,.h-old .big__pv .big__img{left:var(--l);top:var(--t);bottom:auto;width:var(--w);height:auto;transform:none}
 
-/* old: бирки и линии «Старой версии» */
-.v7.h-old .tag__c{transform:rotate(var(--r))!important;border-radius:28px;padding:30px 14px 16px;box-shadow:0 10px 28px rgba(0,0,0,.16);
+/* fix + old: бирки с дыркой и лаймовые верёвки «Старой версии» (в fix — по её решению 23.11) */
+.v7:is(.h-fix,.h-old) .tag__c{transform:rotate(var(--r))!important;border-radius:28px;padding:30px 14px 16px;box-shadow:0 10px 28px rgba(0,0,0,.16);
   -webkit-mask:radial-gradient(circle 5px at 115px 17px,transparent 4.5px,#000 5px);mask:radial-gradient(circle 5px at 115px 17px,transparent 4.5px,#000 5px)}
-.v7.h-old .tag__hole{display:block;background:none;box-shadow:none;border:2px solid rgba(3,56,158,.35);left:109px;top:11px;width:12px;height:12px}
-.v7.h-old .tag__l{font-family:var(--mono)}
-.v7.h-old .lines path{stroke:var(--lime);stroke-width:2.4}
-.v7.h-old .stage.focus .lines path:not(.on){filter:blur(3px);opacity:.55}
+.v7:is(.h-fix,.h-old) .tag__hole{display:block;background:none;box-shadow:none;border:2px solid rgba(3,56,158,.35);left:109px;top:11px;width:12px;height:12px}
+.v7:is(.h-fix,.h-old) .tag__l{font-family:var(--mono)}
+.v7:is(.h-fix,.h-old) .lines path{stroke:var(--lime);stroke-width:2.4}
+.v7:is(.h-fix,.h-old) .stage.focus .lines path:not(.on){filter:blur(3px);opacity:.55}
 
 /* ropes=float: тянуть нельзя, узлы чуть парят, при наведении верёвка слегка вздрагивает (JS) */
 .ropes-float .node{cursor:pointer}
