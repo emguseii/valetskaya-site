@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Имя Фамилия — портфолио</title>
+  <meta name="description" content="Портфолио: кратко о том, чем вы занимаетесь и для кого.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="#top">Имя Фамилия</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Открыть меню">
+        <span></span><span></span>
+      </button>
+      <nav id="site-nav" class="site-nav">
+        <a href="#about">Обо мне</a>
+        <a href="#work">Работы</a>
+        <a href="#services">Услуги</a>
+        <a href="#contact" class="nav-cta">Связаться</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="top" class="hero">
+      <div class="container">
+        <p class="eyebrow">Ваша профессия · Город</p>
+        <h1>Короткий заголовок о том, какую пользу вы приносите</h1>
+        <p class="lead">Одно-два предложения: чем вы занимаетесь, для кого и чем отличаетесь. Замените этот текст на свой.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#work">Смотреть работы</a>
+          <a class="btn btn-ghost" href="#contact">Написать мне</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <div class="container about-grid">
+        <div class="about-photo" role="img" aria-label="Место для вашей фотографии">
+          <span>Фото</span>
+        </div>
+        <div>
+          <h2>Обо мне</h2>
+          <p>Расскажите о себе: опыт, подход к работе, что вам важно. Два-три коротких абзаца читаются лучше одного длинного.</p>
+          <p>Добавьте пару фактов, которые вызывают доверие: годы опыта, известные клиенты, образование или награды.</p>
+          <ul class="facts">
+            <li><strong>X+</strong><span>лет опыта</span></li>
+            <li><strong>XX</strong><span>проектов</span></li>
+            <li><strong>XX</strong><span>клиентов</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="work" class="section section-alt">
+      <div class="container">
+        <h2>Избранные работы</h2>
+        <p class="section-lead">Три-шесть лучших проектов. Для каждого — задача, что вы сделали и результат.</p>
+        <div class="cards">
+          <article class="card">
+            <div class="card-media">Проект 1</div>
+            <div class="card-body">
+              <p class="card-tag">Категория</p>
+              <h3>Название проекта</h3>
+              <p>Коротко: какая была задача и какой получился результат.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-media">Проект 2</div>
+            <div class="card-body">
+              <p class="card-tag">Категория</p>
+              <h3>Название проекта</h3>
+              <p>Коротко: какая была задача и какой получился результат.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-media">Проект 3</div>
+            <div class="card-body">
+              <p class="card-tag">Категория</p>
+              <h3>Название проекта</h3>
+              <p>Коротко: какая была задача и какой получился результат.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="section">
+      <div class="container">
+        <h2>Чем могу помочь</h2>
+        <div class="services">
+          <div class="service">
+            <h3>Услуга 1</h3>
+            <p>Что входит и какой результат получит клиент.</p>
+          </div>
+          <div class="service">
+            <h3>Услуга 2</h3>
+            <p>Что входит и какой результат получит клиент.</p>
+          </div>
+          <div class="service">
+            <h3>Услуга 3</h3>
+            <p>Что входит и какой результат получит клиент.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section section-contact">
+      <div class="container contact-inner">
+        <h2>Давайте поработаем вместе</h2>
+        <p class="section-lead">Напишите, расскажите о задаче — отвечу в течение дня.</p>
+        <div class="contact-links">
+          <a class="btn btn-primary" href="mailto:you@example.com">you@example.com</a>
+          <a class="btn btn-ghost" href="https://t.me/username" target="_blank" rel="noopener">Telegram</a>
+          <a class="btn btn-ghost" href="https://www.linkedin.com/in/username" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year">2026</span> Имя Фамилия</p>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
