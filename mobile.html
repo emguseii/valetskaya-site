@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Валентина Валецкая · Mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/mobile.css">
+<link rel="stylesheet" href="css/modal.css">
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+
+<nav class="dock" aria-label="Разделы">
+  <a href="#cases">Кейсы</a><a href="#about">Обо мне</a><a href="#contacts">Контакты</a><a class="dock__cv" href="cv.pdf" target="_blank" rel="noopener" aria-label="Резюме, PDF">CV</a>
+</nav>
+
+<main>
+<!-- 1 · ГЕРОЙ — старая версия приветственного экрана, как на живом сайте -->
+<header class="hero" id="top">
+  <h1 class="vh">Валентина Валецкая — продуктовый дизайнер</h1>
+  <img class="hero__name" src="assets/hero-name.webp" alt="" width="860" height="338">
+  <div class="hero__photo">
+    <img class="hero__bubble" src="assets/hero-bubble.webp" alt="Product Designer" width="340" height="170">
+    <svg class="hero__star" viewBox="0 0 39 45" aria-hidden="true"><path fill="#fff" d="M19.49 0l2.2 18.68 17.28-7.43-15.07 11.25 15.07 11.25-17.28-7.43L19.49 45l-2.21-18.68L0 33.75l15.08-11.25L0 11.25l17.28 7.43z"/></svg>
+    <img src="assets/hero-photo.webp" alt="Валентина в очках на лаймовом фоне" width="420" height="403">
+  </div>
+  <p class="hero__offer">Разбираюсь в&nbsp;сложных задачах <span class="lime">→ нахожу простые решения</span></p>
+</header>
+
+<!-- 2 · КЕЙСЫ — без заголовка, ничего вбок -->
+<section class="cases" id="cases" aria-label="Кейсы">
+  <a class="case" href="#case-stat">
+    <h2 class="case__h"><em>NEW статистика</em> на&nbsp;web и&nbsp;с&nbsp;нуля на&nbsp;mobile</h2>
+    <img class="case__img" src="assets/case1-card.webp" alt="Экраны новой статистики сообществ" loading="lazy">
+    <ul class="chips"><li class="chip">Июн — Дек 2024</li><li class="chip">WEB</li><li class="chip">Mobile</li></ul>
+  </a>
+  <a class="case" href="#case-path">
+    <h2 class="case__h"><em>+16%</em> оформленных сообществ авторами</h2>
+    <img class="case__img case__img--2" src="assets/case2-card.webp" alt="Карточки онбординга нового автора" loading="lazy">
+    <ul class="chips"><li class="chip">Мар — Июл 2025</li><li class="chip">WEB</li><li class="chip">Mobile</li></ul>
+  </a>
+  <a class="case" href="#case-car">
+    <h2 class="case__h"><em>4 A/B&#8209;теста:</em> почему iOS и&nbsp;Android реагировали по&#8209;разному</h2>
+    <img class="case__img case__img--3" src="assets/carousel-card.webp" alt="Карусель «Авторы для вас»" loading="lazy">
+    <ul class="chips"><li class="chip">2025 — 2026</li><li class="chip">iOS</li><li class="chip">Android</li></ul>
+  </a>
+  <div class="files">
+    <button class="file" type="button" data-locked><img src="assets/subs-card.webp" alt=""><span><b>Подписчики.case</b><small>4 шага → 1</small></span><span class="chip">в процессе</span></button>
+    <button class="file" type="button" data-locked><i class="file__ad">AD</i><span><b>Рекламный баннер.case</b><small>запуск за&nbsp;3&nbsp;недели</small></span><span class="chip">в процессе</span></button>
+    <button class="file" type="button" data-locked data-nda><img class="file__nda" src="assets/cover-nda.webp" alt=""><span><b>Кое-что для профиля.case</b><small>2026, ещё не&nbsp;вышел</small></span><span class="chip">NDA</span></button>
+  </div>
+</section>
+
+<!-- 3 · ОБО МНЕ — здесь живут глаза: появляются снизу (смотрят вверх), в центре — прямо, уходя — вниз на колоду -->
+<section class="about" id="about" aria-labelledby="about-h">
+  <h2 class="vh" id="about-h">Обо мне</h2>
+  <img class="about__title" src="assets/about-title.webp" alt="" aria-hidden="true">
+  <div class="win">
+    <div class="win__top"><i></i><i></i><i></i><span>Валя.exe</span></div>
+    <div class="win__eyes"><img id="eyes" src="assets/eyes-default.webp" alt="Глаза Вали смотрят туда, куда вы листаете" width="1172" height="294"><b class="cnr"></b></div>
+  </div>
+  <div class="deck" id="deck" aria-label="Карточки обо мне — смахивайте">
+    <article class="dc dc--photo"><img src="assets/deck-photo.webp" alt="Валя в очках" draggable="false"><div class="dc__cap"><b>Привет, это Валя</b><span>Листай карточки →</span></div></article>
+    <article class="dc"><span class="dc__l">ВКонтакте · май 2024 — окт 2026</span><b class="dc__h">2,5 года во&nbsp;ВКонтакте</b><p>Команда опыта автора в&nbsp;сообществах: статистика, создание сообщества, онбординг</p></article>
+    <article class="dc"><span class="dc__l">Что делала</span><ul><li>Вела задачи от&nbsp;гипотезы до&nbsp;A/B&#8209;теста</li><li>Собрала библиотеку компонентов, её&nbsp;переиспользуют другие команды</li><li>Интервью, юзабилити-тесты, ~400&nbsp;респондентов</li></ul></article>
+    <article class="dc"><span class="dc__l">Сильная сторона</span><b class="dc__h">Системное мышление</b><p>Мои решения потом берут другие команды</p></article>
+    <article class="dc"><span class="dc__l">Курсы</span><ul><li>Визуализация данных</li><li>Большая практика</li><li>Типографика и&nbsp;вёрстка</li><li>Немодерируемые исследования</li></ul></article>
+    <article class="dc"><span class="dc__l">Образование</span><ul class="dc__rows"><li>Uprock School<span>2024</span></li><li>Contented<span>2022–2023</span></li><li>НИ&nbsp;ТПУ<span>2017–2022</span></li></ul></article>
+    <article class="dc dc--photo dc--cats"><img src="assets/contacts-photo.webp" alt="Валя с котами" draggable="false"><div class="dc__cap"><b>После работы</b><span>Леплю из&nbsp;глины, танцую контемп, снимаю на&nbsp;плёнку. И&nbsp;коты</span></div></article>
+    <article class="dc dc--end" aria-live="polite"><canvas class="confetti" aria-hidden="true"></canvas><b class="dc__h">Это всё&nbsp;✦</b><p>Ты&nbsp;долистал до&nbsp;конца</p><button class="dc__again" type="button">Смотреть сначала</button></article>
+  </div>
+</section>
+
+<!-- 4 · КОНТАКТЫ — компактно, без тултипа, облако с травой снизу -->
+<section class="contacts" id="contacts" aria-labelledby="contacts-h">
+  <h2 class="vh" id="contacts-h">Контакты</h2>
+  <img class="contacts__lwt" src="assets/lwt.webp" alt="let's work together">
+  <div class="btns">
+    <a class="gbtn gbtn--main" href="https://t.me/emgusei" target="_blank" rel="noopener">Telegram <span>↗</span></a>
+    <button class="gbtn" type="button" data-copy-btn="valentine.valetskaya@gmail.com">Почта <span>↗</span></button>
+    <a class="gbtn" href="https://www.linkedin.com/in/vvalentin%D0%B5/" target="_blank" rel="noopener">LinkedIn <span>↗</span></a>
+    <a class="gbtn" href="cv.pdf" target="_blank" rel="noopener">Резюме <span>↗</span></a>
+  </div>
+  <img class="ground" src="assets/contacts-ground.webp" alt="" aria-hidden="true">
+</section>
+</main>
+
+<footer class="foot">
+  <div class="foot__top"><img src="assets/hero-name-v5.webp" alt="Валентина Валецкая" width="1438" height="393"><a class="foot__up" href="#top" aria-label="Наверх">↑</a></div>
+  <nav class="foot__nav"><a href="#cases">Кейсы</a><a href="#about">Обо мне</a><a href="#contacts">Контакты</a></nav>
+  <a class="foot__cv" href="cv.pdf" target="_blank" rel="noopener">Скачать CV ↗</a>
+  <p class="foot__meta">© 2026 Валентина Валецкая · Нидерланды<br>Шрифт заголовков <a href="https://www.rieslingtype.com/" target="_blank" rel="noopener">RT&nbsp;Obligat — Riesling Type</a></p>
+</footer>
+
+<div class="case-modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-h" hidden>
+  <div class="case-modal__in" tabindex="-1"><button class="case-modal__x" type="button" aria-label="Закрыть кейс">×</button><div class="case-modal__body" id="modal-body"></div></div>
+</div>
+<div class="toast" role="status"></div>
+
+<script src="js/sky.js"></script>
+<script src="js/eyes.js"></script>
+<script src="js/cases.js"></script>
+<script src="js/mobile.js"></script>
+</body>
+</html>
