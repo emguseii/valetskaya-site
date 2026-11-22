@@ -271,7 +271,6 @@ ul{list-style:none}
   .cases{padding:80px 24px}
   .cases__grid{grid-template-columns:repeat(2,minmax(0,430px))}
   .files{flex-wrap:wrap}
-  .pile,.board{zoom:.8}
 
 }
 @media (prefers-reduced-motion: reduce){
@@ -363,3 +362,7 @@ ul{list-style:none}
 .pile__word{display:none}.v7 .pile__word{display:block}
 
 /* v7.3 · 22.11: обложки из UI-kit Figma (Web/Case Card 41:346, Web/File 41:513), экспорт 2× → *-card.webp; позиции как в компонентах */
+
+/* Масштаб блоков ниже героя = масштаб героя (--s из web.js). Без этого при невысоком окне
+   герой ужимается, а кейсы остаются в исходных пикселях и кажутся крупнее (правка 22.11) */
+.cases,.about,.contacts,.foot{zoom:var(--s,1)}

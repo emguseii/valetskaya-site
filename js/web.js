@@ -10,7 +10,8 @@ document.documentElement.classList.add('js');
   const toastEl = $('.toast'); let tt;
   const toast = m => { toastEl.textContent = m; toastEl.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => toastEl.classList.remove('on'), 2400); };
 
-  // Сцена героя целиком в экран
+  // Сцена героя целиком в экран. Тот же коэффициент --s масштабирует все блоки ниже (см. .flow в web.css),
+  // чтобы пропорции героя и кейсов не расходились при любом размере окна и масштабе браузера
   const fit = () => root.style.setProperty('--s', Math.min(innerWidth / 1440, innerHeight / 900, 1.25).toFixed(4));
   fit(); addEventListener('resize', fit);
 
@@ -99,7 +100,7 @@ document.documentElement.classList.add('js');
 
   // Карточки кейсов: лаймовый чип едет за курсором, соседи не размываются
   $$('.case').forEach(c => c.addEventListener('pointermove', e => { const r = c.getBoundingClientRect();
-    c.style.setProperty('--px', Math.min(r.width - 170, e.clientX - r.left + 14) + 'px'); c.style.setProperty('--py', Math.min(r.height - 44, e.clientY - r.top + 14) + 'px'); }));
+    c.style.setProperty('--px', Math.min(r.width / S() - 170, (e.clientX - r.left) / S() + 14) + 'px'); c.style.setProperty('--py', Math.min(r.height / S() - 44, (e.clientY - r.top) / S() + 14) + 'px'); }));
 
   // Небо: одна палитра «мягкий день» на всю страницу
   const DAY = { sky: ['#2b4690', '#4d70b4', '#9bb5d8'], L: '#fffaf1', H: '#cfc5bd' };
@@ -141,7 +142,7 @@ document.documentElement.classList.add('js');
     el.addEventListener('pointerdown', e => { if (e.button > 0) return; e.preventDefault(); el.setPointerCapture(e.pointerId);
       sx = e.clientX; sy = e.clientY; ox = el.offsetLeft; oy = el.offsetTop; el.style.zIndex = ++z; el.classList.add('grab'); });
     el.addEventListener('pointermove', e => { if (!el.hasPointerCapture(e.pointerId)) return;
-      const k = parseFloat(getComputedStyle(pile).zoom) || 1; el.style.left = ox + (e.clientX - sx) / k + 'px'; el.style.top = oy + (e.clientY - sy) / k + 'px';
+      const k = (parseFloat(getComputedStyle(pile).zoom) || 1) * S(); el.style.left = ox + (e.clientX - sx) / k + 'px'; el.style.top = oy + (e.clientY - sy) / k + 'px';
       el.style.setProperty('--tilt', Math.max(-8, Math.min(8, e.movementX * .6)) + 'deg'); });
     const up = e => { if (!el.hasPointerCapture(e.pointerId)) return; el.releasePointerCapture(e.pointerId); el.classList.remove('grab'); el.style.setProperty('--tilt', '0deg');
       const st = stackAt(el, i); if (Math.hypot(el.offsetLeft - st.l, el.offsetTop - st.t) > 120) el.dataset.spread = '1';
@@ -154,7 +155,7 @@ document.documentElement.classList.add('js');
   // Язычки: отрываются кусочком, через 4 с вырастает новый. Все ↗, ровные
   $$('.tab').forEach(t => t.addEventListener('click', async () => {
     if (t.classList.contains('torn')) return;
-    if (!reduce) { const r = t.getBoundingClientRect(), b = $('.board').getBoundingClientRect(), k = parseFloat(getComputedStyle($('.board')).zoom) || 1;
+    if (!reduce) { const r = t.getBoundingClientRect(), b = $('.board').getBoundingClientRect(), k = (parseFloat(getComputedStyle($('.board')).zoom) || 1) * S();
       const pc = document.createElement('div'); pc.className = 'piece'; pc.innerHTML = t.querySelector('b').outerHTML;
       Object.assign(pc.style, { left: (r.left - b.left) / k + 'px', top: (r.top - b.top) / k + 'px', width: r.width / k + 'px', height: r.height / k + 'px' });
       $('.board').appendChild(pc); setTimeout(() => pc.remove(), 1400); }
