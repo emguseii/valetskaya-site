@@ -12,7 +12,11 @@ document.documentElement.classList.add('js');
 
   // Сцена героя целиком в экран. Тот же коэффициент --s масштабирует все блоки ниже (см. .flow в web.css),
   // чтобы пропорции героя и кейсов не расходились при любом размере окна и масштабе браузера
-  const fit = () => root.style.setProperty('--s', Math.min(innerWidth / 1440, innerHeight / 900, 1.25).toFixed(4));
+  // --s  — герой: по ширине, высота ограничивает мягче (800 вместо 900), чтобы на ноутбуке первый экран не мельчил
+  // --sb — блоки ниже: по ширине, на 8 % компактнее героя (правка 22.11)
+  const fit = () => { const w = innerWidth / 1440;
+    root.style.setProperty('--s', Math.min(w, innerHeight / 800, 1.25).toFixed(4));
+    root.style.setProperty('--sb', (Math.min(w, 1.25) * .92).toFixed(4)); };
   fit(); addEventListener('resize', fit);
 
   const eyes = Eyes($('#eyes'), 'cursor');
@@ -38,6 +42,7 @@ document.documentElement.classList.add('js');
   /* ── Верёвки: берём ТВОЮ кривую как точки и при перетаскивании сдвигаем только конец у узла,
      плавно затухая к окну. Форма не ломается, верёвка просто тянется. */
   const S = () => parseFloat(getComputedStyle(root).getPropertyValue('--s')) || 1;
+  const SB = () => parseFloat(getComputedStyle(root).getPropertyValue('--sb')) || 1;
   const svg = $('.lines');
   const rope = {};
   const sample = p => { const m = p.getCTM(), L = p.getTotalLength(), N = 48, pts = [];
@@ -100,7 +105,7 @@ document.documentElement.classList.add('js');
 
   // Карточки кейсов: лаймовый чип едет за курсором, соседи не размываются
   $$('.case').forEach(c => c.addEventListener('pointermove', e => { const r = c.getBoundingClientRect();
-    c.style.setProperty('--px', Math.min(r.width / S() - 170, (e.clientX - r.left) / S() + 14) + 'px'); c.style.setProperty('--py', Math.min(r.height / S() - 44, (e.clientY - r.top) / S() + 14) + 'px'); }));
+    c.style.setProperty('--px', Math.min(r.width / SB() - 170, (e.clientX - r.left) / SB() + 14) + 'px'); c.style.setProperty('--py', Math.min(r.height / SB() - 44, (e.clientY - r.top) / SB() + 14) + 'px'); }));
 
   // Небо: одна палитра «мягкий день» на всю страницу
   const DAY = { sky: ['#2b4690', '#4d70b4', '#9bb5d8'], L: '#fffaf1', H: '#cfc5bd' };
@@ -142,7 +147,7 @@ document.documentElement.classList.add('js');
     el.addEventListener('pointerdown', e => { if (e.button > 0) return; e.preventDefault(); el.setPointerCapture(e.pointerId);
       sx = e.clientX; sy = e.clientY; ox = el.offsetLeft; oy = el.offsetTop; el.style.zIndex = ++z; el.classList.add('grab'); });
     el.addEventListener('pointermove', e => { if (!el.hasPointerCapture(e.pointerId)) return;
-      const k = (parseFloat(getComputedStyle(pile).zoom) || 1) * S(); el.style.left = ox + (e.clientX - sx) / k + 'px'; el.style.top = oy + (e.clientY - sy) / k + 'px';
+      const k = (parseFloat(getComputedStyle(pile).zoom) || 1) * SB(); el.style.left = ox + (e.clientX - sx) / k + 'px'; el.style.top = oy + (e.clientY - sy) / k + 'px';
       el.style.setProperty('--tilt', Math.max(-8, Math.min(8, e.movementX * .6)) + 'deg'); });
     const up = e => { if (!el.hasPointerCapture(e.pointerId)) return; el.releasePointerCapture(e.pointerId); el.classList.remove('grab'); el.style.setProperty('--tilt', '0deg');
       const st = stackAt(el, i); if (Math.hypot(el.offsetLeft - st.l, el.offsetTop - st.t) > 120) el.dataset.spread = '1';
@@ -155,7 +160,7 @@ document.documentElement.classList.add('js');
   // Язычки: отрываются кусочком, через 4 с вырастает новый. Все ↗, ровные
   $$('.tab').forEach(t => t.addEventListener('click', async () => {
     if (t.classList.contains('torn')) return;
-    if (!reduce) { const r = t.getBoundingClientRect(), b = $('.board').getBoundingClientRect(), k = (parseFloat(getComputedStyle($('.board')).zoom) || 1) * S();
+    if (!reduce) { const r = t.getBoundingClientRect(), b = $('.board').getBoundingClientRect(), k = (parseFloat(getComputedStyle($('.board')).zoom) || 1) * SB();
       const pc = document.createElement('div'); pc.className = 'piece'; pc.innerHTML = t.querySelector('b').outerHTML;
       Object.assign(pc.style, { left: (r.left - b.left) / k + 'px', top: (r.top - b.top) / k + 'px', width: r.width / k + 'px', height: r.height / k + 'px' });
       $('.board').appendChild(pc); setTimeout(() => pc.remove(), 1400); }
