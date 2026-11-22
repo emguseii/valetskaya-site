@@ -21,29 +21,33 @@ ul{list-style:none}
 .dock.hide{opacity:0;transform:translate(-50%,140%);pointer-events:none}
 
 /* 1 · Герой: без лишней высоты — снизу уже выглядывает первый кейс */
-.hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:max(var(--s-64),env(safe-area-inset-top)) var(--m-margin) var(--s-40)}
+/* Герой — на весь первый экран, док стоит в его нижней части (как в Frame 91) и не перекрывает первый кейс */
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:100svh;padding:max(var(--s-48),env(safe-area-inset-top)) var(--m-margin) calc(54px + var(--s-48) + env(safe-area-inset-bottom))}
 .hero__name{width:100%;max-width:520px}
 .hero__photo{position:relative;margin-top:var(--s-64);width:min(201px,52vw)}
 .hero__photo>img:last-child{width:100%;filter:drop-shadow(0 12px 30px rgba(0,0,0,.18))}
 .hero__bubble{position:absolute;top:-60px;left:52%;width:min(170px,44vw);z-index:2}
 .hero__star{position:absolute;width:38px;right:-60px;bottom:-4px}
-.hero__offer{margin-top:var(--s-32);font:400 clamp(30px,8.6vw,48px)/.88 var(--display);text-transform:uppercase;max-width:520px;text-wrap:balance}
+.hero__offer{margin-top:var(--s-32);font:400 clamp(26px,6.51vw,34px)/.92 var(--display);letter-spacing:-.02em;text-transform:uppercase;width:83.3%;max-width:420px;text-wrap:balance}
 
 /* 2 · Кейсы */
-.cases{padding:0 var(--m-margin) var(--s-48);display:grid;gap:var(--s-16);max-width:520px;margin:0 auto}
-.case{position:relative;display:block;aspect-ratio:358/440;border-radius:var(--r-card);overflow:hidden;padding:var(--s-20) var(--s-20) 0;
-  background:linear-gradient(180deg,rgba(6,44,170,.96),rgba(16,70,200,.86) 45%,rgba(60,130,235,.55));box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
-.case__h{position:relative;z-index:2;font:400 clamp(30px,9vw,38px)/.9 var(--display);text-transform:uppercase}
+.cases{padding:0 21px var(--s-48);display:grid;gap:var(--s-48);max-width:520px;margin:0 auto}
+.case{position:relative;display:block;aspect-ratio:387/472;border-radius:25px;overflow:hidden;padding:22px 22px 0;
+  /* Mobile/Case Card 65:426: синий 20% поверх фото неба, стекло, внутреннее свечение, волосяная линия.
+     ⚠ фото неба — замена: точный файл из Figma (451×560) не выгружается в мою среду, взят sky.webp */
+  background:linear-gradient(rgba(3,56,158,.2),rgba(3,56,158,.2)),url(../assets/sky.webp) 50% 30%/cover;
+  box-shadow:inset 0 0 64.8px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.35);transition:transform .2s var(--ease)}
+.case__h{position:relative;z-index:2;font:400 clamp(24px,6.7vw,32px)/.86 var(--display);letter-spacing:-.04em;text-transform:uppercase;max-width:344px}
 .case__h em{font-style:normal;color:var(--lime)}
 .case__img{position:absolute;left:0;bottom:0;width:100%;z-index:1}
 .case__img--2{left:0;width:100%;bottom:0} /* обложки из UI-kit Mobile/Case Card 65:426 */
 .case__img--3{left:21.2%;width:63.3%;bottom:26.8%}
-.chips{position:absolute;left:var(--s-20);bottom:var(--s-16);z-index:3;display:flex;gap:6px;flex-wrap:wrap}
-.chip{display:inline-flex;align-items:center;height:30px;padding:0 var(--s-12);border-radius:var(--r-chip);background:var(--chip);color:var(--white);font:500 14px/1 var(--text);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);white-space:nowrap}
+.chips{position:absolute;left:22px;bottom:21px;z-index:3;display:flex;gap:5px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;height:29px;padding:0 11px;border-radius:14.4px;background:var(--chip);color:var(--white);font:500 13.5px/1 var(--text);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);white-space:nowrap}
 .case:active{transform:scale(.98)}
 /* Другие работы: строки на тёмном стекле — лайм читается */
-.files{display:grid;gap:var(--s-8);margin-top:var(--s-8)}
-.file{position:relative;display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:var(--s-12);padding:var(--s-8) var(--s-12) var(--s-8) var(--s-8);border-radius:var(--r-row);text-align:left;
+.files{display:grid;gap:var(--s-12);margin-top:-1px}
+.file{position:relative;display:grid;grid-template-columns:64px 1fr auto;align-items:center;min-height:70px;gap:var(--s-12);padding:var(--s-8) var(--s-12) var(--s-8) var(--s-8);border-radius:var(--r-row);text-align:left;
   background:var(--surface-dark);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
 .file img,.file__ad{width:64px;height:52px;border-radius:12px;object-fit:cover;background:#eef1f8}
 .file__ad{display:grid;place-items:center;color:var(--blue);font:700 22px/1 var(--text);font-style:normal}
@@ -56,23 +60,27 @@ ul{list-style:none}
 @keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
 
 /* 3 · Обо мне: заголовок → окно с глазами → стопка */
-.about{padding:var(--s-64) var(--m-margin) var(--s-48);max-width:520px;margin:0 auto}
-.about__title{width:86%;margin:0 auto}
-.win{margin:var(--s-24) auto 0;width:100%;border-radius:var(--s-20);overflow:hidden;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:inset 0 0 0 1px var(--glass-stroke)}
+/* Figma Frame 91: окно (поля 21) → «ОБО МНЕ» 326 px → стопка 368 px (поля 31) */
+.about{padding:60px 21px var(--s-64);max-width:520px;margin:0 auto}
+.about__title{width:75.8%;margin:17px auto 0}
+.win{width:100%;border-radius:18px;overflow:hidden;background:var(--glass);backdrop-filter:blur(33px);-webkit-backdrop-filter:blur(33px);box-shadow:inset 0 0 0 .66px var(--glass-stroke),0 12px 22.7px rgba(0,0,0,.22)}
 .win__top{height:26px;display:flex;align-items:center;gap:5px;padding:0 14px;position:relative}
 .win__top i{width:7px;height:7px;border-radius:50%;background:#ff5f57}.win__top i:nth-child(2){background:#febc2e}.win__top i:nth-child(3){background:#28c840}
 .win__top span{position:absolute;left:0;right:0;text-align:center;font-size:11px;font-weight:500}
-.win__eyes{position:relative;aspect-ratio:1172/294}
+.win__eyes{position:relative;aspect-ratio:387/97}
+/* Нижняя панель окна, как в Shared/Window в масштабе мобилки (0,66) */
+.win__bot{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 9px}
+.pill{height:24px;display:inline-flex;align-items:center;padding:0 10px;border-radius:12px;background:var(--white);color:var(--ink);font:500 11px/1 var(--mono)}
 .win__eyes img{width:100%;height:100%;object-fit:cover}
 .cnr{position:absolute;inset:8px 12px;pointer-events:none;--c:var(--lime);
   background:linear-gradient(var(--c),var(--c)) 0 0/14px 3px,linear-gradient(var(--c),var(--c)) 0 0/3px 14px,linear-gradient(var(--c),var(--c)) 100% 0/14px 3px,linear-gradient(var(--c),var(--c)) 100% 0/3px 14px,
    linear-gradient(var(--c),var(--c)) 0 100%/14px 3px,linear-gradient(var(--c),var(--c)) 0 100%/3px 14px,linear-gradient(var(--c),var(--c)) 100% 100%/14px 3px,linear-gradient(var(--c),var(--c)) 100% 100%/3px 14px;background-repeat:no-repeat}
 
 /* Стопка в духе Apple: одна поверхность, большой радиус, ровные поля, задние карточки — тихие слои сверху */
-.deck{position:relative;isolation:isolate;height:440px;margin-top:calc(var(--s-32) + 20px)}
-.dc{position:absolute;inset:0;border-radius:var(--r-card);padding:var(--s-24);background:var(--white);color:var(--ink);display:flex;flex-direction:column;gap:var(--s-12);
+.deck{position:relative;isolation:isolate;aspect-ratio:368/331;margin:73px 10px 0}
+.dc{position:absolute;inset:0;border-radius:24px;padding:var(--s-24);background:rgba(255,255,255,.96);color:var(--ink);display:flex;flex-direction:column;gap:var(--s-12);
   touch-action:pan-y;user-select:none;overflow:hidden;
-  transform:translate(var(--x,0),calc(var(--i,0) * -10px)) rotate(var(--rot,0deg)) scale(calc(1 - var(--i,0) * .05));transform-origin:50% 0;
+  transform:translate(var(--x,0),calc(var(--i,0) * 12px)) rotate(var(--rot,0deg)) scale(calc(1 - var(--i,0) * .05));transform-origin:50% 100%;
   box-shadow:0 1px 2px rgba(0,20,60,.08),0 18px 40px -18px rgba(0,20,60,.45);transition:transform .5s var(--ease),opacity .4s,translate .55s var(--ease)}
 .dc.deep{opacity:0}
 .dc.rise{opacity:0;translate:0 36px;transition:none}
@@ -82,7 +90,9 @@ ul{list-style:none}
 .dc.out{opacity:0;pointer-events:none}
 .dc.gone{display:none}
 .dc__l{font:500 13px/1.3 var(--text);color:var(--muted)}
-.dc__h{font:400 44px/.9 var(--display);text-transform:uppercase;margin-top:auto}
+.dc__h{font:400 36px/.94 var(--display);text-transform:uppercase;margin-top:auto}
+.dc--paper{background:rgba(251,252,239,.96)}
+.dc__l{font-size:15px}
 .dc p,.dc li{font-size:17px;line-height:1.4}
 .dc ul{display:grid;gap:var(--s-8);margin-top:auto}
 .dc ul li{padding-left:var(--s-16);position:relative}
@@ -90,6 +100,10 @@ ul{list-style:none}
 .dc__rows li{display:flex;justify-content:space-between;padding:var(--s-12) 0!important;border-top:1px solid rgba(22,22,22,.1)}
 .dc__rows li::before{display:none}
 .dc__rows span{color:var(--muted)}
+.dc--me{padding:0;background:var(--lime);border-radius:21px;box-shadow:0 12px 34.5px rgba(0,20,60,.3)}
+.dc--me img{position:absolute;left:6.25%;top:6.34%;width:85.9%;height:79.5%;object-fit:contain;object-position:50% 100%;pointer-events:none}
+.dc--me .dc__me{position:absolute;left:6.25%;bottom:4.8%;font:500 15px/1.25 var(--text);color:#5c5c54}
+.dc--me::after{display:none}
 .dc--photo{padding:0;background:var(--lime)}
 .dc--photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .dc--cats{background:#cfe0ff}
@@ -105,16 +119,23 @@ ul{list-style:none}
 .dc.hint{animation:hint 1.3s var(--ease)}
 @keyframes hint{30%{transform:translateX(-46px) rotate(-5deg)}100%{transform:none}}
 
-/* 4 · Контакты: без второго фото, облако — мостик к траве, чуть заходит под кнопки */
-.contacts{position:relative;padding:var(--s-64) var(--m-margin) 0;text-align:center;overflow:hidden}
-.contacts__lwt{width:min(300px,78%);margin:0 auto;filter:invert(1)}
-.btns{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:var(--m-gutter);max-width:420px;margin:var(--s-32) auto 0}
-.gbtn{height:56px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:var(--r-row);font-weight:700;font-size:16px;color:var(--white);
-  background:rgba(255,255,255,.18);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
-.gbtn--main{background:var(--lime);color:var(--ink);box-shadow:none}
-.ground{position:relative;z-index:1;display:block;width:180%;max-width:none;margin:calc(-1 * var(--s-64)) 0 0 -40%;pointer-events:none}
+/* 4 · Контакты — Figma Frame 91 (117:130771), 430×445: облако за заголовком, звезда, сетка 2×2 стеклянных строк.
+   ⚠ фон — замена: её картинка облака (1264×848) не выгружается в мою среду, временно contacts-ground.webp */
+.contacts{position:relative;min-height:445px;padding:64px 20px 56px;text-align:center;overflow:hidden;
+  background:url(../assets/contacts-ground.webp) 62% 0/auto 100% no-repeat}
+.contacts__lwt{width:min(250px,58%);margin:0 auto}
+.contacts__star{display:block;width:45px;height:45px;margin:16px auto 0}
+.rows{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:420px;margin:16px auto 0}
+.row{height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 20px;border-radius:20px;color:var(--white);text-align:left;
+  background:rgba(255,255,255,.16);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:inset 0 0 16px rgba(255,255,255,.25),inset 0 0 0 1px rgba(255,255,255,.35),0 8px 22px rgba(0,30,10,.18);transition:transform .15s var(--ease)}
+.row b{font:700 16px/1 var(--text)}
+.row__ic{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.18);font:500 18px/1 var(--text);font-style:normal}
+.row__ic--copy::before{content:"";width:14px;height:14px;border:1.6px solid currentColor;border-radius:3px;box-shadow:-4px 4px 0 -1.6px rgba(0,0,0,0),-4px 4px 0 0 currentColor;translate:2px -2px}
+.row:active{transform:scale(.98)}
+.row:active .row__ic{background:rgba(0,0,0,.14)}
 
-.foot{background:var(--ink);padding:var(--s-32) var(--m-margin) calc(var(--s-96) + env(safe-area-inset-bottom))}
+.foot{background:var(--ink);padding:var(--s-32) var(--m-margin) calc(var(--s-32) + env(safe-area-inset-bottom))}
 .foot__top{display:flex;align-items:center;justify-content:space-between;gap:var(--s-16)}
 .foot__top img{width:min(240px,62%)}
 .foot__up{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--white);color:var(--ink);font-size:24px;flex:none}

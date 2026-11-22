@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"><link rel="icon" href="data:,">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Валентина Валецкая · Mobile</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tokens.css?v=11222249">
-<link rel="stylesheet" href="css/mobile.css?v=11222249">
-<link rel="stylesheet" href="css/modal.css?v=11222249">
+<link rel="stylesheet" href="css/tokens.css?v=11222330">
+<link rel="stylesheet" href="css/mobile.css?v=11222330">
+<link rel="stylesheet" href="css/modal.css?v=11222330">
 </head>
 <body>
 <div class="sky" aria-hidden="true"></div>
@@ -27,7 +27,7 @@
     <svg class="hero__star" viewBox="0 0 39 45" aria-hidden="true"><path fill="#fff" d="M19.49 0l2.2 18.68 17.28-7.43-15.07 11.25 15.07 11.25-17.28-7.43L19.49 45l-2.21-18.68L0 33.75l15.08-11.25L0 11.25l17.28 7.43z"/></svg>
     <img src="assets/hero-photo.webp" alt="Валентина в очках на лаймовом фоне" width="420" height="403">
   </div>
-  <p class="hero__offer">Разбираюсь в&nbsp;сложных задачах <span class="lime">→ нахожу простые решения</span></p>
+  <p class="hero__offer">Разбираюсь в&nbsp;сложных задачах → нахожу простые решения</p>
 </header>
 
 <!-- 2 · КЕЙСЫ — без заголовка, ничего вбок -->
@@ -54,37 +54,39 @@
   </div>
 </section>
 
-<!-- 3 · ОБО МНЕ — здесь живут глаза: появляются снизу (смотрят вверх), в центре — прямо, уходя — вниз на колоду -->
+<!-- 3 · ОБО МНЕ — Figma Frame 91 (117:130762): окно с глазами → «ОБО МНЕ» → стопка (сверху лаймовая карточка «это я, Валя»).
+     Глаза живут здесь: окно входит снизу — смотрят вверх, в центре — прямо, уходя — вниз -->
 <section class="about" id="about" aria-labelledby="about-h">
   <h2 class="vh" id="about-h">Обо мне</h2>
-  <img class="about__title" src="assets/about-title.webp" alt="" aria-hidden="true">
   <div class="win">
-    <div class="win__top"><i></i><i></i><i></i><span>Валя.exe</span></div>
+    <div class="win__top"><i></i><i></i><i></i><span>Валя.app</span></div>
     <div class="win__eyes"><img id="eyes" src="assets/eyes-default.webp" alt="Глаза Вали смотрят туда, куда вы листаете" width="1172" height="294"><b class="cnr"></b></div>
+    <div class="win__bot"><a class="pill" href="https://t.me/emgusei" target="_blank" rel="noopener">TG ↗</a><a class="pill" href="cv.pdf" target="_blank" rel="noopener">CV ↓</a></div>
   </div>
+  <img class="about__title" src="assets/about-title.webp" alt="" aria-hidden="true">
   <div class="deck" id="deck" aria-label="Карточки обо мне — смахивайте">
-    <article class="dc dc--photo"><img src="assets/deck-photo.webp" alt="Валя в очках" draggable="false"><div class="dc__cap"><b>Привет, это Валя</b><span>Листай карточки →</span></div></article>
+    <article class="dc dc--me"><img src="assets/contacts-photo.webp" alt="Валя с котами" draggable="false"><span class="dc__me">это я, Валя</span></article>
     <article class="dc"><span class="dc__l">ВКонтакте · май 2024 — окт 2026</span><b class="dc__h">2,5 года во&nbsp;ВКонтакте</b><p>Команда опыта автора в&nbsp;сообществах: статистика, создание сообщества, онбординг</p></article>
-    <article class="dc"><span class="dc__l">Что делала</span><ul><li>Вела задачи от&nbsp;гипотезы до&nbsp;A/B&#8209;теста</li><li>Собрала библиотеку компонентов, её&nbsp;переиспользуют другие команды</li><li>Интервью, юзабилити-тесты, ~400&nbsp;респондентов</li></ul></article>
-    <article class="dc"><span class="dc__l">Сильная сторона</span><b class="dc__h">Системное мышление</b><p>Мои решения потом берут другие команды</p></article>
-    <article class="dc"><span class="dc__l">Курсы</span><ul><li>Визуализация данных</li><li>Большая практика</li><li>Типографика и&nbsp;вёрстка</li><li>Немодерируемые исследования</li></ul></article>
-    <article class="dc"><span class="dc__l">Образование</span><ul class="dc__rows"><li>Uprock School<span>2024</span></li><li>Contented<span>2022–2023</span></li><li>НИ&nbsp;ТПУ<span>2017–2022</span></li></ul></article>
-    <article class="dc dc--photo dc--cats"><img src="assets/contacts-photo.webp" alt="Валя с котами" draggable="false"><div class="dc__cap"><b>После работы</b><span>Леплю из&nbsp;глины, танцую контемп, снимаю на&nbsp;плёнку. И&nbsp;коты</span></div></article>
+    <article class="dc dc--paper"><span class="dc__l">что делала</span><ul><li>Вела задачи от&nbsp;гипотезы до&nbsp;A/B&#8209;теста</li><li>Собрала библиотеку компонентов, её&nbsp;переиспользуют другие команды</li><li>Интервью, юзабилити-тесты, ~400&nbsp;респондентов</li></ul></article>
+    <article class="dc"><span class="dc__l">сильная сторона</span><b class="dc__h">Системное мышление</b><p>Мои решения потом берут другие команды</p></article>
+    <article class="dc dc--paper"><span class="dc__l">курсы</span><p>Визуализация данных · Большая практика · Типографика и&nbsp;вёрстка · Немодерируемые исследования</p></article>
+    <article class="dc"><span class="dc__l">образование</span><p>Uprock School · 2024<br>Contented · 2022–2023<br>НИ&nbsp;ТПУ · 2017–2022</p></article>
+    <article class="dc dc--paper"><span class="dc__l">после работы</span><p>Леплю из&nbsp;глины, танцую контемп и&nbsp;снимаю на&nbsp;плёнку</p></article>
     <article class="dc dc--end" aria-live="polite"><canvas class="confetti" aria-hidden="true"></canvas><b class="dc__h">Это всё&nbsp;✦</b><p>Ты&nbsp;долистал до&nbsp;конца</p><button class="dc__again" type="button">Смотреть сначала</button></article>
   </div>
 </section>
 
-<!-- 4 · КОНТАКТЫ — компактно, без тултипа, облако с травой снизу -->
+<!-- 4 · КОНТАКТЫ — Figma Frame 91 (117:130771): облако, «let's work together», звезда, 4 стеклянные строки (Mobile/Contact Row) -->
 <section class="contacts" id="contacts" aria-labelledby="contacts-h">
   <h2 class="vh" id="contacts-h">Контакты</h2>
   <img class="contacts__lwt" src="assets/lwt.webp" alt="let's work together">
-  <div class="btns">
-    <a class="gbtn gbtn--main" href="https://t.me/emgusei" target="_blank" rel="noopener">Telegram <span>↗</span></a>
-    <button class="gbtn" type="button" data-copy-btn="valentine.valetskaya@gmail.com">Почта <span>↗</span></button>
-    <a class="gbtn" href="https://www.linkedin.com/in/vvalentin%D0%B5/" target="_blank" rel="noopener">LinkedIn <span>↗</span></a>
-    <a class="gbtn" href="cv.pdf" target="_blank" rel="noopener">Резюме <span>↗</span></a>
+  <svg class="contacts__star" viewBox="0 0 39 45" aria-hidden="true"><path fill="#fff" d="M19.49 0l2.2 18.68 17.28-7.43-15.07 11.25 15.07 11.25-17.28-7.43L19.49 45l-2.21-18.68L0 33.75l15.08-11.25L0 11.25l17.28 7.43z"/></svg>
+  <div class="rows">
+    <a class="row" href="https://t.me/emgusei" target="_blank" rel="noopener"><b>Telegram</b><i class="row__ic" aria-hidden="true">↗</i></a>
+    <button class="row" type="button" data-copy-btn="valentine.valetskaya@gmail.com" aria-label="Почта — скопировать адрес"><b>Почта</b><i class="row__ic row__ic--copy" aria-hidden="true"></i></button>
+    <a class="row" href="https://www.linkedin.com/in/vvalentin%D0%B5/" target="_blank" rel="noopener"><b>LinkedIn</b><i class="row__ic" aria-hidden="true">↗</i></a>
+    <a class="row" href="cv.pdf" target="_blank" rel="noopener"><b>Резюме</b><i class="row__ic" aria-hidden="true">↗</i></a>
   </div>
-  <img class="ground" src="assets/contacts-ground.webp" alt="" aria-hidden="true">
 </section>
 </main>
 
@@ -100,9 +102,9 @@
 </div>
 <div class="toast" role="status"></div>
 
-<script src="js/sky.js?v=11222249"></script>
-<script src="js/eyes.js?v=11222249"></script>
-<script src="js/cases.js?v=11222249"></script>
-<script src="js/mobile.js?v=11222249"></script>
+<script src="js/sky.js?v=11222330"></script>
+<script src="js/eyes.js?v=11222330"></script>
+<script src="js/cases.js?v=11222330"></script>
+<script src="js/mobile.js?v=11222330"></script>
 </body>
 </html>

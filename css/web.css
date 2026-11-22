@@ -30,7 +30,6 @@ ul{list-style:none}
     radial-gradient(1px 1px at 63% 12%,#fff 98%,transparent),radial-gradient(1.3px 1.3px at 81% 25%,#fff 98%,transparent),radial-gradient(1px 1px at 92% 6%,#fff 98%,transparent),
     radial-gradient(1px 1px at 6% 40%,#fff 98%,transparent),radial-gradient(1.2px 1.2px at 35% 36%,#fff 98%,transparent),radial-gradient(1px 1px at 72% 40%,#fff 98%,transparent),radial-gradient(1.1px 1.1px at 54% 4%,#fff 98%,transparent);
   background-size:520px 520px}
-.sky::after — убрать одной строкой, если не нужно) */
 .sky{position:fixed;inset:0;z-index:-1;overflow:hidden;
   background:radial-gradient(60% 45% at 50% 40%,rgba(90,150,255,.28) 0%,rgba(90,150,255,0) 70%),
     radial-gradient(90% 40% at 50% 105%,rgba(255,226,190,.22) 0%,rgba(255,226,190,0) 70%),
@@ -47,8 +46,8 @@ ul{list-style:none}
 .bar a:hover{color:var(--lime)}
 
 /* 1 · Герой: сцена 1440×900 масштабом под экран */
-.hero{position:relative;z-index:2;height:calc(900px * var(--s,1));overflow:visible}
-.stage{position:absolute;left:50%;top:0;width:1440px;height:900px;transform:translateX(-50%) scale(var(--s,1));transform-origin:50% 0}
+.hero{position:relative;z-index:2;height:var(--hh,calc(900px * var(--s,1)));overflow:visible}
+.stage{position:absolute;left:50%;top:var(--st,0px);width:1440px;height:900px;transform:translateX(-50%) scale(var(--s,1));transform-origin:50% 0}
 .lines{position:absolute;inset:0;width:1440px;height:900px;overflow:visible;z-index:1;pointer-events:none}
 .lines path{fill:none;stroke:var(--lime);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:1 1;stroke-dashoffset:var(--o,0);transition:opacity .4s,filter .4s}
 
@@ -157,11 +156,7 @@ ul{list-style:none}
 /* Один бейдж на весь сайт: тёмное стекло, Onest 15, высота 32 */
 .chip{display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:16px;background:rgba(22,22,22,.62);color:#fff;font:500 15px/1 var(--text);
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);white-space:nowrap}
-.chip--go{position:absolute;left:0;top:0;z-index:4;background:var(--lime);color:var(--ink);opacity:0;pointer-events:none;
-  transform:translate(var(--px,50%),var(--py,50%)) scale(.85);transition:opacity .2s,transform .12s linear}
 .case:focus-visible{outline:3px solid var(--lime);outline-offset:4px}
-.case:hover .chip--go{opacity:1;transform:translate(var(--px),var(--py)) scale(1)}
-.case:focus-visible .chip--go{opacity:1;--px:calc(100% - 180px);--py:calc(100% - 60px);transform:translate(24px,-80px)}
 
 
 /* Другие работы: три файла, без заголовка */
@@ -190,7 +185,6 @@ ul{list-style:none}
 .pile__tidy{display:block;margin:var(--s-8) auto 0;height:40px;padding:0 var(--s-16);border-radius:20px;color:var(--white);font:500 15px/1 var(--text);background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .pile__tidy:hover{background:rgba(255,255,255,.22)}
 .pile__tidy[hidden]{display:none}
-  transform:translate(-50%,-16px);opacity:0;pointer-events:none;transition:transform .4s var(--spring),opacity .25s;box-shadow:0 14px 30px -12px rgba(0,0,0,.45)}
 .ach__ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--lime);color:var(--ink);font-size:20px}
 .card{position:absolute;padding:16px 16px 18px;border-radius:18px;color:var(--ink);touch-action:none;cursor:grab;user-select:none;
   box-shadow:0 14px 30px -14px rgba(0,20,70,.45);transform:rotate(calc(var(--r,0deg) + var(--tilt,0deg)));transition:transform .25s var(--ease),box-shadow .25s}
@@ -303,43 +297,34 @@ ul{list-style:none}
 .v7 .lines path.on{stroke:var(--lime);stroke-width:1.6}
 .v7 .stage.focus .lines path:not(.on){filter:none;opacity:.3}
 
-/* Обо мне — тёмный лист поверх неба; ровная сетка цветных карточек; игрушка остаётся */
-.v7 .about{background:var(--ink-bg);border-radius:var(--sheet-r);margin:0 var(--s-16);padding:var(--s-64) 0 var(--s-48)}
-.v7 .pile{width:1280px;height:600px}
-.v7 .pile__title{top:0;opacity:1!important;width:min(560px,40vw)}
-.v7 .card{transform:none!important;width:408px!important;min-height:196px;border-radius:16px;box-shadow:none}
-.v7 .card.grab{box-shadow:0 20px 40px -20px rgba(0,0,0,.6)}
-.v7 .toy{--r:0deg!important}
-.v7 .pile__tidy{background:none;box-shadow:inset 0 0 0 1px var(--line);backdrop-filter:none}
 
 /* Контакты на небе: камера ровно, вместо травы — облака снизу (шейдер) */
 .v7 .ground{display:none}
-.v7 .sheet__cam{transform:none}
 .v7 .tab:hover{transform:none}
-.v7 .contacts{padding-bottom:var(--s-120)}
 
 /* Футер — тёмный лист, как «Обо мне» */
-.v7 .foot{background:var(--ink-bg);border:0;border-radius:var(--sheet-r);margin:0 var(--s-16) var(--s-16)}
-.v7 .card--ink{box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
 
-/* ───── v7.1 · 22.11 ───── */
-/* Кейсы: спокойнее. Было: белая обводка 85% + внутреннее свечение (читалось как наклейка-пузырь),
-   заголовок 40 px на 3–4 строки спорил с картинкой, тёмные бейджи лежали поверх скриншотов.
-   Стало: стекло с волосяной линией (как линии героя), радиус 24, мета — тихой строкой над заголовком, заголовок 30 px. */
-.v7 .case{aspect-ratio:430/524;border-radius:24px;padding:28px 28px 0;display:flex;flex-direction:column;
-  background:rgba(22,34,92,.30);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),0 30px 60px -40px rgba(10,14,50,.5)}
-.v7 .case:hover{box-shadow:inset 0 0 0 1px rgba(255,255,255,.5),0 30px 60px -40px rgba(10,14,50,.5)}
-.v7 .case__h{font-size:30px;line-height:.95;max-width:340px}
-.v7 .chips{position:relative;left:auto;bottom:auto;order:-1;gap:0;margin-bottom:14px}
-.v7 .chips .chip{height:auto;padding:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:0;
-  font:500 14px/1 var(--text);color:rgba(255,255,255,.72)}
-.v7 .chips .chip+.chip::before{content:"·";margin:0 8px;color:rgba(255,255,255,.45)}
-.v7 .case .chip--go{border-radius:16px}
-/* картинки: чуть ниже заголовка, не упираются в края */
-.v7 .case__img,.v7 .case__img--2{left:0;width:100%;bottom:0}
-.v7 .case__spin{left:10.1%;right:11%;bottom:19.2%}
+/* ───── v8 · 22.11 вечер: кейсы по Web/Case Card 41:346 ─────
+   Стекло на небе: синий 20 % + размытие + внутреннее свечение 72 px (белый 15 %) + волосяная линия.
+   Заголовок RT Obligat 32 / 86 % / −4 %, поля 24. Обложка — с 104 px до низа (430×420), тем же кадром, что в компоненте.
+   Чипы — внизу слева поверх тёмной растяжки 88 px. Ховер: вместо лаймового чипа карточка приподнимается, обложка едет вверх. */
+.v7 .case{aspect-ratio:430/524;border-radius:28px;padding:24px 24px 0;display:block;
+  background:rgba(3,56,158,.2);backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);
+  box-shadow:inset 0 0 72px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.3);
+  transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.v7 .case::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16.8%;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,rgba(34,34,34,0) 0%,rgba(34,34,34,.28) 32%,rgba(34,34,34,.9) 83%,rgba(34,34,34,1) 100%)}
+.v7 .case__h{font-size:32px;line-height:.86;letter-spacing:-.04em;max-width:382px}
+.v7 .chips{position:absolute;left:24px;bottom:24px;z-index:3;gap:6px}
+.v7 .case__img,.v7 .case__img--2{left:0;top:19.85%;bottom:auto;width:100%;height:80.15%;object-fit:cover;object-position:50% 0}
+.v7 .case--car::after{display:none}
+.v7 .case__spin{left:10.23%;right:auto;width:78.84%;top:37.4%;bottom:auto}
 .v7 .case__spin .case__img--3{position:relative;left:0;width:100%;bottom:auto}
+.v7 .case:hover,.v7 .case:focus-visible{transform:translateY(-8px);box-shadow:inset 0 0 72px rgba(255,255,255,.2),inset 0 0 0 1px rgba(255,255,255,.55),0 30px 50px -30px rgba(4,12,50,.55)}
+.v7 .case:hover .case__img,.v7 .case:focus-visible .case__img{transform:translateY(-10px) scale(1.02)}
+.v7 .case:hover .case__spin,.v7 .case:focus-visible .case__spin{transform:translateY(-10px) rotate(-1.5deg)}
+.case__spin{transition:transform .6s var(--ease)}
+.v7 .case:active{transform:translateY(-4px) scale(.99)}
 
 /* Другие работы: было — белые залитые плашки (другой материал). Стало — то же стекло, что у кейсов */
 .v7 .file__pv{background:rgba(22,34,92,.30);backdrop-filter:blur(22px) saturate(1.15);-webkit-backdrop-filter:blur(22px) saturate(1.15);
@@ -351,14 +336,13 @@ ul{list-style:none}
 /* Тёмный лист. Было: нейтрально-чёрный #0f1318 — чужой по температуре синему небу, плотный прямоугольник
    с полосками неба по 16 px — «бельмо». Выбрано стекло: тот же лист, но тёмно-синее стекло: облака просвечивают, край — волосяная линия. */
 .v7 .toy{filter:drop-shadow(0 12px 14px rgba(0,0,0,.35))}
-.v7 .about,.v7 .foot{background:rgba(11,20,60,.38);backdrop-filter:blur(32px) saturate(1.25);-webkit-backdrop-filter:blur(32px) saturate(1.25);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
-.v7 .card--ink{background:rgba(255,255,255,.06)}
+.v7 .foot{background:rgba(11,20,60,.38);backdrop-filter:blur(32px) saturate(1.25);-webkit-backdrop-filter:blur(32px) saturate(1.25);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
 
 /* v7.2 · 22.11: стекло прозрачнее (.62 → .38); заголовок «Обо мне» — живой текст Obligat, плотный трекинг, строго по центру;
    карточки стоят сеткой и перетаскиваются, как раньше; «Навести порядок» появляется после перетаскивания; ачивки нет. Блок докручиваем в следующий раз. */
 .v7 .pile__title{display:none}
-.v7 .pile__word{position:absolute;left:0;right:0;top:0;text-align:center;font:400 168px/.8 var(--display);letter-spacing:-.02em;text-transform:uppercase;color:#fff;pointer-events:none}
+.v7 .pile__word{position:absolute;left:0;right:0;top:232px;z-index:0;text-align:center;font:400 200px/.8 var(--display);letter-spacing:-.02em;text-transform:uppercase;color:#fff;pointer-events:none}
 .pile__word{display:none}.v7 .pile__word{display:block}
 
 /* v7.3 · 22.11: обложки из UI-kit Figma (Web/Case Card 41:346, Web/File 41:513), экспорт 2× → *-card.webp; позиции как в компонентах */
@@ -372,3 +356,48 @@ ul{list-style:none}
 .skypick button{display:flex;align-items:center;gap:8px;height:32px;padding:0 12px 0 8px;border-radius:12px;color:#fff;font:500 13px/1 var(--text)}
 .skypick button::before{content:"";width:16px;height:16px;border-radius:50%;background:linear-gradient(180deg,var(--c1),var(--c2));box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
 .skypick button[aria-pressed=true]{background:var(--lime);color:var(--ink)}
+
+
+/* ───── v8 · 22.11 вечер: правки Вали голосом ─────
+   1) Система отступов: между экранами 120, между группами внутри экрана 64, между карточками в ряду 24 (сетка Figma: гаттер 24). */
+:root{--gap-screen:var(--s-120);--gap-group:var(--s-64);--gap-grid:var(--s-24)}
+.cases{padding:var(--gap-screen) 56px 0}
+.cases__grid{gap:var(--gap-grid)}
+.files{gap:var(--gap-grid);margin-top:var(--gap-group)}
+.v7 .about{padding:var(--gap-screen) 0 0}
+.v7 .contacts{padding:var(--gap-screen) 0 var(--gap-screen)}
+
+/* 2) «Обо мне»: без тёмной подложки. Под всеми карточками — «ОБО МНЕ» RT Obligat с плотным трекингом.
+   Карточки слегка под наклоном и чуть наезжают друг на друга краями, каждая читается. Фон темнеет при прокрутке (sky.js, стоп #about). */
+.v7 .pile{width:1440px;height:620px}
+.hero{overflow-x:clip}
+.v7 .card{z-index:2;transform:rotate(calc(var(--r,0deg) + var(--tilt,0deg)));border-radius:18px;box-shadow:0 16px 34px -16px rgba(0,10,50,.55)}
+.v7 .card:hover{box-shadow:0 22px 40px -16px rgba(0,10,50,.6)}
+.v7 .card--ink{background:var(--ink)}
+.v7 .toy{z-index:3}
+
+/* 3) Контакты: лист изначально целый (без щелей и теней по язычкам). Кусок отрывается по зигзагу и падает,
+   через 4 с проявляется обратно. Грязная тень листа убрана. Камера меньше и слегка покачивается. */
+.v7 .sheet__paper{clip-path:none;filter:none}
+.v7 .tabs{gap:0;left:19px;right:21px;top:318px;height:92px}
+.v7 .tab{display:block;height:92px;padding-top:16px;background:none;box-shadow:none;border-radius:0;transition:opacity .6s var(--ease)}
+.v7 .tab::before{content:"";position:absolute;left:6px;right:6px;top:0;height:6px;opacity:0;transition:opacity .25s;
+  background:linear-gradient(135deg,transparent 50%,rgba(22,22,22,.18) 50% 62%,transparent 62%) 0 0/8px 6px,linear-gradient(225deg,transparent 50%,rgba(22,22,22,.18) 50% 62%,transparent 62%) 0 0/8px 6px}
+.v7 .tab:hover::before,.v7 .tab:focus-visible::before{opacity:1}
+.v7 .tab:hover b{color:var(--blue)}
+.v7 .tab.torn{visibility:visible;opacity:0;pointer-events:none}
+.v7 .tab.back{animation:none;opacity:1}
+.v7 .piece{background:url(../assets/paper.webp) 0 0/620px 447px no-repeat;border-radius:0;box-shadow:none;filter:drop-shadow(0 10px 10px rgba(0,0,0,.18));padding:16px 10px 0;
+  clip-path:polygon(0 6px,4% 0,8% 6px,12% 0,16% 6px,20% 0,24% 6px,28% 0,32% 6px,36% 0,40% 6px,44% 0,48% 6px,52% 0,56% 6px,60% 0,64% 6px,68% 0,72% 6px,76% 0,80% 6px,84% 0,88% 6px,92% 0,96% 6px,100% 0,100% 100%,0 100%)}
+.v7 .sheet__paper{transition:opacity .6s}
+.v7 .sheet__cam{width:112px;right:-40px;top:-46px;transform-origin:50% 80%;animation:bob 5.5s ease-in-out infinite;transform:rotate(calc(8deg + var(--px,0) * 6deg))}
+.v7 .me{animation:bob 7s ease-in-out infinite reverse}
+.v7 .toy{animation:bob 6s ease-in-out infinite}
+@keyframes bob{0%,100%{translate:0 0;rotate:-1.5deg}50%{translate:0 -6px;rotate:1.5deg}}
+@media (prefers-reduced-motion: reduce){.v7 .sheet__cam,.v7 .me,.v7 .toy{animation:none}}
+
+/* 4) Футер прилегает к низу страницы: без нижнего зазора, скругление только сверху */
+.v7 .foot{margin:0;border-radius:var(--sheet-r) var(--sheet-r) 0 0}
+.v7 .regrow{position:absolute;z-index:1;background:url(../assets/paper.webp) 0 0/620px 447px no-repeat;opacity:0;transition:opacity .6s var(--ease);pointer-events:none}
+.v7 .regrow.on{opacity:1}
+.v7 .piece span{display:block;margin-top:8px;font:500 12px/1.35 var(--text);color:var(--muted)}

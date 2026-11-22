@@ -14,8 +14,14 @@ document.documentElement.classList.add('js');
   // чтобы пропорции героя и кейсов не расходились при любом размере окна и масштабе браузера
   // --s  — герой: по ширине, высота ограничивает мягче (800 вместо 900), чтобы на ноутбуке первый экран не мельчил
   // --sb — блоки ниже: по ширине, на 8 % компактнее героя (правка 22.11)
-  const fit = () => { const w = innerWidth / 1440;
-    root.style.setProperty('--s', Math.min(w, innerHeight / 800, 1.25).toFixed(4));
+  // v8: герой крупнее, но все папки и бирки целиком в первом экране. Масштаб считается не по кадру 1440×900,
+  // а по рамке содержимого сцены (имя, окно, папки, бирки): x 70…1390, y 56…846. Сверху меню-бар 30 px.
+  const BOX = { x: 70, y: 56, w: 1320, h: 790 }, BAR = 30, PAD = 24;
+  const fit = () => { const W = innerWidth, H = innerHeight, w = W / 1440;
+    const s = Math.min((W - 2 * PAD) / BOX.w, (H - BAR - 2 * PAD) / BOX.h, 1.4);
+    root.style.setProperty('--s', s.toFixed(4));
+    root.style.setProperty('--st', (BAR + PAD - BOX.y * s).toFixed(1) + 'px');
+    root.style.setProperty('--hh', Math.max(H, BAR + 2 * PAD + BOX.h * s).toFixed(0) + 'px');
     root.style.setProperty('--sb', (Math.min(w, 1.25) * .92).toFixed(4)); };
   fit(); addEventListener('resize', fit);
 
@@ -103,9 +109,7 @@ document.documentElement.classList.add('js');
   });
 
 
-  // Карточки кейсов: лаймовый чип едет за курсором, соседи не размываются
-  $$('.case').forEach(c => c.addEventListener('pointermove', e => { const r = c.getBoundingClientRect();
-    c.style.setProperty('--px', Math.min(r.width / SB() - 170, (e.clientX - r.left) / SB() + 14) + 'px'); c.style.setProperty('--py', Math.min(r.height / SB() - 44, (e.clientY - r.top) / SB() + 14) + 'px'); }));
+  // Карточки кейсов: ховер — подъём карточки и обложки (CSS). Лаймового чипа за курсором больше нет (решение 22.11).
 
   // Небо: одна палитра «мягкий день» на всю страницу
   // Палитры неба. Основная — deepx2 «Ещё глубже» (выбрана 22.11). Примерочная остаётся по её просьбе:
@@ -124,13 +128,14 @@ document.documentElement.classList.add('js');
     deepplus:  { name: 'Глубокий+ (насыщ. +15%, темнее 10%)', sky: ['#012185', '#1040a8', '#2d6cd5'], L: '#f6f2ea', H: '#97a6cf' },
     deepplus2: { name: 'Глубокий++ (насыщ. +30%, темнее 18%)', sky: ['#001e7a', '#0637a2', '#1d5fce'], L: '#f3efe8', H: '#8c9bc6' },
   };
-  const skyQ = new URLSearchParams(location.search).get('sky'), DAY = PALS[skyQ] || PALS.deepx2; // основная с 22.11 — «Ещё глубже»
+  // Основная палитра с 22.11 — «Ещё глубже» (её выбор в примерочной). На «Обо мне» небо темнеет («Тёмный»).
+  const skyQ = new URLSearchParams(location.search).get('sky'), DAY = PALS[skyQ] || PALS.deepx2, DUSK = PALS.dark;
   if (skyQ) { const sw = document.createElement('div'); sw.className = 'skypick'; sw.setAttribute('aria-label', 'Палитра неба');
     Object.entries(PALS).forEach(([k, o]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = o.name;
       b.style.setProperty('--c1', o.sky[0]); b.style.setProperty('--c2', o.sky[2]); b.setAttribute('aria-pressed', DAY === o);
       b.onclick = () => { const u = new URL(location); u.searchParams.set('sky', k); location = u; }; sw.appendChild(b); });
     document.body.appendChild(sw); }
-  Sky([{ sel: '#top', d: .6, pal: DAY }, { sel: '.cases__grid', d: .6, pal: DAY }, { sel: '#about', d: .35, pal: DAY }, { sel: '#contacts', d: .5, low: 1, pal: DAY }, { sel: '.foot', d: .3, pal: DAY }]);
+  Sky([{ sel: '#top', d: .6, pal: DAY }, { sel: '.cases__grid', d: .6, pal: DAY }, { sel: '#about', d: .3, pal: DUSK }, { sel: '#contacts', d: .5, low: 1, pal: DAY }, { sel: '.foot', d: .3, pal: DAY }]);
 
   // Кейс карусели: в одном положении начинает крутиться — её видео, если лежит в assets
   const car = $('.case--car'), vid = $('.case__video', car); let vidOk = null;
@@ -154,15 +159,17 @@ document.documentElement.classList.add('js');
   const home = items.map(el => ({ l: parseFloat(el.style.left), t: parseFloat(el.style.top) }));
   // Сгруппировано, но читаемо: карточки цепляются только краями и закрывают заголовок, растащишь — проявится
   // Ровная сетка 3×2, игрушка (индекс 2) справа от заголовка
-  const GRID7 = [[0, 180], [436, 180], [1070, 20], [872, 180], [0, 400], [436, 400], [872, 400]];
-  const stackAt = (el, i) => ({ l: GRID7[i][0], t: GRID7[i][1] });
-  const rot = [-3, 2, -6, 3, -2, 1.5, -1.5];
+  // v8: группа поверх «ОБО МНЕ» — лёгкий наклон, карточки наезжают только краями, каждая читается.
+  // Порядок как в разметке: ВКонтакте, что делала, игрушка, после работы, курсы, сильная сторона, образование.
+  const CLUSTER = [[130, 64], [418, 84], [930, 70], [1066, 118], [448, 402], [756, 390], [148, 384]];
+  const stackAt = (el, i) => ({ l: CLUSTER[i][0], t: CLUSTER[i][1] });
+  const rot = [-4, 2.5, -7, 4, -2, 3, 2.5];
   const setPos = (el, p) => { el.style.left = p.l + 'px'; el.style.top = p.t + 'px'; };
   const stack = (animate) => { items.forEach((el, i) => { el.classList.toggle('settle', !!animate); el.style.transitionDelay = animate ? (items.length - i) * 40 + 'ms' : '0ms';
     setPos(el, stackAt(el, i)); el.style.setProperty('--r', rot[i] + 'deg'); el.dataset.spread = ''; el.style.zIndex = 10 + i; });
     setTimeout(() => items.forEach(el => { el.classList.remove('settle'); el.style.transitionDelay = ''; }), 900); reveal(); tidy.hidden = true; };
   let z = 30;
-  const reveal = () => { const n = items.filter(el => el.dataset.spread).length; title.style.opacity = (.12 + .88 * n / items.length).toFixed(2); };
+  const reveal = () => {}; // v8: «ОБО МНЕ» видно всегда, под карточками
   items.forEach((el, i) => {
     let sx, sy, ox, oy;
     el.addEventListener('pointerdown', e => { if (e.button > 0) return; e.preventDefault(); el.setPointerCapture(e.pointerId);
@@ -178,15 +185,25 @@ document.documentElement.classList.add('js');
   tidy.addEventListener('click', () => stack(true));
   stack(false);
 
-  // Язычки: отрываются кусочком, через 4 с вырастает новый. Все ↗, ровные
+  // Язычки (v8): лист изначально целый. Клик — кусок отрывается по зигзагу и падает, на листе остаётся зубчатый край;
+  // через 4 с кусок проявляется обратно (фейд). Дыра — маска на картинке бумаги, считается в координатах листа 620×447.
+  const sheet = $('.sheet'), paper = $('.sheet__paper'), torn = new Set();
+  const zig = (x, y, w, h, n = 25) => { let d = `M${x} ${y + 6}`; for (let i = 1; i <= n; i++) d += ` L${(x + w * i / n).toFixed(1)} ${i % 2 ? y : y + 6}`; return d + ` L${x + w} ${y + h} L${x} ${y + h} Z`; };
+  const mask = () => { const W = 620, H = 447; const holes = [...torn].map(t => zig(t.offsetLeft + $('.tabs').offsetLeft, $('.tabs').offsetTop, t.offsetWidth, H)).join(' ');
+    const svgM = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${W} ${H}' preserveAspectRatio='none'><path fill-rule='evenodd' fill='white' d='M0 0H${W}V${H}H0Z ${holes}'/></svg>`;
+    const url = torn.size ? `url("data:image/svg+xml,${encodeURIComponent(svgM)}")` : 'none';
+    paper.style.maskImage = paper.style.webkitMaskImage = url; paper.style.maskSize = paper.style.webkitMaskSize = '100% 100%'; };
   $$('.tab').forEach(t => t.addEventListener('click', async () => {
     if (t.classList.contains('torn')) return;
-    if (!reduce) { const r = t.getBoundingClientRect(), b = $('.board').getBoundingClientRect(), k = (parseFloat(getComputedStyle($('.board')).zoom) || 1) * SB();
-      const pc = document.createElement('div'); pc.className = 'piece'; pc.innerHTML = t.querySelector('b').outerHTML;
-      Object.assign(pc.style, { left: (r.left - b.left) / k + 'px', top: (r.top - b.top) / k + 'px', width: r.width / k + 'px', height: r.height / k + 'px' });
-      $('.board').appendChild(pc); setTimeout(() => pc.remove(), 1400); }
-    t.classList.add('torn');
-    setTimeout(() => { t.classList.remove('torn'); t.classList.add('back'); setTimeout(() => t.classList.remove('back'), 600); }, 4000);
+    const tabs = $('.tabs'), x = tabs.offsetLeft + t.offsetLeft, y = tabs.offsetTop;
+    if (!reduce) { const pc = document.createElement('div'); pc.className = 'piece'; pc.innerHTML = t.innerHTML;
+      Object.assign(pc.style, { left: x + 'px', top: y + 'px', width: t.offsetWidth + 'px', height: (447 - y) + 'px', backgroundPosition: `${-x}px ${-y}px` });
+      sheet.appendChild(pc); setTimeout(() => pc.remove(), 1400); }
+    torn.add(t); t.classList.add('torn'); mask();
+    setTimeout(() => { torn.delete(t); const ghost = document.createElement('div'); ghost.className = 'regrow';
+      Object.assign(ghost.style, { left: x + 'px', top: y + 'px', width: t.offsetWidth + 'px', height: (447 - y) + 'px', backgroundPosition: `${-x}px ${-y}px` });
+      sheet.insertBefore(ghost, $('.tabs')); requestAnimationFrame(() => ghost.classList.add('on'));
+      setTimeout(() => { mask(); ghost.remove(); t.classList.remove('torn'); }, reduce ? 0 : 650); }, 4000);
     if (t.dataset.copy) { try { await navigator.clipboard.writeText(t.dataset.copy); toast('Почта скопирована: ' + t.dataset.copy); } catch { toast(t.dataset.copy); } }
     if (t.dataset.href) { const a = document.createElement('a'); a.href = t.dataset.href; a.target = '_blank'; a.rel = 'noopener'; setTimeout(() => a.click(), reduce ? 0 : 400); }
   }));
@@ -197,8 +214,11 @@ document.documentElement.classList.add('js');
   const route = () => { const id = location.hash.slice(1);
     if (CASES[id]) openCaseModal(modal, body, id);
     else if (!modal.hidden) { modal.hidden = true; root.style.overflow = ''; } };
-  addEventListener('hashchange', route); route();
-  const close = () => { if (history.length > 1 && CASES[location.hash.slice(1)]) history.back(); else { location.hash = ''; } };
+  // Открыт ли кейс переходом внутри сайта. Если пришли по прямой ссылке (#case-…), «назад» увёл бы с сайта —
+  // тогда × просто убирает адрес кейса и закрывает модалку (правка 22.11)
+  let inside = false;
+  addEventListener('hashchange', () => { inside = true; route(); }); route();
+  const close = () => { if (inside && CASES[location.hash.slice(1)]) history.back(); else { history.replaceState(null, '', location.pathname + location.search); route(); } };
   $('.case-modal__x').addEventListener('click', close);
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) close(); });

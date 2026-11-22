@@ -66,7 +66,9 @@
   const modal = $('#modal'), body = $('#modal-body');
   const route = () => { const id = location.hash.slice(1);
     if (CASES[id]) openCaseModal(modal, body, id); else if (!modal.hidden) { modal.hidden = true; root.style.overflow = ''; } };
-  addEventListener('hashchange', route); route();
-  const close = () => { if (history.length > 1 && CASES[location.hash.slice(1)]) history.back(); else location.hash = ''; };
+  // Пришли по прямой ссылке на кейс — × не уводит с сайта «назад», а закрывает модалку на месте
+  let inside = false;
+  addEventListener('hashchange', () => { inside = true; route(); }); route();
+  const close = () => { if (inside && CASES[location.hash.slice(1)]) history.back(); else { history.replaceState(null, '', location.pathname + location.search); route(); } };
   $('.case-modal__x').addEventListener('click', close);
 }
