@@ -20,7 +20,7 @@ ul{list-style:none}
 /* Без фото: чистый градиент того же синего, что и карточки кейсов, облака — только шейдер (не пикселят, не грязнят) */
 /* Небо: цвета — переменные (--sky-1 верх, --sky-2 середина, --sky-3 низ), их меняет sky.js по скроллу
    из палитр в web.js (варианты A/B/C). Облака — шейдер. Зерно — .sky::after, звёзды — .sky::before (--stars). */
-:root{--sky-1:#2b4690;--sky-2:#4d70b4;--sky-3:#9bb5d8}
+:root{--sky-1:#071f72;--sky-2:#163d9c;--sky-3:#4c79c2}
 .sky{position:fixed;inset:0;z-index:-1;overflow:hidden;
   background:radial-gradient(60% 45% at 50% 40%,rgba(255,240,220,.12) 0%,rgba(255,240,220,0) 70%),
     radial-gradient(130% 100% at 50% 45%,rgba(10,14,40,0) 60%,rgba(10,14,40,.28) 100%),

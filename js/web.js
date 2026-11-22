@@ -108,8 +108,8 @@ document.documentElement.classList.add('js');
     c.style.setProperty('--px', Math.min(r.width / SB() - 170, (e.clientX - r.left) / SB() + 14) + 'px'); c.style.setProperty('--py', Math.min(r.height / SB() - 44, (e.clientY - r.top) / SB() + 14) + 'px'); }));
 
   // Небо: одна палитра «мягкий день» на всю страницу
-  // Примерка палитр неба (22.11): ?sky=vintage|soft|rich|deep|dark. Без параметра — текущее «мягкий день».
-  // После выбора оставить одну палитру, остальное удалить (бэклог).
+  // Палитры неба. Основная — deepx2 «Ещё глубже» (выбрана 22.11). Примерочная остаётся по её просьбе:
+  // ?sky=<ключ> показывает переключатель всех палитр. «Сейчас» (day) — прежнее «мягкий день».
   const PALS = {
     day:     { name: 'Сейчас',          sky: ['#2b4690', '#4d70b4', '#9bb5d8'], L: '#fffaf1', H: '#cfc5bd' },
     vintage: { name: 'Винтаж',          sky: ['#2f4a7c', '#5f7fa8', '#b9c3c8'], L: '#fff4e2', H: '#c9b9a6' },
@@ -124,7 +124,7 @@ document.documentElement.classList.add('js');
     deepplus:  { name: 'Глубокий+ (насыщ. +15%, темнее 10%)', sky: ['#012185', '#1040a8', '#2d6cd5'], L: '#f6f2ea', H: '#97a6cf' },
     deepplus2: { name: 'Глубокий++ (насыщ. +30%, темнее 18%)', sky: ['#001e7a', '#0637a2', '#1d5fce'], L: '#f3efe8', H: '#8c9bc6' },
   };
-  const skyQ = new URLSearchParams(location.search).get('sky'), DAY = PALS[skyQ] || PALS.day;
+  const skyQ = new URLSearchParams(location.search).get('sky'), DAY = PALS[skyQ] || PALS.deepx2; // основная с 22.11 — «Ещё глубже»
   if (skyQ) { const sw = document.createElement('div'); sw.className = 'skypick'; sw.setAttribute('aria-label', 'Палитра неба');
     Object.entries(PALS).forEach(([k, o]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = o.name;
       b.style.setProperty('--c1', o.sky[0]); b.style.setProperty('--c2', o.sky[2]); b.setAttribute('aria-pressed', DAY === o);
