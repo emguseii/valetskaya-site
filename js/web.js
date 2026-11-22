@@ -27,19 +27,18 @@ document.documentElement.classList.add('js');
 
   /* Примерочная героя (23.11): ?hero=now|fix|old и &ropes=float. Без параметра — как сейчас (now). */
   const QS = new URLSearchParams(location.search);
-  const HERO = ['fix', 'old'].includes(QS.get('hero')) ? QS.get('hero') : 'now', FLOAT = QS.get('ropes') === 'float';
+  const HERO = ['fix', 'old'].includes(QS.get('hero')) ? QS.get('hero') : 'now', FLOAT = HERO !== 'now'; // fix/old: конструкция верёвка+узел парит, тянуть нельзя
   document.body.classList.add('h-' + HERO); if (FLOAT) document.body.classList.add('ropes-float');
   if (QS.has('hero') || QS.has('ropes')) {
     const pick = document.createElement('nav'); pick.className = 'heropick'; pick.setAttribute('aria-label', 'Варианты героя');
-    const link = (label, h, r) => { const u = new URL(location); u.searchParams.set('hero', h); r ? u.searchParams.set('ropes', 'float') : u.searchParams.delete('ropes'); u.hash = '';
-      const a = document.createElement('a'); a.href = u; a.textContent = label; a.setAttribute('aria-current', String(HERO === h && FLOAT === !!r)); return a; };
+    const link = (label, h) => { const u = new URL(location); u.searchParams.set('hero', h); u.searchParams.delete('ropes'); u.hash = '';
+      const a = document.createElement('a'); a.href = u; a.textContent = label; a.setAttribute('aria-current', String(HERO === h)); return a; };
     const lab = t => { const s = document.createElement('span'); s.textContent = t; return s; };
-    pick.append(lab('Папки:'), link('Сейчас', 'now'), link('Исправлено', 'fix'), link('Старая версия', 'old'),
-      document.createElement('i'), lab('Верёвки парят:'), link('fix', 'fix', 1), link('old', 'old', 1));
+    pick.append(lab('Герой:'), link('Сейчас', 'now'), link('Исправлено', 'fix'), link('Старая версия', 'old'));
     document.body.appendChild(pick);
   }
   const NEWEYES = HERO !== 'now';
-  const eyes = Eyes($('#eyes'), 'cursor', NEWEYES ? { hoverOnly: true, idle: 3000, blinkEvery: 3000 } : {});
+  const eyes = Eyes($('#eyes'), 'cursor', NEWEYES ? { armOnHover: true, idle: 3000, blinkEvery: 3000 } : {});
   if (NEWEYES && !reduce) eyes.sleep(true);
   const paths = $$('.lines path'), lineFor = id => paths.find(p => p.dataset.to === id);
 
@@ -126,16 +125,14 @@ document.documentElement.classList.add('js');
   });
 
 
-  /* ropes=float (её коммент к 73:1174): тянуть нельзя; папки и бирки чуть парят (±2,5 px), верёвка тянется следом
-     от узла к окну; при наведении — короткое затухающее вздрагивание. Пружины нет. */
+  /* fix/old — «парение» (её уточнение 23.11): вся конструкция верёвка + папка/бирка медленно и чуть-чуть покачивается
+     сама по себе, без реакции на наведение и без рывков. Узел смещается по плавной кривой (±3 px, период 7–11 с),
+     верёвка тянется следом от узла к окну. Тянуть нельзя. */
   if (FLOAT && !reduce) {
-    const items = $$('.node').map((n, i) => ({ n, p: lineFor(n.id), r: null, ph: i * 1.7, sh: 0, t0: 0 }));
-    items.forEach(it => it.n.addEventListener('pointerenter', () => { it.sh = 1; it.t0 = performance.now(); }));
+    const items = $$('.node').map((n, i) => ({ n, p: lineFor(n.id), r: null, ph: i * 1.9, px: 7 + (i % 3) * 1.6, py: 9 + (i % 2) * 2 }));
     const start = () => { items.forEach(it => { if (it.p) it.r = sample(it.p); });
-      (function loop(now) {
-        items.forEach(it => { if (dragging) return; const t = now / 1000;
-          let dx = Math.sin(t * .9 + it.ph) * 2.5, dy = Math.cos(t * .7 + it.ph * 1.3) * 2.5;
-          if (it.sh) { const k = (now - it.t0) / 600; if (k >= 1) it.sh = 0; else { const a = 3 * (1 - k); dx += Math.sin(k * 40) * a; dy += Math.cos(k * 33) * a * .6; } }
+      (function loop(now) { const t = now / 1000;
+        items.forEach(it => { const dx = Math.sin(t * 2 * Math.PI / it.px + it.ph) * 3, dy = Math.sin(t * 2 * Math.PI / it.py + it.ph * .7) * 3;
           it.n.style.translate = `${dx.toFixed(2)}px ${dy.toFixed(2)}px`; if (it.r) stretch(it.p, it.r, dx, dy); });
         requestAnimationFrame(loop); })(performance.now()); };
     setTimeout(start, T.lines + 6 * T.step + T.line + 500);
