@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Песочница · «Обо мне» · варианты</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<style>
+/* Песочница для выбора «Обо мне». Основной сайт не трогает. Контент — в объекте DATA ниже (готово к админке). */
+*{box-sizing:border-box;margin:0}
+body{font:16px/1.4 var(--text);color:#fff;background:#3d5fa6 url(assets/sky.webp) 50% 30%/cover fixed;min-height:100vh;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.bar{position:fixed;left:0;right:0;top:0;z-index:50;display:flex;align-items:center;gap:8px;padding:10px 16px;background:rgba(11,20,60,.38);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:inset 0 -1px 0 rgba(255,255,255,.14)}
+.bar b{font-weight:600;margin-right:8px}
+.bar .sp{flex:1}
+.tb{height:34px;padding:0 14px;border-radius:17px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);font-size:14px;font-weight:500}
+.tb[aria-pressed=true]{background:var(--lime);color:var(--ink);box-shadow:none}
+.tg{display:flex;align-items:center;gap:6px;font-size:14px;opacity:.9}
+.tg input{accent-color:var(--lime);width:16px;height:16px}
+.hint{position:fixed;right:16px;bottom:14px;z-index:50;max-width:420px;font-size:13px;line-height:1.45;padding:10px 14px;border-radius:14px;background:rgba(11,20,60,.45);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.hint b{color:var(--lime);font-weight:600}
+.v{display:none;position:relative;min-height:100vh;padding:110px 80px 120px}
+.v.on{display:block}
+.title{font:400 clamp(90px,11vw,168px)/.8 var(--display);text-transform:uppercase;letter-spacing:-.02em;text-align:center}
+.sub{font-size:15px;opacity:.75;text-align:center;margin-top:18px}
+
+/* C · Плёнка */
+.film{position:relative;margin:56px auto 0;max-width:1280px;padding:44px 28px;border-radius:10px;background:#111214;
+  box-shadow:0 40px 80px -40px rgba(0,0,20,.7)}
+.film::before,.film::after{content:"";position:absolute;left:24px;right:24px;height:14px;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.16) 0 18px,transparent 18px 40px);-webkit-mask:linear-gradient(#000,#000);border-radius:3px}
+.film::before{top:14px}.film::after{bottom:14px}
+.frames{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.fr{position:relative;cursor:zoom-in}
+.fr__img{position:relative;aspect-ratio:3/4;border-radius:3px;overflow:hidden;background:#3a3f48;transition:transform .35s var(--ease)}
+.fr__img img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05) brightness(.9);transition:filter .35s var(--ease)}
+.fr__ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:12px;font-size:12px;color:rgba(255,255,255,.55);background:repeating-linear-gradient(135deg,#3a3f48 0 10px,#343841 10px 20px)}
+.fr:hover .fr__img{transform:scale(1.06)}
+.fr:hover .fr__img img{filter:none}
+.fr svg{position:absolute;left:-6px;top:-8px;width:calc(100% + 12px);height:calc(75% + 16px);pointer-events:none;overflow:visible}
+.fr svg path{fill:none;stroke:var(--lime);stroke-width:1.6;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-dasharray:900;stroke-dashoffset:900;transition:stroke-dashoffset .6s var(--ease)}
+.fr:hover svg path,.fr.pick svg path{stroke-dashoffset:0}
+.fr__cap{margin-top:12px;font-size:13px;font-weight:500;line-height:1.3}
+.fr__code{margin-top:6px;font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.35)}
+.pick__note{position:absolute;right:0;top:-26px;font-size:13px;color:var(--lime);transform:rotate(-4deg);white-space:nowrap}
+.film__foot{max-width:1280px;margin:22px auto 0;display:flex;gap:40px;font-size:14px;opacity:.85}
+.film__foot span{opacity:.6;display:block;font-size:12px;margin-bottom:4px}
+
+/* D · Линия */
+.line{position:relative;max-width:1280px;height:440px;margin:40px auto 0}
+.line__path{position:absolute;left:6%;width:84%;top:300px;height:0;border-top:1.2px solid rgba(255,255,255,.6);transform-origin:0 0;animation:draw 1.6s var(--ease) both}
+@keyframes draw{from{transform:scaleX(0)}}
+.line__dash{position:absolute;left:90%;width:8%;top:300px;border-top:1.2px dashed rgba(255,255,255,.6)}
+.node{position:absolute;top:300px;transform:translate(-50%,-7px);text-align:center;width:150px}
+.node i{display:block;width:13px;height:13px;margin:0 auto;border-radius:50%;background:#30489a;box-shadow:inset 0 0 0 1.2px rgba(255,255,255,.85);transition:transform .25s var(--spring),background .25s}
+.node small{display:block;margin-top:14px;font-size:13px;opacity:.65}
+.node b{display:block;font-size:15px;font-weight:600}
+.node:hover i,.node.on i{background:var(--lime);transform:scale(1.35)}
+.ncard{position:absolute;bottom:72px;left:50%;width:300px;transform:translate(-50%,8px);opacity:0;pointer-events:none;text-align:left;padding:18px 20px;border-radius:18px;
+  background:rgba(22,34,92,.30);backdrop-filter:blur(22px) saturate(1.15);-webkit-backdrop-filter:blur(22px) saturate(1.15);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);transition:opacity .25s,transform .25s var(--ease)}
+.ncard h4{font:400 26px/.95 var(--display);text-transform:uppercase;margin-bottom:8px}
+.ncard p{font-size:14px;line-height:1.45;opacity:.88}
+.node:hover .ncard,.node.on .ncard{opacity:1;transform:translate(-50%,0)}
+.line__toy{position:absolute;right:-6px;top:120px;width:86px;filter:drop-shadow(0 12px 14px rgba(0,0,0,.35))}
+.line__after{position:absolute;right:-40px;top:370px;width:170px;font-size:13px;opacity:.7;text-align:center}
+
+/* E · Одна фраза */
+.phrase{max-width:1180px;margin:20px auto 0;font:500 clamp(44px,4.6vw,68px)/1.16 var(--text);letter-spacing:-.01em}
+.obj{display:inline-block;vertical-align:middle;height:1.05em;margin:0 .12em;cursor:grab;touch-action:none;position:relative;transition:transform .25s var(--spring)}
+.obj:hover{transform:rotate(-4deg) scale(1.08)}
+.obj.grab{cursor:grabbing;transition:none;z-index:5}
+.obj--shot{height:1.1em;border-radius:12px;box-shadow:0 10px 24px -10px rgba(0,0,30,.5)}
+.notes{max-width:1180px;margin:70px auto 0;display:grid;grid-template-columns:repeat(4,1fr);gap:28px;font-size:14px;line-height:1.45}
+.notes span{display:block;font-size:12px;opacity:.6;margin-bottom:6px}
+.notes sup{color:var(--lime)}
+
+/* F · 3D-дуга */
+.ring{position:relative;height:470px;margin-top:26px;perspective:1400px;cursor:grab;touch-action:pan-y;user-select:none}
+.ring.grab{cursor:grabbing}
+.ring__in{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.rc{position:absolute;left:-95px;top:-130px;width:190px;height:260px;border-radius:16px;overflow:hidden;background:#dfe6f5;backface-visibility:hidden;
+  box-shadow:0 20px 40px -20px rgba(0,0,30,.5);transition:box-shadow .2s}
+.rc img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.rc .fr__ph{font-size:12px}
+.rc:hover{box-shadow:0 0 0 2px var(--lime),0 20px 40px -20px rgba(0,0,30,.5)}
+.rc__cap{position:absolute;left:10px;right:10px;bottom:10px;padding:6px 10px;border-radius:12px;background:rgba(22,22,22,.62);font-size:12px;line-height:1.3;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.ring__text{max-width:760px;margin:10px auto 0;text-align:center;font-size:16px;line-height:1.5;opacity:.9}
+
+/* Акценты */
+.trail{position:fixed;z-index:40;width:120px;border-radius:10px;pointer-events:none;box-shadow:0 14px 28px -14px rgba(0,0,30,.5);animation:trail 1s var(--ease) forwards}
+@keyframes trail{0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--r)) scale(.7)}15%{opacity:1;transform:translate(-50%,-50%) rotate(var(--r)) scale(1)}100%{opacity:0;transform:translate(-50%,-60%) rotate(var(--r)) scale(.95)}}
+.eyes{position:fixed;left:24px;bottom:24px;z-index:45;width:300px;border-radius:16px;overflow:hidden;background:rgba(22,34,92,.30);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);display:none}
+.eyes.on{display:block}
+.eyes__top{height:24px;display:flex;align-items:center;gap:5px;padding:0 10px;font-size:11px;opacity:.85}
+.eyes__top i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5)}
+.eyes__top span{flex:1;text-align:center;margin-right:34px}
+.eyes img{display:block;width:100%}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style></head>
+<body>
+<div class="bar" role="toolbar" aria-label="Варианты">
+  <b>«Обо мне» · варианты</b>
+  <button class="tb" data-v="C" type="button">C · Плёнка</button>
+  <button class="tb" data-v="D" type="button">D · Линия</button>
+  <button class="tb" data-v="E" type="button">E · Одна фраза</button>
+  <button class="tb" data-v="F" type="button">F · 3D-дуга</button>
+  <span class="sp"></span>
+  <label class="tg"><input type="checkbox" id="tTrail">След из картинок</label>
+  <label class="tg"><input type="checkbox" id="tEyes">Глаза</label>
+</div>
+
+<section class="v" id="C"><h2 class="title">Обо мне</h2><div class="film"><div class="frames" id="frames"></div></div><div class="film__foot" id="filmFoot"></div></section>
+<section class="v" id="D"><h2 class="title">Обо мне</h2><div class="line" id="line"></div></section>
+<section class="v" id="E"><div class="phrase" id="phrase"></div><div class="notes" id="notes"></div></section>
+<section class="v" id="F"><h2 class="title">Обо мне</h2><div class="ring" id="ring"><div class="ring__in" id="ringIn"></div></div><p class="ring__text" id="ringText"></p></section>
+
+<div class="eyes" id="eyesWin" aria-hidden="true"><div class="eyes__top"><i></i><i></i><i></i><span>Валя.exe</span></div><img id="eyes" src="assets/eyes-default.webp" alt=""></div>
+<p class="hint" id="hint"></p>
+
+<script src="js/eyes.js"></script>
+<script>
+/* Контент отдельно от разметки — потом уедет в content/about.json для админки */
+const DATA = {
+  facts: { vk: '2,5 года во ВКонтакте', team: 'Команда опыта автора в сообществах', did: 'Задачи от гипотезы до A/B-теста · библиотека компонентов, которую переиспользуют другие команды · интервью и юзабилити-тесты, ~400 респондентов',
+    strong: 'Системное мышление: мои решения потом берут другие команды', after: 'Леплю из глины, танцую контемп и снимаю на плёнку',
+    courses: 'Визуализация данных · Большая практика · Типографика и вёрстка · Немодерируемые исследования', edu: 'Uprock School · 2024 · Contented · 2022–2023 · НИ ТПУ · 2017–2022' },
+  film: [
+    { img: 'assets/hero-photo.webp', cap: '2,5 года во ВКонтакте' },
+    { img: 'assets/in-stat.webp', cap: 'От гипотезы до A/B-теста' },
+    { ph: 'плёнка · твоё фото', cap: '~400 респондентов', pick: 'вот это про меня' },
+    { img: 'assets/case1-card.webp', cap: 'Библиотека компонентов' },
+    { img: 'assets/contacts-photo.webp', cap: 'Глина, контемп, плёнка' },
+    { ph: 'плёнка · твоё фото', cap: 'Ищу свою команду' } ],
+  path: [
+    { x: 6, y: '2017–2022', t: 'НИ ТПУ', h: 'НИ ТПУ', p: 'Инженерное образование. Отсюда — привычка разбирать систему на части.' },
+    { x: 27, y: '2022–2023', t: 'Contented', h: 'Contented', p: 'Курс продуктового дизайна. Первые кейсы и исследования.' },
+    { x: 46, y: '2024', t: 'Uprock School', h: 'Uprock', p: 'Типографика, вёрстка, визуализация данных.' },
+    { x: 68, y: '2024–2026', t: 'ВКонтакте', h: '2,5 года во ВКонтакте', p: 'Команда опыта автора. Задачи от гипотезы до A/B-теста, библиотека компонентов, ~400 респондентов.', on: true },
+    { x: 93, y: '2026 →', t: 'ищу команду', h: 'Дальше', p: 'Ищу команду с хорошими ценностями и отношением к людям.' } ],
+  ring: [
+    { img: 'assets/case1-card.webp', cap: 'Статистика ВКонтакте' }, { img: 'assets/hero-photo.webp', cap: 'Это я' },
+    { img: 'assets/case2-card.webp', cap: 'Путь автора, +16%' }, { ph: 'плёнка · твоё фото', cap: 'Плёнка' },
+    { img: 'assets/carousel-card.webp', cap: '4 A/B-теста' }, { img: 'assets/contacts-photo.webp', cap: 'После работы' },
+    { img: 'assets/in-stat.webp', cap: 'Исследования' }, { img: 'assets/web-obj-flower.webp', cap: 'Глина' },
+    { img: 'assets/subs-card.webp', cap: 'Подписчики' }, { ph: 'плёнка · твоё фото', cap: 'Плёнка' },
+    { img: 'assets/in-path.webp', cap: 'Онбординг' }, { img: 'assets/deck-photo.webp', cap: 'Тоже я' } ],
+  trail: ['assets/in-stat.webp','assets/in-path.webp','assets/in-car.webp','assets/hero-photo.webp','assets/contacts-photo.webp','assets/web-obj-flower.webp','assets/web-obj-camera.webp','assets/subs-card.webp'],
+  hints: {
+    C: '<b>C · Плёнка.</b> Наведи на кадр — станет цветным, крупнее и обведётся «карандашом». Один кадр обведён всегда. Серые кадры — места для твоих плёночных фото.',
+    D: '<b>D · Линия.</b> Линия рисуется при открытии. Наведи на точку — откроется карточка. ВКонтакте открыт по умолчанию.',
+    E: '<b>E · Одна фраза.</b> Предметы в тексте можно перетаскивать. Детали — сносками внизу.',
+    F: '<b>F · 3D-дуга.</b> Крутится сама, тяни мышью. Наведи на карточку — подпись. Серые карточки — места для твоих фото.' }
+};
+const $ = s => document.querySelector(s), esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const ph = t => `<div class="fr__ph">${esc(t)}</div>`;
+const nb = s => s.replace(/ (в|во|и|из|на|до|от|с|к|о|по|за|у|не) /gi, ' $1 ');
+
+// C
+$('#frames').innerHTML = DATA.film.map((f, i) => `<figure class="fr${f.pick ? ' pick' : ''}">
+  <div class="fr__img">${f.img ? `<img src="${f.img}" alt="">` : ph(f.ph)}</div>
+  <svg viewBox="0 0 100 130" preserveAspectRatio="none"><path d="M52 4 C80 3 97 20 96 62 C95 104 78 126 48 125 C18 124 4 104 5 62 C6 24 22 6 56 7"/></svg>
+  ${f.pick ? `<span class="pick__note">${esc(f.pick)}</span>` : ''}
+  <figcaption class="fr__cap">${String(i + 1).padStart(2, '0')} · ${nb(esc(f.cap))}</figcaption><div class="fr__code">PORTRA 400 · ${i * 2 + 1}A</div></figure>`).join('');
+$('#filmFoot').innerHTML = `<p><span>курсы</span>${nb(DATA.facts.courses)}</p><p><span>образование</span>${DATA.facts.edu}</p>`;
+
+// D
+const L = $('#line');
+L.innerHTML = `<i class="line__path"></i><i class="line__dash"></i>` +
+  DATA.path.map(n => `<div class="node${n.on ? ' on' : ''}" style="left:${n.x}%"><div class="ncard"><h4>${esc(n.h)}</h4><p>${nb(esc(n.p))}</p></div><i></i><small>${n.y}</small><b>${esc(n.t)}</b></div>`).join('') +
+  `<img class="line__toy" src="assets/web-obj-flower.webp" alt="Баночка-клоун"><p class="line__after">после работы: ${nb(DATA.facts.after.toLowerCase())}</p>`;
+L.addEventListener('pointerover', e => { const n = e.target.closest('.node'); if (n) L.querySelectorAll('.node').forEach(x => x.classList.toggle('on', x === n)); });
+
+// E
+$('#phrase').innerHTML = nb('Я Валя. 2,5 года делала статистику') + ` <img class="obj obj--shot" src="assets/in-stat.webp" alt="Экран статистики"> ` + nb('во ВКонтакте<sup>1</sup>, леплю') +
+  ` <img class="obj" src="assets/web-obj-flower.webp" alt="Баночка-клоун"> ` + nb('из глины и снимаю на') + ` <img class="obj" src="assets/web-obj-camera.webp" alt="Плёночная камера"> плёнку.`;
+$('#notes').innerHTML = [['¹ что делала', DATA.facts.did], ['сильная сторона', DATA.facts.strong], ['курсы', DATA.facts.courses], ['образование', DATA.facts.edu]]
+  .map(([a, b]) => `<p><span>${a}</span>${nb(b)}</p>`).join('');
+document.querySelectorAll('.obj').forEach(o => { let sx, sy, ox = 0, oy = 0;
+  o.addEventListener('pointerdown', e => { e.preventDefault(); o.setPointerCapture(e.pointerId); o.classList.add('grab'); sx = e.clientX - ox; sy = e.clientY - oy; });
+  o.addEventListener('pointermove', e => { if (!o.hasPointerCapture(e.pointerId)) return; ox = e.clientX - sx; oy = e.clientY - sy; o.style.transform = `translate(${ox}px,${oy}px) rotate(${ox * .03}deg)`; });
+  o.addEventListener('pointerup', () => o.classList.remove('grab')); });
+
+// F
+const RI = $('#ringIn'), N = DATA.ring.length, R = 470;
+RI.innerHTML = DATA.ring.map((c, i) => `<div class="rc" style="transform:rotateY(${i * 360 / N}deg) translateZ(${R}px)">${c.img ? `<img src="${c.img}" alt="">` : ph(c.ph)}<span class="rc__cap">${esc(c.cap)}</span></div>`).join('');
+$('#ringText').innerHTML = nb(`${DATA.facts.vk}. ${DATA.facts.team}. ${DATA.facts.strong}. ${DATA.facts.after}.`);
+let ang = 0, vel = .12, drag = false, lx = 0; const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ring = $('#ring');
+ring.addEventListener('pointerdown', e => { drag = true; lx = e.clientX; ring.setPointerCapture(e.pointerId); ring.classList.add('grab'); });
+ring.addEventListener('pointermove', e => { if (!drag) return; const d = (e.clientX - lx) * .25; ang += d; vel = d; lx = e.clientX; });
+ring.addEventListener('pointerup', () => { drag = false; ring.classList.remove('grab'); });
+(function tick() { if (!drag) { vel += (.12 - vel) * .03; if (!reduce) ang += vel; } RI.style.transform = `translateZ(-${R}px) rotateX(-6deg) rotateY(${ang}deg)`; requestAnimationFrame(tick); })();
+
+// Переключатель вариантов (?v=C)
+const show = v => { document.querySelectorAll('.v').forEach(s => s.classList.toggle('on', s.id === v)); document.querySelectorAll('.tb').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === v));
+  $('#hint').innerHTML = DATA.hints[v] + ' <button type="button" onclick="this.parentNode.hidden=true" aria-label="Скрыть подсказку">×</button>'; $('#hint').hidden = false; const u = new URL(location); u.searchParams.set('v', v); history.replaceState(null, '', u); };
+document.querySelectorAll('.tb').forEach(b => b.onclick = () => show(b.dataset.v));
+show(['C', 'D', 'E', 'F'].includes(new URLSearchParams(location.search).get('v')) ? new URLSearchParams(location.search).get('v') : 'C');
+
+// Акценты: след из картинок и глаза
+let lastX = 0, lastY = 0, ti = 0;
+addEventListener('pointermove', e => { if (!$('#tTrail').checked || e.target.closest('.bar,.hint')) return;
+  if (Math.hypot(e.clientX - lastX, e.clientY - lastY) < 110) return; lastX = e.clientX; lastY = e.clientY;
+  const im = document.createElement('img'); im.className = 'trail'; im.src = DATA.trail[ti++ % DATA.trail.length]; im.alt = '';
+  im.style.left = e.clientX + 'px'; im.style.top = e.clientY + 'px'; im.style.setProperty('--r', (Math.random() * 16 - 8).toFixed(1) + 'deg');
+  document.body.appendChild(im); setTimeout(() => im.remove(), 1000); }, { passive: true });
+$('#tEyes').onchange = e => $('#eyesWin').classList.toggle('on', e.target.checked);
+Eyes($('#eyes'), 'cursor');
+</script>
+</body></html>
