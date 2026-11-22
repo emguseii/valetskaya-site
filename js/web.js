@@ -25,7 +25,22 @@ document.documentElement.classList.add('js');
     root.style.setProperty('--sb', (Math.min(w, 1.25) * .92).toFixed(4)); };
   fit(); addEventListener('resize', fit);
 
-  const eyes = Eyes($('#eyes'), 'cursor');
+  /* Примерочная героя (23.11): ?hero=now|fix|old и &ropes=float. Без параметра — как сейчас (now). */
+  const QS = new URLSearchParams(location.search);
+  const HERO = ['fix', 'old'].includes(QS.get('hero')) ? QS.get('hero') : 'now', FLOAT = QS.get('ropes') === 'float';
+  document.body.classList.add('h-' + HERO); if (FLOAT) document.body.classList.add('ropes-float');
+  if (QS.has('hero') || QS.has('ropes')) {
+    const pick = document.createElement('nav'); pick.className = 'heropick'; pick.setAttribute('aria-label', 'Варианты героя');
+    const link = (label, h, r) => { const u = new URL(location); u.searchParams.set('hero', h); r ? u.searchParams.set('ropes', 'float') : u.searchParams.delete('ropes'); u.hash = '';
+      const a = document.createElement('a'); a.href = u; a.textContent = label; a.setAttribute('aria-current', String(HERO === h && FLOAT === !!r)); return a; };
+    const lab = t => { const s = document.createElement('span'); s.textContent = t; return s; };
+    pick.append(lab('Папки:'), link('Сейчас', 'now'), link('Исправлено', 'fix'), link('Старая версия', 'old'),
+      document.createElement('i'), lab('Верёвки парят:'), link('fix', 'fix', 1), link('old', 'old', 1));
+    document.body.appendChild(pick);
+  }
+  const NEWEYES = HERO !== 'now';
+  const eyes = Eyes($('#eyes'), 'cursor', NEWEYES ? { hoverOnly: true, idle: 3000, blinkEvery: 3000 } : {});
+  if (NEWEYES && !reduce) eyes.sleep(true);
   const paths = $$('.lines path'), lineFor = id => paths.find(p => p.dataset.to === id);
 
   /* ── Загрузка. Ориентир Apple HIG: интерфейсное движение 200–500 мс, короткий шаг каскада,
@@ -34,7 +49,7 @@ document.documentElement.classList.add('js');
   const show = (el, t) => setTimeout(() => { el.classList.add('in');
     el.addEventListener('animationend', () => { el.classList.remove('in'); el.classList.add('shown'); }, { once: true }); }, t);
   const intro = () => {
-    if (reduce) { $$('.name,.tip,.win,.node').forEach(n => n.classList.add('shown')); return; }
+    if (reduce) { $$('.name,.tip,.win,.node').forEach(n => n.classList.add('shown')); eyes.sleep(false); return; }
     show($('.name'), T.name); show($('.win'), T.win); show($('.tip'), T.tip);
     ['t2', 'f2', 'f1', 't3', 'f3', 't1'].forEach((id, i) => {
       const p = lineFor(id), delay = T.lines + i * T.step, dur = T.line + Math.min(220, p.getTotalLength() * .25);
@@ -42,6 +57,8 @@ document.documentElement.classList.add('js');
       show($('#' + id), delay + dur * .7);
     });
     setTimeout(() => paths.forEach(p => { p.getAnimations().forEach(a => { a.commitStyles?.(); a.cancel(); }); p.style.strokeDasharray = 'none'; }), T.lines + 6 * T.step + T.line + 400);
+    // fix/old: пока линии не вышли — глаза закрыты (её аннотация к кадру «Загрузка ≈360 мс»)
+    if (NEWEYES) setTimeout(() => eyes.sleep(false), T.lines + 6 * T.step + T.line);
   };
   if (document.readyState === 'complete') intro(); else addEventListener('load', intro);
 
@@ -92,7 +109,7 @@ document.documentElement.classList.add('js');
     n.setAttribute('draggable', 'false'); $$('img', n).forEach(i => i.setAttribute('draggable', 'false'));
     n.addEventListener('dragstart', e => e.preventDefault());
     let sx, sy, p, r, dx = 0, dy = 0, lastX = 0;
-    n.addEventListener('pointerdown', e => { if (e.button > 0 || !n.classList.contains('shown')) return;
+    n.addEventListener('pointerdown', e => { if (FLOAT || e.button > 0 || !n.classList.contains('shown')) return;
       p = lineFor(n.id); sx = e.clientX; sy = e.clientY; dx = dy = 0; moved = false; lastX = e.clientX; n.setPointerCapture(e.pointerId); });
     n.addEventListener('pointermove', e => { if (!n.hasPointerCapture(e.pointerId)) return;
       dx = (e.clientX - sx) / S(); dy = (e.clientY - sy) / S();
@@ -108,6 +125,21 @@ document.documentElement.classList.add('js');
     n.addEventListener('click', e => { if (moved) { e.preventDefault(); e.stopImmediatePropagation(); moved = false; } }, true);
   });
 
+
+  /* ropes=float (её коммент к 73:1174): тянуть нельзя; папки и бирки чуть парят (±2,5 px), верёвка тянется следом
+     от узла к окну; при наведении — короткое затухающее вздрагивание. Пружины нет. */
+  if (FLOAT && !reduce) {
+    const items = $$('.node').map((n, i) => ({ n, p: lineFor(n.id), r: null, ph: i * 1.7, sh: 0, t0: 0 }));
+    items.forEach(it => it.n.addEventListener('pointerenter', () => { it.sh = 1; it.t0 = performance.now(); }));
+    const start = () => { items.forEach(it => { if (it.p) it.r = sample(it.p); });
+      (function loop(now) {
+        items.forEach(it => { if (dragging) return; const t = now / 1000;
+          let dx = Math.sin(t * .9 + it.ph) * 2.5, dy = Math.cos(t * .7 + it.ph * 1.3) * 2.5;
+          if (it.sh) { const k = (now - it.t0) / 600; if (k >= 1) it.sh = 0; else { const a = 3 * (1 - k); dx += Math.sin(k * 40) * a; dy += Math.cos(k * 33) * a * .6; } }
+          it.n.style.translate = `${dx.toFixed(2)}px ${dy.toFixed(2)}px`; if (it.r) stretch(it.p, it.r, dx, dy); });
+        requestAnimationFrame(loop); })(performance.now()); };
+    setTimeout(start, T.lines + 6 * T.step + T.line + 500);
+  }
 
   // Карточки кейсов: ховер — подъём карточки и обложки (CSS). Лаймового чипа за курсором больше нет (решение 22.11).
 
