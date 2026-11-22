@@ -119,6 +119,8 @@ document.documentElement.classList.add('js');
     dark:    { name: 'Тёмный',          sky: ['#060f3a', '#0e2470', '#2c4e9e'], L: '#dfe6ff', H: '#5f6fa8' },
     deepv:   { name: 'Глубокий + винтаж 30%', sky: ['#163486', '#315bae', '#6f93ce'], L: '#fbf3e6', H: '#b0b4c3' },
     deepv2:  { name: 'Глубокий + винтаж 50%', sky: ['#1d3a83', '#3e65ac', '#84a1cc'], L: '#fbf3e6', H: '#b4b4be' },
+    deepx:   { name: 'Глубже, винтаж в облаках', sky: ['#0a2786', '#1c48ae', '#5c88cf'], L: '#fbf1e2', H: '#a7aec8' },
+    deepx2:  { name: 'Ещё глубже',             sky: ['#071f72', '#163d9c', '#4c79c2'], L: '#f8efe0', H: '#9aa3c2' },
   };
   const skyQ = new URLSearchParams(location.search).get('sky'), DAY = PALS[skyQ] || PALS.day;
   if (skyQ) { const sw = document.createElement('div'); sw.className = 'skypick'; sw.setAttribute('aria-label', 'Палитра неба');
