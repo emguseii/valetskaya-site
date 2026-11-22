@@ -108,7 +108,22 @@ document.documentElement.classList.add('js');
     c.style.setProperty('--px', Math.min(r.width / SB() - 170, (e.clientX - r.left) / SB() + 14) + 'px'); c.style.setProperty('--py', Math.min(r.height / SB() - 44, (e.clientY - r.top) / SB() + 14) + 'px'); }));
 
   // Небо: одна палитра «мягкий день» на всю страницу
-  const DAY = { sky: ['#2b4690', '#4d70b4', '#9bb5d8'], L: '#fffaf1', H: '#cfc5bd' };
+  // Примерка палитр неба (22.11): ?sky=vintage|soft|rich|deep|dark. Без параметра — текущее «мягкий день».
+  // После выбора оставить одну палитру, остальное удалить (бэклог).
+  const PALS = {
+    day:     { name: 'Сейчас',          sky: ['#2b4690', '#4d70b4', '#9bb5d8'], L: '#fffaf1', H: '#cfc5bd' },
+    vintage: { name: 'Винтаж',          sky: ['#2f4a7c', '#5f7fa8', '#b9c3c8'], L: '#fff4e2', H: '#c9b9a6' },
+    soft:    { name: 'Мягкий голубой',  sky: ['#4f78c2', '#86a9dc', '#cfe0f2'], L: '#ffffff', H: '#d4dcea' },
+    rich:    { name: 'Насыщенный',      sky: ['#0c3cc4', '#2f66de', '#79a6f0'], L: '#fffaf1', H: '#c9cfe6' },
+    deep:    { name: 'Глубокий',        sky: ['#0b2a8a', '#1d4bb0', '#4f7fd0'], L: '#f6f2ea', H: '#9fb0d6' },
+    dark:    { name: 'Тёмный',          sky: ['#060f3a', '#0e2470', '#2c4e9e'], L: '#dfe6ff', H: '#5f6fa8' },
+  };
+  const skyQ = new URLSearchParams(location.search).get('sky'), DAY = PALS[skyQ] || PALS.day;
+  if (skyQ) { const sw = document.createElement('div'); sw.className = 'skypick'; sw.setAttribute('aria-label', 'Палитра неба');
+    Object.entries(PALS).forEach(([k, o]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = o.name;
+      b.style.setProperty('--c1', o.sky[0]); b.style.setProperty('--c2', o.sky[2]); b.setAttribute('aria-pressed', DAY === o);
+      b.onclick = () => { const u = new URL(location); u.searchParams.set('sky', k); location = u; }; sw.appendChild(b); });
+    document.body.appendChild(sw); }
   Sky([{ sel: '#top', d: .6, pal: DAY }, { sel: '.cases__grid', d: .6, pal: DAY }, { sel: '#about', d: .35, pal: DAY }, { sel: '#contacts', d: .5, low: 1, pal: DAY }, { sel: '.foot', d: .3, pal: DAY }]);
 
   // Кейс карусели: в одном положении начинает крутиться — её видео, если лежит в assets

@@ -366,3 +366,9 @@ ul{list-style:none}
 /* Масштаб блоков ниже героя — свой (--sb из web.js), по ширине и чуть компактнее героя. Без этого при невысоком окне
    герой ужимается, а кейсы остаются в исходных пикселях и кажутся крупнее (правка 22.11) */
 .cases,.about,.contacts,.foot{zoom:var(--sb,1)}
+
+/* Временный переключатель палитр неба (только с ?sky=…). Убрать после выбора */
+.skypick{position:fixed;right:16px;bottom:16px;z-index:80;display:flex;gap:4px;padding:5px;border-radius:16px;background:rgba(11,20,60,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+.skypick button{display:flex;align-items:center;gap:8px;height:32px;padding:0 12px 0 8px;border-radius:12px;color:#fff;font:500 13px/1 var(--text)}
+.skypick button::before{content:"";width:16px;height:16px;border-radius:50%;background:linear-gradient(180deg,var(--c1),var(--c2));box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
+.skypick button[aria-pressed=true]{background:var(--lime);color:var(--ink)}
