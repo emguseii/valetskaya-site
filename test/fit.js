@@ -41,7 +41,23 @@
   const br = document.createElement('i'); br.style.cssText = 'flex-basis:100%;height:0'; pick.appendChild(br);
   row('«Обо мне» заголовок:', 'abouth', [['now', 'как сейчас'], ['contacts', 'как в контактах'], ['off', 'без']], 'now');
   row('Футер:', 'footnav', [['on', 'с меню'], ['off', 'без меню']], 'off');
+  const br2 = document.createElement('i'); br2.style.cssText = 'flex-basis:100%;height:0'; pick.appendChild(br2);
+  row('Роль:', 'role', [['bubble', 'бабл'], ['window', 'в заголовке окна'], ['line', 'строкой'], ['tag', 'биркой']], 'tag');
+  row('Папки:', 'folder', [['glass', 'стекло'], ['solid', 'непрозрачные']], 'solid');
+  // верёвки: web.js читает при загрузке — переключение перезагружает страницу
+  { const l = document.createElement('span'); l.textContent = 'Верёвки:'; l.style.marginLeft = '8px'; pick.appendChild(l);
+    const curR = q.get('rope') === 'phys' ? 'phys' : 'now';
+    [['now', 'как сейчас'], ['phys', 'физика']].forEach(([v, t]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.setAttribute('aria-pressed', String(v === curR));
+      b.addEventListener('click', () => { const u = new URL(location); u.searchParams.set('rope', v); location.href = u; }); pick.appendChild(b); }); }
   pick.appendChild(desc); document.body.appendChild(pick); set(mode);
+
+  // Роль: элементы для вариантов «в окне», «строкой», «биркой»
+  const stage = document.getElementById('stage'), winT = document.querySelector('.win__top span');
+  const line = document.createElement('b'); line.className = 'role-line'; line.innerHTML = '<em>Product</em><br>designer'; stage.appendChild(line);
+  const tag = document.createElement('div'); tag.className = 'role-tag'; tag.innerHTML = '<i></i><span>роль</span><b>Продуктовый<br>дизайнер</b>'; stage.appendChild(tag);
+  stage.insertAdjacentHTML('beforeend', '<svg class="role-rope" viewBox="0 0 1440 900" aria-hidden="true"><path d="M948 170C962 176 974 172 982 160 990 148 994 140 998 134"/></svg>');
+  const roleSync = () => { winT.textContent = root.dataset.role === 'window' ? 'Валя.app — Product Designer' : 'Валя.app'; };
+  new MutationObserver(roleSync).observe(root, { attributes: true, attributeFilter: ['data-role'] }); roleSync();
 
   // Плавность папок: размытая копия картинки внутри передней стенки (вместо живого backdrop-filter)
   document.querySelectorAll('.h-fix .ic').forEach(ic => { const src = ic.querySelector('.ic__in'), front = ic.querySelector('.ic__front'); if (!src || !front) return;
