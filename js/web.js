@@ -150,7 +150,8 @@ document.documentElement.classList.add('js');
       const sl = stage.getBoundingClientRect().left, rs = cs.map(c => c.getBoundingClientRect()),
         TL = (Math.min(...rs.map(r => r.left)) - sl) / k0, TR = (Math.max(...rs.map(r => r.right)) - sl) / k0, C = 720;
       // левая и правая половины раздвигаются каждая своим коэффициентом — крайние узлы встают ровно по краям сетки
-      const K = { l: 1.8, r: 1.8 };
+      // предел раздвижки — из CSS (--spread-max, по умолчанию 1,8): при уменьшенном герое большие сдвиги заворачивают верёвки в петли
+      const KM = parseFloat(getComputedStyle(root).getPropertyValue('--spread-max')) || 1.8, K = { l: KM, r: KM };
       items.forEach(it => { const w = it.n.offsetWidth, xc = it.n.offsetLeft + w / 2, d = xc - C; if (Math.abs(d) < 60) return;
         if (d < 0) K.l = Math.min(K.l, (TL + w / 2 - C) / d); else K.r = Math.min(K.r, (TR - w / 2 - C) / d); });
       K.l = Math.max(.86, K.l); K.r = Math.max(.86, K.r); // и сжимаем немного, если герой шире сетки

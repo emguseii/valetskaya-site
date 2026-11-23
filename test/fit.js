@@ -49,6 +49,7 @@
   // 24.11 её решения: роль — в заголовке окна, папки — стекло (развилки убраны из панели)
   root.dataset.role = 'window'; root.dataset.folder = 'glass';
   row('Фон кейсов:', 'caseb', [['white', 'белый'], ['glass', 'стекло'], ['deep', 'тёмно-синий']], 'white');
+  row('Воздух у «Обо мне»:', 'aboutair', [['now', 'как сейчас'], ['air', 'больше воздуха'], ['fade', 'воздух + картинки контактов позже']], 'fade');
   row('Кнопки контактов:', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло']], 'icons');
   row('Кейсы:', 'cases', [['now', 'как сейчас'], ['s1', 'Ш1 · индекс слева'], ['s2', 'Ш2 · крупный + два']], 's1');
   pick.appendChild(desc); document.body.appendChild(pick); set(mode);
@@ -96,3 +97,10 @@
     requestAnimationFrame(tick); };
   requestAnimationFrame(tick);
 })();
+
+/* «Обо мне» без отвлечения (24.11): картинки контактов проявляются, только когда блок контактов поднялся почти до середины экрана */
+(() => { const root = document.documentElement, cx = document.getElementById('contacts'); if (!cx) return;
+  const st = t => t * t * (3 - 2 * t);
+  const upd = () => { const r = cx.getBoundingClientRect(), e = (innerHeight - r.top) / innerHeight;
+    root.style.setProperty('--cxv', st(Math.max(0, Math.min(1, (e - .45) / .4))).toFixed(3)); };
+  addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); })();
