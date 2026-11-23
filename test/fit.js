@@ -34,30 +34,26 @@
     const u = new URL(location); u.searchParams.set('fit', m); history.replaceState(null, '', u);
     dispatchEvent(new Event('resize')); }; // web.js пересчитает своё, затем over() — своё; герой заново раздвинет узлы
   // 24.11: масштаб выбран — A (по высоте окна); варианты «Сейчас» и B убраны из панели
-  // вторая строка панели: «Обо мне» и футер
-  const row = (label, key, opts, def) => { const l = document.createElement('span'); l.textContent = label; l.style.marginLeft = '8px'; pick.appendChild(l);
-    let cur = q.get(key) || def; root.dataset[key] = cur;
+  // Закреплённые решения (развилки убраны): роль в заголовке окна, папки — стекло, футер без меню, кейсы Ш2, больше воздуха у «Обо мне», уголков на глазах нет
+  Object.assign(root.dataset, { role: 'window', folder: 'glass', footnav: 'off', aboutair: 'air', cnr: 'off' });
+  /* Панель: строки идут в порядке блоков страницы, название — всегда слева в своей колонке (её правило 24.11) */
+  const rowEl = label => { const r = document.createElement('div'); r.className = 'fitrow'; const l = document.createElement('span'); l.className = 'fitrow__l'; l.textContent = label; r.appendChild(l); pick.appendChild(r); return r; };
+  const row = (label, key, opts, def, reload) => { const r = rowEl(label); let cur = q.get(key) || def; root.dataset[key] = cur;
     opts.forEach(([v, t]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.dataset[key] = v;
-      const mark = () => pick.querySelectorAll(`[data-${key}]`).forEach(x => x.tagName === 'BUTTON' && x.setAttribute('aria-pressed', String(x.dataset[key] === cur)));
-      b.addEventListener('click', () => { cur = v; root.dataset[key] = v; const u = new URL(location); u.searchParams.set(key, v); history.replaceState(null, '', u); mark(); });
-      pick.appendChild(b); mark(); }); };
-  const br = document.createElement('i'); br.style.cssText = 'flex-basis:100%;height:0'; pick.appendChild(br);
-  row('«Обо мне» заголовок:', 'abouth', [['over', 'стекло поверх карточек'], ['glass', 'стекло под карточками'], ['now', 'белый'], ['contacts', 'как в контактах']], 'over');
-  root.dataset.footnav = 'off'; // 24.11: футер без меню
-  const br2 = document.createElement('i'); br2.style.cssText = 'flex-basis:100%;height:0'; pick.appendChild(br2);
-  // 24.11 её решения: роль — в заголовке окна, папки — стекло (развилки убраны из панели)
-  root.dataset.role = 'window'; root.dataset.folder = 'glass';
-  // облака на первом экране: web.js читает при загрузке — переключение перезагружает страницу
-  { const l = document.createElement('span'); l.textContent = 'Облака на 1-м экране:'; l.style.marginLeft = '8px'; pick.appendChild(l);
-    const cur = root.dataset.skyTop;
-    [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало'], ['0', 'чистое небо']].forEach(([v, t]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.setAttribute('aria-pressed', String(+v === +cur));
-      b.addEventListener('click', () => { const u = new URL(location); u.searchParams.set('sky1', v); location.href = u; }); pick.appendChild(b); }); }
-  row('Уголки на глазах:', 'cnr', [['lime', 'лаймовые'], ['white', 'белые'], ['glass', 'прозрачные'], ['blue', 'синие'], ['off', 'без']], 'white');
-  row('Фон кейсов:', 'caseb', [['white', 'белый'], ['glass', 'стекло']], 'white');
-  root.dataset.aboutair = 'air'; // 24.11: больше воздуха
-  row('Кнопки контактов:', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло']], 'icons');
-  row('«Обо мне» фон:', 'aboutbg', [['none', 'без'], ['glass', 'стеклянная подложка']], 'glass');
-  root.dataset.cases = 's2'; // 24.11: кейсы — Ш2 (крупный + два)
+      const mark = () => r.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset[key] === cur)));
+      b.addEventListener('click', () => { const u = new URL(location); u.searchParams.set(key, v);
+        if (reload) { location.href = u; return; } cur = v; root.dataset[key] = v; history.replaceState(null, '', u); mark(); });
+      r.appendChild(b); mark(); }); };
+  // 1 · Первый экран. Облака web.js читает при загрузке — кнопка перезагружает страницу (значение — в html[data-sky-top], ставит скрипт в <head>)
+  row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало'], ['0', 'чистое небо']], root.dataset.skyTop, true);
+  // 2 · Кейсы
+  row('Кейсы · сетка', 'cases', [['s2', 'Ш2 (выбрана)'], ['d1', 'Д1 · плитка'], ['d2', 'Д2 · три с подписями'], ['d3', 'Д3 · большой + два стопкой']], 's2');
+  row('Кейсы · фон карточек', 'caseb', [['white', 'белый'], ['glass', 'стекло']], 'white');
+  // 3 · Обо мне
+  row('Обо мне · заголовок', 'abouth', [['over', 'стекло поверх карточек'], ['glass', 'стекло под карточками'], ['now', 'белый'], ['contacts', 'как в контактах']], 'over');
+  row('Обо мне · подложка', 'aboutbg', [['none', 'без'], ['glass', 'стеклянная']], 'none');
+  // 4 · Контакты
+  row('Контакты · кнопки', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло']], 'icons');
   document.body.appendChild(pick); set(mode);
 
   // Кейсы, швейцарская сетка: подпись блока (черновик текста — отредактируем, если раскладка понравится)
