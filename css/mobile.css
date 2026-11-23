@@ -67,11 +67,11 @@ ul{list-style:none}
 .win__top{height:26px;display:flex;align-items:center;gap:5px;padding:0 14px;position:relative}
 .win__top i{width:7px;height:7px;border-radius:50%;background:#ff5f57}.win__top i:nth-child(2){background:#febc2e}.win__top i:nth-child(3){background:#28c840}
 .win__top span{position:absolute;left:0;right:0;text-align:center;font-size:11px;font-weight:500}
-.win__eyes{position:relative;aspect-ratio:387/97}
+.win__eyes{position:relative;aspect-ratio:387/97;overflow:hidden}
 /* Нижняя панель окна, как в Shared/Window в масштабе мобилки (0,66) */
 .win__bot{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 9px}
 .pill{height:24px;display:inline-flex;align-items:center;padding:0 10px;border-radius:12px;background:var(--white);color:var(--ink);font:500 11px/1 var(--mono)}
-.win__eyes img{width:100%;height:100%;object-fit:cover}
+.win__eyes img{width:100%;height:100%;object-fit:cover;transform:scale(1.22);transform-origin:50% 60%}
 .cnr{position:absolute;inset:8px 12px;pointer-events:none;--c:var(--lime);
   background:linear-gradient(var(--c),var(--c)) 0 0/14px 3px,linear-gradient(var(--c),var(--c)) 0 0/3px 14px,linear-gradient(var(--c),var(--c)) 100% 0/14px 3px,linear-gradient(var(--c),var(--c)) 100% 0/3px 14px,
    linear-gradient(var(--c),var(--c)) 0 100%/14px 3px,linear-gradient(var(--c),var(--c)) 0 100%/3px 14px,linear-gradient(var(--c),var(--c)) 100% 100%/14px 3px,linear-gradient(var(--c),var(--c)) 100% 100%/3px 14px;background-repeat:no-repeat}
