@@ -83,18 +83,7 @@ document.documentElement.classList.add('js');
       d += 'C' + (b.x + (c.x - a.x) / 6).toFixed(2) + ' ' + (b.y + (c.y - a.y) / 6).toFixed(2) + ' ' + (c.x - (e.x - b.x) / 6).toFixed(2) + ' ' + (c.y - (e.y - b.y) / 6).toFixed(2) + ' ' + c.x.toFixed(2) + ' ' + c.y.toFixed(2); }
     return d; };
   // dx, dy — сдвиг узла (конец верёвки); bow — лёгкий изгиб середины поперёк верёвки; начало у окна неподвижно
-  /* Тест 23.11 (класс rope-physics на <html>, только в test/): верёвка как пружинная цепочка. Цель каждой точки — исходная форма,
-     сдвинутая к узлу с весом u^2,2 (у окна почти неподвижна); точки догоняют цель пружиной с затуханием, середина мягче —
-     верёвка не «гуляет» целиком, а запаздывает волной. 48 точек × 6 верёвок — доли миллисекунды на кадр. */
-  const PHYS = root.classList.contains('rope-physics');
-  const stretchPhys = (p, r, dx, dy) => { const n = r.pts.length - 1, dt = 1 / 60;
-    if (!r.cur) r.cur = r.pts.map(q => ({ x: q.x, y: q.y, vx: 0, vy: 0 }));
-    const out = r.pts.map((q, i) => { const u = i / n, w = Math.pow(u, 2.2), tx = q.x + dx * w, ty = q.y + dy * w, c = r.cur[i];
-      if (i === 0 || i === n) { c.x = tx; c.y = ty; c.vx = c.vy = 0; return c; }
-      const k = 90 * (1 - .75 * Math.sin(Math.PI * u)), dmp = 2 * Math.sqrt(k) * .6;
-      c.vx += (k * (tx - c.x) - dmp * c.vx) * dt; c.vy += (k * (ty - c.y) - dmp * c.vy) * dt; c.x += c.vx * dt; c.y += c.vy * dt; return c; });
-    p.removeAttribute('transform'); p.setAttribute('d', curve(out)); };
-  const stretch = (p, r, dx, dy, bow = 0) => { if (PHYS) return stretchPhys(p, r, dx, dy); const n = r.pts.length - 1, a = r.pts[0], z = r.pts[n];
+  const stretch = (p, r, dx, dy, bow = 0) => { const n = r.pts.length - 1, a = r.pts[0], z = r.pts[n];
     const L = Math.hypot(z.x - a.x, z.y - a.y) || 1, nx = -(z.y - a.y) / L, ny = (z.x - a.x) / L;
     p.removeAttribute('transform');
     p.setAttribute('d', curve(r.pts.map((q, i) => { const u = i / n, w = smooth(u), b = Math.sin(Math.PI * u) * bow;
