@@ -10,7 +10,7 @@
   };
   const BOX = { y: 56, w: 1320, h: 790 }, BAR = 30, PAD = 24;
   const q = new URLSearchParams(location.search);
-  let mode = P[q.get('fit')] ? q.get('fit') : 'now';
+  let mode = P[q.get('fit')] ? q.get('fit') : 'A'; // 24.11 её выбор: по умолчанию A
   // web.js считает --s/--sb в своём обработчике resize (он зарегистрирован раньше) — здесь перекрываем
   const over = () => { root.dataset.fit = mode; const p = P[mode];
     const W = innerWidth, H = innerHeight, s0 = Math.min((W - 2 * PAD) / BOX.w, (H - BAR - 2 * PAD) / BOX.h, 1.4), s = s0 * p.hero;
@@ -42,22 +42,33 @@
       b.addEventListener('click', () => { cur = v; root.dataset[key] = v; const u = new URL(location); u.searchParams.set(key, v); history.replaceState(null, '', u); mark(); });
       pick.appendChild(b); mark(); }); };
   const br = document.createElement('i'); br.style.cssText = 'flex-basis:100%;height:0'; pick.appendChild(br);
-  row('«Обо мне» заголовок:', 'abouth', [['glass', 'стекло (Figma 165:2635)'], ['now', 'белый'], ['contacts', 'как в контактах'], ['off', 'без']], 'glass');
-  row('Футер:', 'footnav', [['on', 'с меню'], ['off', 'без меню']], 'off');
+  row('«Обо мне» заголовок:', 'abouth', [['over', 'стекло поверх карточек'], ['glass', 'стекло под карточками'], ['now', 'белый']], 'over');
+  root.dataset.footnav = 'off'; // 24.11: футер без меню
   const br2 = document.createElement('i'); br2.style.cssText = 'flex-basis:100%;height:0'; pick.appendChild(br2);
   // 24.11 её решения: роль — в заголовке окна, папки — стекло (развилки убраны из панели)
   root.dataset.role = 'window'; root.dataset.folder = 'glass';
+  // облака на первом экране: web.js читает при загрузке — переключение перезагружает страницу
+  { const l = document.createElement('span'); l.textContent = 'Облака на 1-м экране:'; l.style.marginLeft = '8px'; pick.appendChild(l);
+    const cur = root.dataset.skyTop;
+    [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало'], ['0', 'чистое небо']].forEach(([v, t]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.setAttribute('aria-pressed', String(+v === +cur));
+      b.addEventListener('click', () => { const u = new URL(location); u.searchParams.set('sky1', v); location.href = u; }); pick.appendChild(b); }); }
+  row('Уголки на глазах:', 'cnr', [['lime', 'лаймовые'], ['white', 'белые'], ['glass', 'прозрачные'], ['blue', 'синие'], ['off', 'без']], 'white');
   row('Фон кейсов:', 'caseb', [['white', 'белый'], ['glass', 'стекло'], ['deep', 'тёмно-синий']], 'white');
-  row('Воздух у «Обо мне»:', 'aboutair', [['now', 'как сейчас'], ['air', 'больше воздуха'], ['fade', 'воздух + картинки контактов позже']], 'fade');
+  root.dataset.aboutair = 'air'; // 24.11: больше воздуха
   row('Кнопки контактов:', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло']], 'icons');
   row('«Обо мне» фон:', 'aboutbg', [['none', 'без'], ['glass', 'стеклянная подложка']], 'glass');
-  row('Кейсы:', 'cases', [['now', 'как сейчас'], ['s1', 'Ш1 · индекс слева'], ['s2', 'Ш2 · крупный + два'], ['s3', 'Ш3 · колонка'], ['s4', 'Ш4 · лесенка'], ['s5', 'Ш5 · список']], 's3');
+  root.dataset.cases = 's2'; // 24.11: кейсы — Ш2 (крупный + два)
   pick.appendChild(desc); document.body.appendChild(pick); set(mode);
 
   // Кейсы, швейцарская сетка: подпись блока (черновик текста — отредактируем, если раскладка понравится)
   document.querySelector('.cases__grid').insertAdjacentHTML('afterbegin', '<div class="cases-index"><b class="cases-index__h">Кейсы</b></div>');
   // «Обо мне» стеклом (Figma 165:2635): форма букв — её вектор about-title.webp как маска, внутри — размытый и подсвеченный фон
-  document.getElementById('pile').insertAdjacentHTML('afterbegin', '<div class="pile__glass" aria-hidden="true"><i></i></div>');
+  document.getElementById('pile').insertAdjacentHTML('afterbegin', '<div class="pile__glass" aria-hidden="true"><i class="bd"></i><i class="rim"></i></div>');
+  // кромка букв: SVG-фильтр «форма минус сжатая форма» = светлый контур (filter нельзя вешать на родителя стекла — он отключает backdrop-filter)
+  document.body.insertAdjacentHTML('beforeend', '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="glassRim" x="-5%" y="-5%" width="110%" height="110%"><feMorphology in="SourceAlpha" operator="erode" radius="1.6" result="e"/><feComposite in="SourceGraphic" in2="e" operator="out"/></filter></svg>');
+  // «Навести порядок» — круглая кнопка с иконкой «вернуть» (её просьба 24.11); подпись остаётся для экранных читалок и во всплывающей подсказке
+  { const t = document.querySelector('.pile__tidy'); if (t) { t.setAttribute('aria-label', 'Навести порядок'); t.title = 'Навести порядок';
+    t.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4 4.5v4h4"/></svg>'; } }
   // Подписи кейсов для Ш3–Ш5: номер, короткое название, год — вместо длинного заголовка в карточке (меньше букв)
   [['01', 'Новая статистика', '2024'], ['02', 'Путь нового автора', '2025'], ['03', 'Карусель авторов', '2025–2026']].forEach(([n, t, y], i) => {
     const c = document.querySelectorAll('.cases__grid .case')[i]; if (!c) return;
