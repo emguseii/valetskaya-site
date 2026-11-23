@@ -53,31 +53,9 @@ html[data-fit=C] .cases__grid{grid-template-columns:repeat(3,minmax(0,344px))}
 .fitpick.min > :not(.fitpick__x){display:none}
 .fitpick p{flex-basis:100%;padding:6px 8px 4px;color:rgba(255,255,255,.72);font-size:12px;line-height:1.4}
 
-/* ── Папки: непрозрачные (компромисс ради плавности) — ничего не пересчитывается при движении,
-   верёвки не просвечивают, фон после ховера не меняется ── */
-html[data-folder=solid] .h-fix .ic::before{display:none}
-html[data-folder=solid] .h-fix .ic__back path{fill:#3d63c6;stroke:rgba(255,255,255,.55)}
-html[data-folder=solid] .h-fix .ic__front{background:linear-gradient(180deg,#a9bdf0,#86a1e3);backdrop-filter:none;-webkit-backdrop-filter:none;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.45),inset 0 1px 0 rgba(255,255,255,.7),0 9px 27px rgba(10,41,92,.22)}
-html[data-folder=solid] .h-fix .ic__front::after,html[data-folder=solid] .ic__blur{display:none}
-html[data-folder=solid] .h-fix .big::before{backdrop-filter:none;-webkit-backdrop-filter:none;background:#3a5fc2;border-radius:25px}
-html[data-folder=solid] .h-fix .big__shape path{fill:#3a5fc2}
-
-/* ── Роль ── */
-html:not([data-role=bubble]) .tip{display:none}
-.role-line,.role-tag,.role-rope{display:none}
-html[data-role=window] .win__top span{font:600 13px/1 var(--text)}
-/* строкой в стиле кейсов: RT Obligat, первое слово лаймом (как «NEW статистика») */
-html[data-role=line] .role-line{display:block;position:absolute;left:968px;top:104px;z-index:3;font:400 46px/.86 var(--display);letter-spacing:-.04em;text-transform:uppercase;color:#fff;transform:rotate(-4deg)}
-.role-line em{font-style:normal;color:var(--lime)}
-/* биркой — по её наброску Figma 198:4747: лаймовая бирка на хвосте рукописной фамилии */
-html[data-role=tag] .role-tag{display:block;position:absolute;left:982px;top:92px;z-index:3;width:206px;padding:20px 14px 14px 34px;border-radius:24px;background:var(--lime);color:var(--ink);text-align:center;
-  transform:rotate(-9deg);box-shadow:0 10px 28px rgba(0,10,61,.18)}
-.role-tag i{position:absolute;left:14px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:#03389e}
-.role-tag span{display:block;font:500 12px/1 var(--mono);color:#3d4200}
-.role-tag b{display:block;margin-top:6px;font:700 18px/1.15 var(--text);text-transform:uppercase}
-html[data-role=tag] .role-rope{display:block;position:absolute;inset:0;width:1440px;height:900px;z-index:2;pointer-events:none;overflow:visible}
-.role-rope path{fill:none;stroke:var(--lime);stroke-width:2.4;stroke-linecap:round}
+/* ── Роль — в заголовке окна (её выбор 24.11) ── */
+html .tip{display:none}
+.win__top span{font:600 13px/1 var(--text)}
 
 /* ── Кейсы: швейцарская сетка (её запрос 24.11). 12 колонок, промежуток 40 (x), между рядами 64 (1,6x) ── */
 .cases-index{display:none}
@@ -86,7 +64,6 @@ html[data-cases^=s] .files{max-width:1328px;margin-left:auto;margin-right:auto;j
 html[data-cases^=s] .cases-index{display:block;color:#fff}
 .cases-index__l{display:block;font:500 12px/1 var(--mono);letter-spacing:.02em;color:rgba(255,255,255,.7)}
 .cases-index__h{display:block;margin-top:16px;font:400 88px/.86 var(--display);letter-spacing:-.03em;text-transform:uppercase}
-.cases-index__p{margin-top:20px;max-width:300px;font:400 16px/1.4 var(--text);color:rgba(255,255,255,.82)}
 /* Ш1 · Индекс слева: подпись — колонки 1–3, кейсы — 4–6, 7–9, 10–12; маленькие работы — с колонки 4 */
 html[data-cases=s1] .cases-index{grid-column:1/4;grid-row:1}
 html[data-cases=s1] .case:nth-of-type(1){grid-column:4/7}
@@ -100,17 +77,35 @@ html[data-cases=s2] .case:nth-of-type(3){grid-column:10/13;grid-row:1}
 html[data-cases=s2] .cases-index{grid-column:7/13;grid-row:2;align-self:end}
 html[data-cases=s2] .case:nth-of-type(1) .case__h{font-size:48px;max-width:560px}
 
-/* 24.11 · фон больших карточек кейсов непрозрачный — чтобы карточки читались на облаках (её просьба) */
-html[data-caseb=blue] .v7 .case,html[data-caseb=light] .v7 .case,html[data-caseb=deep] .v7 .case{backdrop-filter:none;-webkit-backdrop-filter:none;
+/* ── Фон карточек кейсов (24.11): белый · стекло · тёмно-синий. Маленькие карточки — тем же фоном ── */
+html[data-caseb=deep] .v7 .case{background:#0a2474;backdrop-filter:none;-webkit-backdrop-filter:none;
   box-shadow:inset 0 0 72px rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.3),0 30px 60px -34px rgba(4,12,50,.6)}
-html[data-caseb=blue] .v7 .case{background:var(--case)}
-html[data-caseb=light] .v7 .case{background:#2f5fd8}
-html[data-caseb=deep] .v7 .case{background:#0a2474}
-
-/* 24.11 · белый фон карточек кейсов: текст тёмный, акцент — синий или лаймовый маркер (лайм на белом не читается) */
-html[data-caseb=white] .v7 .case,html[data-caseb=marker] .v7 .case{background:#fff;color:var(--ink);backdrop-filter:none;-webkit-backdrop-filter:none;
+html[data-caseb=white] .v7 .case{background:#fff;color:var(--ink);backdrop-filter:none;-webkit-backdrop-filter:none;
   box-shadow:inset 0 0 0 1px rgba(3,56,158,.12),0 30px 60px -30px rgba(4,12,50,.55)}
-html[data-caseb=white] .v7 .case__h,html[data-caseb=marker] .v7 .case__h{color:var(--ink);text-shadow:none}
+html[data-caseb=white] .v7 .case__h{color:var(--ink);text-shadow:none}
 html[data-caseb=white] .v7 .case__h em{color:var(--blue)}
-html[data-caseb=marker] .v7 .case__h em{color:var(--ink);background:var(--lime);padding:0 .08em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
-html[data-caseb=white] .v7 .case:hover,html[data-caseb=marker] .v7 .case:hover,html[data-caseb=white] .v7 .case:focus-visible,html[data-caseb=marker] .v7 .case:focus-visible{box-shadow:inset 0 0 0 1px rgba(3,56,158,.2),0 40px 60px -30px rgba(4,12,50,.6)}
+html[data-caseb=white] .v7 .case:hover,html[data-caseb=white] .v7 .case:focus-visible{box-shadow:inset 0 0 0 1px rgba(3,56,158,.2),0 40px 60px -30px rgba(4,12,50,.6)}
+html[data-caseb=white] .file__pv{background:#fff;box-shadow:inset 0 0 0 1px rgba(3,56,158,.12),0 20px 40px -24px rgba(4,12,50,.5)}
+html[data-caseb=white] .file__pv img{background:#eef2fa}
+html[data-caseb=deep] .file__pv{background:#0a2474;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3),0 20px 40px -24px rgba(4,12,50,.6)}
+
+/* ── Чипы без «грязи»: непрозрачные, без размытия поверх картинки. На белом и стекле — графит, на тёмно-синем — светлое стекло-плашка ── */
+.chip{background:var(--ink);color:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
+html[data-caseb=deep] .chip{background:#2a4bb0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+
+/* ── Кейс «4 A/B-теста»: карусель ниже заголовка — не наезжает (заголовок в узкой колонке занимает 5 строк) ── */
+.v7 .case--car .case__spin{top:48%;left:14%;width:72%}
+
+/* ── Кнопки контактов иконками из стекла (вариант 24.11) ── */
+.cx__icons{display:none;justify-content:center;gap:var(--s-16,16px);margin-top:38px}
+html[data-cxb=icons] .cx__btns{display:none}
+html[data-cxb=icons] .cx__icons{display:flex}
+.cx__ic{display:grid;place-items:center;width:72px;height:72px;border-radius:50%;color:#fff;font:600 20px/1 var(--text);letter-spacing:.02em;
+  background:rgba(255,255,255,.14);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.32),inset 0 0 24px rgba(255,255,255,.1),0 10px 30px rgba(4,20,80,.18);transition:background .2s,transform .2s var(--ease)}
+.cx__ic svg{width:30px;height:30px}
+.cx__ic .f{fill:#fff}
+.cx__ic .s{fill:none;stroke:#fff;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+.cx__ic:hover{background:rgba(255,255,255,.24);transform:translateY(-2px)}
+.cx__ic:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.cx__ic{transition:none}}

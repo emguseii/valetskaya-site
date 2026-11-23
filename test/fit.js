@@ -46,26 +46,31 @@
   row('«Обо мне» заголовок:', 'abouth', [['now', 'как сейчас'], ['contacts', 'как в контактах'], ['off', 'без']], 'now');
   row('Футер:', 'footnav', [['on', 'с меню'], ['off', 'без меню']], 'off');
   const br2 = document.createElement('i'); br2.style.cssText = 'flex-basis:100%;height:0'; pick.appendChild(br2);
-  row('Роль:', 'role', [['bubble', 'бабл'], ['window', 'в заголовке окна'], ['line', 'строкой'], ['tag', 'биркой']], 'tag');
-  row('Папки:', 'folder', [['glass', 'стекло'], ['solid', 'непрозрачные']], 'glass');
-  row('Фон кейсов:', 'caseb', [['glass', 'стекло (сейчас)'], ['blue', 'синий'], ['light', 'светлее неба'], ['deep', 'тёмно-синий'], ['white', 'белый · синий акцент'], ['marker', 'белый · лаймовый маркер']], 'white');
+  // 24.11 её решения: роль — в заголовке окна, папки — стекло (развилки убраны из панели)
+  root.dataset.role = 'window'; root.dataset.folder = 'glass';
+  row('Фон кейсов:', 'caseb', [['white', 'белый'], ['glass', 'стекло'], ['deep', 'тёмно-синий']], 'white');
+  row('Кнопки контактов:', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло']], 'icons');
   row('Кейсы:', 'cases', [['now', 'как сейчас'], ['s1', 'Ш1 · индекс слева'], ['s2', 'Ш2 · крупный + два']], 's1');
-  // верёвки: web.js читает при загрузке — переключение перезагружает страницу
-  { const l = document.createElement('span'); l.textContent = 'Верёвки:'; l.style.marginLeft = '8px'; pick.appendChild(l);
-    const curR = q.get('rope') === 'phys' ? 'phys' : 'now';
-    [['now', 'как сейчас'], ['phys', 'физика']].forEach(([v, t]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.setAttribute('aria-pressed', String(v === curR));
-      b.addEventListener('click', () => { const u = new URL(location); u.searchParams.set('rope', v); location.href = u; }); pick.appendChild(b); }); }
   pick.appendChild(desc); document.body.appendChild(pick); set(mode);
 
   // Кейсы, швейцарская сетка: подпись блока (черновик текста — отредактируем, если раскладка понравится)
-  document.querySelector('.cases__grid').insertAdjacentHTML('afterbegin', '<div class="cases-index"><span class="cases-index__l">кейсы · 2024–2026 · ВКонтакте</span><b class="cases-index__h">Кейсы</b><p class="cases-index__p">Статистика сообществ, путь нового автора и&nbsp;лента рекомендаций — от&nbsp;гипотезы до&nbsp;релиза.</p></div>');
-  // Роль: элементы для вариантов «в окне», «строкой», «биркой»
-  const stage = document.getElementById('stage'), winT = document.querySelector('.win__top span');
-  const line = document.createElement('b'); line.className = 'role-line'; line.innerHTML = '<em>Product</em><br>designer'; stage.appendChild(line);
-  const tag = document.createElement('div'); tag.className = 'role-tag'; tag.innerHTML = '<i></i><span>роль</span><b>Продуктовый<br>дизайнер</b>'; stage.appendChild(tag);
-  stage.insertAdjacentHTML('beforeend', '<svg class="role-rope" viewBox="0 0 1440 900" aria-hidden="true"><path d="M948 170C962 176 974 172 982 160 990 148 994 140 998 134"/></svg>');
-  const roleSync = () => { winT.textContent = root.dataset.role === 'window' ? 'Валя.app — Product Designer' : 'Валя.app'; };
-  new MutationObserver(roleSync).observe(root, { attributes: true, attributeFilter: ['data-role'] }); roleSync();
+  document.querySelector('.cases__grid').insertAdjacentHTML('afterbegin', '<div class="cases-index"><span class="cases-index__l">кейсы · 2024–2026 · ВКонтакте</span><b class="cases-index__h">Кейсы</b></div>');
+  // Роль — в заголовке окна (её выбор 24.11)
+  document.querySelector('.win__top span').textContent = 'Валя.app — Product Designer';
+
+  // Кнопки контактов иконками из стекла (вариант 24.11): Telegram, LinkedIn, почта (копирует), CV
+  const ico = {
+    tg: '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="f" d="M20.6 4.2 2.9 11c-1 .4-1 1.2-.1 1.5l4.5 1.4 1.7 5.3c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.2-2.1 4.6 3.4c.8.5 1.4.2 1.6-.8l3-14.1c.3-1.2-.5-1.8-1.6-1.3ZM8.3 13.6l9.6-6c.5-.3.9-.1.5.2l-8.2 7.4-.3 3.4-1.6-5Z"/></svg>',
+    li: '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="f" d="M4.5 9h3.2v10.5H4.5zM6.1 3.8a1.85 1.85 0 1 1 0 3.7 1.85 1.85 0 0 1 0-3.7ZM9.8 9h3.1v1.5c.5-.9 1.6-1.8 3.3-1.8 3.4 0 4 2.2 4 5.1v5.7h-3.2v-5c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7v5.1H9.8z"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect class="s" x="3" y="5.5" width="18" height="13" rx="3"/><path class="s" d="m4 7.5 8 5.5 8-5.5"/></svg>' };
+  const src = [...document.querySelectorAll('.cx__btn')], mailBtn = src.find(b => b.dataset.copyBtn);
+  const href = t => (src.find(b => b.textContent.includes(t)) || {}).href || '#';
+  document.querySelector('.cx__btns').insertAdjacentHTML('afterend', `<div class="cx__icons">
+    <a class="cx__ic" href="${href('Telegram')}" target="_blank" rel="noopener" aria-label="Telegram" title="Telegram">${ico.tg}</a>
+    <a class="cx__ic" href="${href('LinkedIn')}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">${ico.li}</a>
+    <button class="cx__ic" type="button" data-copy-proxy aria-label="Скопировать почту" title="Скопировать почту">${ico.mail}</button>
+    <a class="cx__ic cx__ic--cv" href="${href('Резюме')}" target="_blank" rel="noopener" aria-label="Резюме (CV)" title="Резюме">CV</a></div>`);
+  document.querySelector('[data-copy-proxy]').addEventListener('click', () => mailBtn && mailBtn.click());
 
   // Плавность папок: размытая копия картинки внутри передней стенки (вместо живого backdrop-filter)
   document.querySelectorAll('.h-fix .ic').forEach(ic => { const src = ic.querySelector('.ic__in'), front = ic.querySelector('.ic__front'); if (!src || !front) return;
