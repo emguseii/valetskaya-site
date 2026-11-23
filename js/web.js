@@ -25,16 +25,17 @@ document.documentElement.classList.add('js');
     root.style.setProperty('--sb', (Math.min(w, 1.25) * .92).toFixed(4)); };
   fit(); addEventListener('resize', fit);
 
-  /* Примерочная героя (23.11): ?hero=now|fix|old и &ropes=float. Без параметра — как сейчас (now). */
+  /* Примерочная героя (23.11): ?hero=now|fix|old. Без параметра — «Исправлено» (fix): её выбор 23.11 ~03:41, основной вид сайта.
+     «Прежний» (now) и «Старая версия» (old) — только по ссылке, для сравнения. */
   const QS = new URLSearchParams(location.search);
-  const HERO = ['fix', 'old'].includes(QS.get('hero')) ? QS.get('hero') : 'now', FLOAT = HERO !== 'now'; // fix/old: конструкция верёвка+узел парит, тянуть нельзя
+  const HERO = ['now', 'old'].includes(QS.get('hero')) ? QS.get('hero') : 'fix', FLOAT = HERO !== 'now'; // fix/old: конструкция верёвка+узел парит, тянуть нельзя
   document.body.classList.add('h-' + HERO); if (FLOAT) document.body.classList.add('ropes-float');
   if (QS.has('hero') || QS.has('ropes')) {
     const pick = document.createElement('nav'); pick.className = 'heropick'; pick.setAttribute('aria-label', 'Варианты героя');
     const link = (label, h) => { const u = new URL(location); u.searchParams.set('hero', h); u.searchParams.delete('ropes'); u.hash = '';
       const a = document.createElement('a'); a.href = u; a.textContent = label; a.setAttribute('aria-current', String(HERO === h)); return a; };
     const lab = t => { const s = document.createElement('span'); s.textContent = t; return s; };
-    pick.append(lab('Герой:'), link('Сейчас', 'now'), link('Исправлено', 'fix'), link('Старая версия', 'old'));
+    pick.append(lab('Герой:'), link('Основной', 'fix'), link('Прежний', 'now'), link('Старая версия', 'old'));
     document.body.appendChild(pick);
   }
   const NEWEYES = HERO !== 'now';
