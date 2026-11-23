@@ -443,5 +443,6 @@ ul{list-style:none}
 .v7:is(.h-fix,.h-old) .stage.focus .lines path:not(.on){filter:blur(3px);opacity:.55}
 
 /* ropes=float: тянуть нельзя, узлы чуть парят, при наведении верёвка слегка вздрагивает (JS) */
-.ropes-float .node{cursor:pointer}
+.ropes-float .node{cursor:pointer;will-change:translate} /* отдельный слой: подпись плывёт плавно, без «шагов» по пикселям */
+.ropes-float .lines path{stroke-linejoin:round}
 .h-fix .big__img--plain,.h-old .big__img--plain{display:none}

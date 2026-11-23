@@ -74,9 +74,17 @@ document.documentElement.classList.add('js');
     const d0 = Math.hypot(pts[0].x - c.x, pts[0].y - c.y), d1 = Math.hypot(pts[N].x - c.x, pts[N].y - c.y);
     return { pts: d0 < d1 ? pts.slice().reverse() : pts, d: p.getAttribute('d'), tr: p.getAttribute('transform') }; };
   const smooth = t => t * t * (3 - 2 * t);
-  const stretch = (p, r, dx, dy) => { const n = r.pts.length - 1;
+  // Кривая через точки — сплайн Катмулла-Рома → кубические Безье: линия гладкая, без «ломаной» (её замечание 23.11)
+  const curve = q => { let d = 'M' + q[0].x.toFixed(2) + ' ' + q[0].y.toFixed(2);
+    for (let i = 0; i < q.length - 1; i++) { const a = q[i - 1] || q[i], b = q[i], c = q[i + 1], e = q[i + 2] || c;
+      d += 'C' + (b.x + (c.x - a.x) / 6).toFixed(2) + ' ' + (b.y + (c.y - a.y) / 6).toFixed(2) + ' ' + (c.x - (e.x - b.x) / 6).toFixed(2) + ' ' + (c.y - (e.y - b.y) / 6).toFixed(2) + ' ' + c.x.toFixed(2) + ' ' + c.y.toFixed(2); }
+    return d; };
+  // dx, dy — сдвиг узла (конец верёвки); bow — лёгкий изгиб середины поперёк верёвки; начало у окна неподвижно
+  const stretch = (p, r, dx, dy, bow = 0) => { const n = r.pts.length - 1, a = r.pts[0], z = r.pts[n];
+    const L = Math.hypot(z.x - a.x, z.y - a.y) || 1, nx = -(z.y - a.y) / L, ny = (z.x - a.x) / L;
     p.removeAttribute('transform');
-    p.setAttribute('d', r.pts.map((q, i) => { const w = smooth(i / n); return (i ? 'L' : 'M') + (q.x + dx * w).toFixed(1) + ' ' + (q.y + dy * w).toFixed(1); }).join('')); };
+    p.setAttribute('d', curve(r.pts.map((q, i) => { const u = i / n, w = smooth(u), b = Math.sin(Math.PI * u) * bow;
+      return { x: q.x + dx * w + nx * b, y: q.y + dy * w + ny * b }; }))); };
   const restore = (p, r) => { p.setAttribute('d', r.d); r.tr && p.setAttribute('transform', r.tr); };
   // Пружина как в iOS: response 0.45 с, damping 0.72 — один мягкий перелёт и на место
   const spring = (from, onStep, done) => { if (reduce) { onStep(0, 0); done(); return; }
@@ -125,17 +133,28 @@ document.documentElement.classList.add('js');
   });
 
 
-  /* fix/old — «парение» (её уточнение 23.11): вся конструкция верёвка + папка/бирка медленно и чуть-чуть покачивается
-     сама по себе, без реакции на наведение и без рывков. Узел смещается по плавной кривой (±3 px, период 7–11 с),
-     верёвка тянется следом от узла к окну. Тянуть нельзя. */
-  if (FLOAT && !reduce) {
-    const items = $$('.node').map((n, i) => ({ n, p: lineFor(n.id), r: null, ph: i * 1.9, px: 7 + (i % 3) * 1.6, py: 9 + (i % 2) * 2 }));
-    const start = () => { items.forEach(it => { if (it.p) it.r = sample(it.p); });
-      (function loop(now) { const t = now / 1000;
-        items.forEach(it => { const dx = Math.sin(t * 2 * Math.PI / it.px + it.ph) * 3, dy = Math.sin(t * 2 * Math.PI / it.py + it.ph * .7) * 3;
-          it.n.style.translate = `${dx.toFixed(2)}px ${dy.toFixed(2)}px`; if (it.r) stretch(it.p, it.r, dx, dy); });
-        requestAnimationFrame(loop); })(performance.now()); };
-    setTimeout(start, T.lines + 6 * T.step + T.line + 500);
+  /* fix/old — «парение» (её уточнения 23.11): вся конструкция верёвка + папка/бирка медленно и чуть-чуть плывёт
+     сама по себе, без реакции на наведение. Узел смещается по плавной кривой (±3 px, период 7–11 с), середина верёвки
+     слегка изгибается (±4 px, свой период), начало под глазами не двигается. Верёвка к бирке цепляется ровно за дырочку.
+     Геометрия верёвок готовится ДО появления (без скачка при старте), парение разгоняется с нуля за 2,5 с. */
+  if (FLOAT) {
+    const items = $$('.node').map((n, i) => ({ n, p: lineFor(n.id), r: null, ph: i * 1.9, px: 7 + (i % 3) * 1.6, py: 9 + (i % 2) * 2, pb: 6 + (i % 4) * 1.3 }));
+    const prep = () => { const k = S(), sb = svg.getBoundingClientRect();
+    items.forEach(it => { if (!it.p) return; it.r = sample(it.p);
+      const hole = $('.tag__hole', it.n);
+      if (hole) { const h = hole.getBoundingClientRect(), c = { x: (h.left + h.width / 2 - sb.left) / k, y: (h.top + h.height / 2 - sb.top) / k };
+        const pts = it.r.pts, n = pts.length - 1, z = pts[n], ex = c.x - z.x, ey = c.y - z.y;
+        it.r.pts = pts.map((q, i) => { const w = Math.pow(i / n, 3); return new DOMPoint(q.x + ex * w, q.y + ey * w); }); }
+      stretch(it.p, it.r, 0, 0); }); };
+    // на load: шрифты и масштаб уже на месте, узлы ещё не начали появляться
+    if (document.readyState === 'complete') prep(); else addEventListener('load', prep);
+    const go = () => { if (reduce) return; const t0 = performance.now();
+      (function loop(now) { const t = now / 1000, ramp = smooth(Math.min(1, (now - t0) / 2500));
+        items.forEach(it => { const w = 2 * Math.PI, dx = Math.sin(t * w / it.px + it.ph) * 3 * ramp, dy = Math.sin(t * w / it.py + it.ph * .7) * 3 * ramp,
+            bow = Math.sin(t * w / it.pb + it.ph * 1.3) * 4 * ramp;
+          it.n.style.translate = `${dx.toFixed(3)}px ${dy.toFixed(3)}px`; if (it.r) stretch(it.p, it.r, dx, dy, bow); });
+        requestAnimationFrame(loop); })(t0); };
+    setTimeout(go, T.lines + 6 * T.step + T.line + 300);
   }
 
   // Карточки кейсов: ховер — подъём карточки и обложки (CSS). Лаймового чипа за курсором больше нет (решение 22.11).
