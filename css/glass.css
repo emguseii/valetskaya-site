@@ -12,12 +12,22 @@
 /* 1. Жидкое стекло (Frost 0 — без размытия) */
 .glass-liquid .v7 .case{
   background:rgba(3,56,158,.06);
-  backdrop-filter:url(#liquid) saturate(1.12) brightness(1.04);
+  backdrop-filter:none;-webkit-backdrop-filter:none; /* сама карточка без фильтра: иначе полосы внутри не увидят небо */
   border:1px solid rgba(255,255,255,.16);
   /* Light −45° / 80 %: яркая кромка сверху и справа, слабее снизу и слева */
   box-shadow:inset -1.5px 1.5px 0 rgba(255,255,255,.75),inset 1px -1px 0 rgba(255,255,255,.18),
     inset 0 0 28px rgba(255,255,255,.08),0 18px 40px -22px rgba(4,12,50,.5);
   transition:transform .5s var(--ease),box-shadow .5s var(--ease),border-color .5s var(--ease)}
+/* преломление — 4 полосы по краям, только у карточек на экране */
+.lq{display:none}
+.glass-liquid .v7 .case .lq{display:block;position:absolute;z-index:0;pointer-events:none}
+.glass-liquid .v7 .case.in-view .lq--t{backdrop-filter:url(#lq-t)}
+.glass-liquid .v7 .case.in-view .lq--b{backdrop-filter:url(#lq-b)}
+.glass-liquid .v7 .case.in-view .lq--l{backdrop-filter:url(#lq-l)}
+.glass-liquid .v7 .case.in-view .lq--r{backdrop-filter:url(#lq-r)}
+/* радужная кайма (Dispersion): тонкие цветные кромки вместо разложения по каналам — так в разы легче для браузера */
+.glass-liquid .v7 .case::before{box-shadow:inset 2px 0 2px -1px rgba(255,80,120,.35),inset -2px 0 2px -1px rgba(80,170,255,.4),
+  inset 0 2px 2px -1px rgba(120,255,220,.25),inset 0 -2px 2px -1px rgba(255,200,80,.25)}
 /* блик в правом верхнем углу */
 .glass-liquid .v7 .case::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;
   background:radial-gradient(120% 70% at 100% 0%,rgba(255,255,255,.34) 0%,rgba(255,255,255,.1) 22%,rgba(255,255,255,0) 45%),

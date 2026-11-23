@@ -15,36 +15,46 @@
   Object.assign(holder.style, { position: 'absolute', width: 0, height: 0, overflow: 'hidden' });
   document.body.appendChild(holder);
 
-  // Карта смещений: у краёв (полоса BAND px) пиксели берутся «изнутри» — изгиб, как у толстого стекла; в середине — без смещения
-  const BAND = 54, SCALE = 70, DISP = [1, 1.09, 1.18]; // DISP — разброс по каналам R/G/B: радужная кайма (Dispersion)
-  const map = (w, h, axis) => {
-    const n = axis === 'x' ? w : h, b = Math.min(BAND, n / 3), p = v => (v / n * 100).toFixed(2) + '%';
-    const c = v => axis === 'x' ? `rgb(${v},128,128)` : `rgb(128,${v},128)`;
-    const stops = [[0, 255], [b * .18, 236], [b * .45, 186], [b, 128], [n - b, 128], [n - b * .45, 70], [n - b * .18, 20], [n, 0]]
-      .map(([o, v]) => `<stop offset="${p(o)}" stop-color="${c(v)}"/>`).join('');
-    const g = axis === 'x' ? 'x1="0" y1="0" x2="1" y2="0"' : 'x1="0" y1="0" x2="0" y2="1"';
-    return 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="${NS}" width="${w}" height="${h}"><defs><linearGradient id="g" ${g}>${stops}</linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/></svg>`);
+  // Карта смещений — одна картинка на обе оси: красный канал — сдвиг по X, зелёный — по Y.
+  // У краёв (полоса BAND px) пиксели берутся «изнутри» — изгиб, как у толстого стекла; в середине смещения нет.
+  // Оптимизация 23.11: было 2 карты и 6 проходов смещения (по каналу на радужную кайму) — ≈6 кадров/с;
+  // стало 1 карта и 1 проход, кайма — тонкие цветные кромки в CSS.
+  const BAND = 54, SCALE = 70;
+  const ramp = n => { const b = Math.min(BAND, n / 3), p = v => (v / n * 100).toFixed(2) + '%';
+    return [[0, 255], [b * .18, 236], [b * .45, 186], [b, 128], [n - b, 128], [n - b * .45, 70], [n - b * .18, 20], [n, 0]].map(([o, v]) => [p(o), v]); };
+  // карта рисуется один раз в canvas и отдаётся готовой PNG — браузеру не нужно заново рисовать SVG-градиенты на каждом кадре
+  const map = (w, h) => {
+    const c = Object.assign(document.createElement('canvas'), { width: w, height: h }), g = c.getContext('2d');
+    const grad = (x2, y2, n, col) => { const lg = g.createLinearGradient(0, 0, x2, y2);
+      ramp(n).forEach(([o, v]) => lg.addColorStop(parseFloat(o) / 100, col(v))); return lg; };
+    g.fillStyle = grad(w, 0, w, v => `rgb(${v},0,0)`); g.fillRect(0, 0, w, h);
+    g.globalCompositeOperation = 'lighter';
+    g.fillStyle = grad(0, h, h, v => `rgb(0,${v},0)`); g.fillRect(0, 0, w, h);
+    return c.toDataURL('image/png');
   };
 
+  // Оптимизация 2 (23.11): преломление считается только в 4 полосах по краям (≈40 % площади карточки, а не вся),
+  // каждая полоса видит свой кусок общей карты смещений. В середине стекло прозрачное и ничего не стоит.
   const build = () => {
     const card = document.querySelector('.v7 .case'); if (!card) return;
-    const w = Math.round(card.offsetWidth), h = Math.round(card.offsetHeight);
+    const w = Math.round(card.offsetWidth), h = Math.round(card.offsetHeight), b = Math.round(Math.min(BAND, w / 3, h / 3));
     if (holder.dataset.size === w + 'x' + h) return; holder.dataset.size = w + 'x' + h;
-    const ch = (k, i) => {
-      const m = [0, 1, 2].map(j => j === i ? [0, 1, 2, 3, 4].map(k => +(k === j)).join(' ') : '0 0 0 0 0'); // оставляем только свой канал
-      return `<feDisplacementMap in="SourceGraphic" in2="mx" scale="${SCALE * k}" xChannelSelector="R" yChannelSelector="G" result="dx${i}"/>
-        <feDisplacementMap in="dx${i}" in2="my" scale="${SCALE * k}" xChannelSelector="R" yChannelSelector="G" result="d${i}"/>
-        <feColorMatrix in="d${i}" type="matrix" values="${m.join(' ')} 0 0 0 1 0" result="c${i}"/>`;
-    };
-    holder.innerHTML = `<filter id="liquid" x="0" y="0" width="${w}" height="${h}" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feImage href="${map(w, h, 'x')}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none" result="mx"/>
-      <feImage href="${map(w, h, 'y')}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none" result="my"/>
-      ${DISP.map(ch).join('')}
-      <feComposite in="c0" in2="c1" operator="arithmetic" k2="1" k3="1" result="rg"/>
-      <feComposite in="rg" in2="c2" operator="arithmetic" k2="1" k3="1"/>
-    </filter>`;
+    const href = map(w, h);
+    const strips = { t: [0, 0, w, b], b: [0, h - b, w, b], l: [0, b, b, h - 2 * b], r: [w - b, b, b, h - 2 * b] };
+    holder.innerHTML = Object.entries(strips).map(([k, [x, y, sw, sh]]) =>
+      `<filter id="lq-${k}" x="0" y="0" width="${sw}" height="${sh}" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feImage href="${href}" x="${-x}" y="${-y}" width="${w}" height="${h}" preserveAspectRatio="none" result="m"/>
+        <feDisplacementMap in="SourceGraphic" in2="m" scale="${SCALE}" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>`).join('');
+    document.querySelectorAll('.v7 .case').forEach(c => {
+      Object.entries(strips).forEach(([k, [x, y, sw, sh]]) => {
+        const el = c.querySelector('.lq--' + k) || c.appendChild(Object.assign(document.createElement('i'), { className: 'lq lq--' + k }));
+        Object.assign(el.style, { left: x + 'px', top: y + 'px', width: sw + 'px', height: sh + 'px' }); }); });
   };
-  if (canLiquid) { build(); addEventListener('resize', () => { clearTimeout(build.t); build.t = setTimeout(build, 150); }); }
+  if (canLiquid) { build(); addEventListener('resize', () => { clearTimeout(build.t); build.t = setTimeout(build, 150); });
+    // фильтр считается только у карточек в зоне видимости
+    const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('in-view', e.isIntersecting)), { rootMargin: '100px' });
+    document.querySelectorAll('.v7 .case').forEach(c => io.observe(c)); }
 
   const apply = m => { Object.values(KEY).forEach(c => root.classList.remove(c)); root.classList.add(KEY[m]);
     const u = new URL(location); u.searchParams.set('glass', m); history.replaceState(null, '', u);
