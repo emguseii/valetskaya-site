@@ -212,7 +212,9 @@ document.documentElement.classList.add('js');
       b.style.setProperty('--c1', o.sky[0]); b.style.setProperty('--c2', o.sky[2]); b.setAttribute('aria-pressed', DAY === o);
       b.onclick = () => { const u = new URL(location); u.searchParams.set('sky', k); location = u; }; sw.appendChild(b); });
     document.body.appendChild(sw); }
-  Sky([{ sel: '#top', d: .6, pal: DAY }, { sel: '.cases__grid', d: .6, pal: DAY }, { sel: '#about', d: .3, pal: DUSK }, { sel: '#contacts', d: .5, low: 1, pal: DAY }, { sel: '.foot', d: .3, pal: DAY }]);
+  // плотность облаков на первом экране; на тесте её задаёт html[data-sky-top] (24.11, примерка «меньше облаков»)
+  const skyTop = root.dataset.skyTop !== undefined ? +root.dataset.skyTop : .6;
+  Sky([{ sel: '#top', d: skyTop, pal: DAY }, { sel: '.cases__grid', d: .6, pal: DAY }, { sel: '#about', d: .3, pal: DUSK }, { sel: '#contacts', d: .5, low: 1, pal: DAY }, { sel: '.foot', d: .3, pal: DAY }]);
 
   // Кейс карусели: в одном положении начинает крутиться — её видео, если лежит в assets
   const car = $('.case--car'), vid = $('.case__video', car); let vidOk = null;

@@ -172,9 +172,26 @@ html[data-cases=s5] .files{justify-content:flex-start}
 /* ── «Обо мне» стеклом — по её макету Figma 165:2635: буквы — белый 10 % + эффект Glass (преломление, свет −45°).
    В CSS: маска по её вектору заголовка, внутри размытый и высветленный фон; светлая кромка — тенью обёртки; блик сверху слева ── */
 .pile__glass{display:none}
-html[data-abouth=glass] .v7 .pile__word{display:none}
-html[data-abouth=glass] .v7 .pile__glass{display:block;position:absolute;left:50%;margin-left:-347px;top:222px;width:695px;height:174px;z-index:1;pointer-events:none;
-  filter:drop-shadow(0 0 .6px rgba(255,255,255,.9)) drop-shadow(0 10px 24px rgba(4,16,70,.25))}
-.pile__glass i{position:absolute;inset:0;-webkit-mask:url(../assets/about-title.webp) center/100% 100% no-repeat;mask:url(../assets/about-title.webp) center/100% 100% no-repeat;
-  background:linear-gradient(135deg,rgba(255,255,255,.5),rgba(255,255,255,.08) 28%,rgba(255,255,255,.06) 70%,rgba(160,200,255,.35));
-  backdrop-filter:blur(4px) saturate(1.6) brightness(1.18);-webkit-backdrop-filter:blur(4px) saturate(1.6) brightness(1.18)}
+html[data-abouth=glass] .v7 .pile__word,html[data-abouth=over] .v7 .pile__word{display:none}
+html[data-abouth=glass] .v7 .pile__glass,html[data-abouth=over] .v7 .pile__glass{display:block;position:absolute;left:50%;margin-left:-347px;top:222px;width:695px;height:174px;z-index:1;pointer-events:none}
+.pile__glass i{position:absolute;inset:0;-webkit-mask:url(../assets/about-title.webp) center/100% 100% no-repeat;mask:url(../assets/about-title.webp) center/100% 100% no-repeat}
+.pile__glass .bd{background:linear-gradient(135deg,rgba(255,255,255,.45),rgba(255,255,255,.1) 30%,rgba(255,255,255,.08) 68%,rgba(150,195,255,.35));
+  backdrop-filter:blur(6px) saturate(1.15) brightness(1.12);-webkit-backdrop-filter:blur(6px) saturate(1.15) brightness(1.12)}
+.pile__glass .rim{background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(255,255,255,.35) 45%,rgba(190,220,255,.8));filter:url(#glassRim)}
+/* «Стекло поверх карточек» (её просьба 24.11, как в Figma 165:2635): заголовок — верхний слой, карточки уходят под него и видны сквозь буквы размытыми.
+   Стекло плотнее: сильнее размытие и подсветка, кромка ярче */
+html[data-abouth=over] .v7 .pile__glass{z-index:9999}
+html[data-abouth=over] .pile__glass .bd{backdrop-filter:blur(8px) saturate(1.15) brightness(1.12);-webkit-backdrop-filter:blur(8px) saturate(1.15) brightness(1.12)}
+
+/* ── «Навести порядок» — круглая стеклянная кнопка с иконкой «вернуть» (24.11) ── */
+.pile__tidy{width:48px;height:48px;padding:0;border-radius:50%;display:grid;place-items:center}
+.pile__tidy[hidden]{display:none}
+.pile__tidy svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s var(--ease)}
+.pile__tidy:hover svg{transform:rotate(-60deg)}
+.pile__tidy:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+
+/* ── Уголки на глазах (24.11 примерка): лаймовые / белые / прозрачные (белый 45 %) / синие / без ── */
+html[data-cnr=white] .cnr{background:#fff}
+html[data-cnr=glass] .cnr{background:rgba(255,255,255,.45)}
+html[data-cnr=blue] .cnr{background:var(--blue)}
+html[data-cnr=off] .cnr{display:none}
