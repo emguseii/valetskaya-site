@@ -21,7 +21,9 @@ document.documentElement.classList.add('js');
     const s = Math.min((W - 2 * PAD) / BOX.w, (H - BAR - 2 * PAD) / BOX.h, 1.4);
     root.style.setProperty('--s', s.toFixed(4));
     root.style.setProperty('--st', (BAR + PAD - BOX.y * s).toFixed(1) + 'px');
-    root.style.setProperty('--hh', Math.max(H, BAR + 2 * PAD + BOX.h * s).toFixed(0) + 'px');
+    // высота героя — по содержимому, а не «весь экран»: при мелком масштабе браузера (67 %, 50 %) масштаб героя упирается
+    // в предел 1,4, и раньше под ним оставалась пустая дыра до кейсов (её правка 23.11)
+    root.style.setProperty('--hh', (BAR + 2 * PAD + BOX.h * s).toFixed(0) + 'px');
     root.style.setProperty('--sb', (Math.min(w, 1.25) * .92).toFixed(4)); };
   fit(); addEventListener('resize', fit);
 
@@ -151,8 +153,11 @@ document.documentElement.classList.add('js');
       const K = { l: 1.8, r: 1.8 };
       items.forEach(it => { const w = it.n.offsetWidth, xc = it.n.offsetLeft + w / 2, d = xc - C; if (Math.abs(d) < 60) return;
         if (d < 0) K.l = Math.min(K.l, (TL + w / 2 - C) / d); else K.r = Math.min(K.r, (TR - w / 2 - C) / d); });
-      K.l = Math.max(.8, K.l); K.r = Math.max(.8, K.r); // и сжимаем немного, если герой шире сетки
-      items.forEach(it => { const w = it.n.offsetWidth, d = it.n.offsetLeft + w / 2 - C; it.ox = d * ((d < 0 ? K.l : K.r) - 1); }); };
+      K.l = Math.max(.86, K.l); K.r = Math.max(.86, K.r); // и сжимаем немного, если герой шире сетки
+      items.forEach(it => { const w = it.n.offsetWidth, d = it.n.offsetLeft + w / 2 - C; it.ox = d * ((d < 0 ? K.l : K.r) - 1); });
+      // когда узлы сдвигаются к центру, окно с глазами тоже чуть уменьшается (не меньше 86 %, от нижнего края),
+      // чтобы верёвки не прилипали к его бокам (её правка 23.11)
+      const win = $('.win'); if (win) { const ws = Math.min(1, K.l, K.r); win.style.transformOrigin = '50% 100%'; win.style.scale = ws < .999 ? ws.toFixed(3) : ''; } };
     let running = false;
     const still = () => items.forEach(it => { it.n.style.translate = `${it.ox.toFixed(2)}px 0px`; if (it.r) stretch(it.p, it.r, it.ox, 0); });
     const prep = () => { spread(); items.forEach(it => { it.n.style.translate = `${it.ox.toFixed(2)}px 0px`; });
