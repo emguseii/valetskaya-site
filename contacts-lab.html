@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Песочница · «Контакты» · варианты</title>
+<meta name="robots" content="noindex"><link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css?v=11232100">
+<style>
+/* Песочница блока «Контакты» (8.12–8.13, 23.11). Основной сайт не трогает.
+   Центр у всех вариантов один: заголовок + 4 кнопки (главное действие блока — связаться / скопировать почту),
+   картинки никогда не заходят на кнопки. Картинки — заглушки из assets/, список — в ITEMS ниже (готово к админке). */
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font:16px/1.4 var(--text);color:#fff;background:#163d9c;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
+:root{--sky-1:#071f72;--sky-2:#163d9c;--sky-3:#4c79c2}
+.sky{position:fixed;inset:0;z-index:-1;overflow:hidden;background:radial-gradient(130% 100% at 50% 45%,rgba(10,14,40,0) 65%,rgba(10,14,40,.18) 100%),linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 58%,var(--sky-3) 100%)}
+.sky__clouds{position:absolute;inset:0;width:100%;height:100%}
+
+/* Перед блоком — кусочек «Обо мне», чтобы было видно, как в блок въезжаешь скроллом */
+.before{height:46vh;display:grid;place-items:end center;padding-bottom:40px;color:rgba(255,255,255,.55);font:500 13px/1 var(--mono)}
+
+/* ── Блок ── */
+.ct{position:relative;height:max(100vh,760px);overflow:hidden;isolation:isolate}
+.ct__fx{position:absolute;inset:0;z-index:1}
+.ct__core{position:absolute;left:50%;top:46%;z-index:20;transform:translate(-50%,-50%);width:760px;text-align:center;pointer-events:none}
+.ct__h{font:400 104px/.88 var(--display);white-space:nowrap;letter-spacing:-.02em;text-transform:uppercase;text-shadow:0 6px 30px rgba(4,16,70,.25)}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:440px;margin:34px auto 0;pointer-events:auto}
+.btn{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 10px 0 20px;border-radius:18px;
+  font:600 15px/1 var(--text);background:rgba(255,255,255,.14);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.32),inset 0 0 24px rgba(255,255,255,.1),0 10px 30px rgba(4,20,80,.18);transition:background .2s,transform .2s var(--ease)}
+.btn i{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);font-style:normal;font-size:15px}
+.btn:hover{background:rgba(255,255,255,.24);transform:translateY(-2px)}
+.btn:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+.btn svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:1.8}
+.ct__note{margin-top:18px;font:500 12px/1 var(--mono);color:rgba(255,255,255,.55);opacity:0;transition:opacity .4s}
+.toast{position:fixed;left:50%;bottom:30px;z-index:95;transform:translate(-50%,20px);opacity:0;background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-size:15px;transition:.25s;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* Карточки и предметы — общие для всех вариантов */
+.it{position:absolute;left:0;top:0;will-change:transform,opacity;pointer-events:none}
+.it--photo,.it--frame,.it--card{border-radius:18px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45),0 14px 30px rgba(4,20,80,.25)}
+.it--photo img{width:100%;height:100%;object-fit:cover}
+.it--frame{background:rgba(255,255,255,.14)}
+.it--frame img{position:absolute;left:50%;bottom:0;width:112%;transform:translateX(-50%)}
+.it--cut img{width:100%;height:auto;filter:drop-shadow(0 12px 16px rgba(4,20,80,.3))}
+.it--card{background:rgba(255,255,255,.16);display:grid;place-items:center}
+.it--card img{width:86%;height:86%;object-fit:contain}
+.it--card.is-photo img{width:100%;height:100%;object-fit:cover}
+.spark{position:absolute;left:0;top:0;width:26px;height:26px;pointer-events:none}
+.spark path{fill:#fff}
+
+/* 1 · Орбита (её набросок 172:4148) */
+.orbit-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.orbit-line ellipse{fill:none;stroke:rgba(255,255,255,.28);stroke-width:1.5}
+.v-orbit .ct__fx{cursor:grab}.v-orbit .ct__fx.drag{cursor:grabbing}
+
+/* 2 · Дуга */
+.v-arc .ct__fx{cursor:grab}.v-arc .ct__fx.drag{cursor:grabbing}
+.v-arc.arc-top .ct__core{top:58%}
+
+/* 3 · След за курсором */
+.v-trail .ct__fx{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='17' fill='none' stroke='white' stroke-width='1.6'/%3E%3Cpath d='M20 11.5c.6 5 3.5 7.9 8.5 8.5-5 .6-7.9 3.5-8.5 8.5-.6-5-3.5-7.9-8.5-8.5 5-.6 7.9-3.5 8.5-8.5z' fill='%23e4ff3a'/%3E%3C/svg%3E") 20 20,crosshair}
+.v-trail .ct__note{opacity:1}
+
+/* 4 · Полёт: контакты + футер вместе, при скролле летим сквозь поле фото */
+.v-fall .ct{height:260vh;overflow:visible}
+.v-fall .ct__pin{position:sticky;top:0;height:100vh;overflow:hidden}
+.ct__pin{position:relative;height:100%}
+.v-fall .ct__fx{perspective:800px;perspective-origin:50% 44%}
+.v-fall .it{left:50%;top:44%}
+.foot{display:none}
+.v-fall .foot{display:flex;position:absolute;left:0;right:0;bottom:0;z-index:25;align-items:center;gap:40px;padding:22px 48px 26px;
+  background:linear-gradient(180deg,rgba(7,31,114,0),rgba(7,31,114,.55));font:500 14px/1.5 var(--text)}
+.foot img{width:190px;height:auto}
+.foot nav{display:flex;gap:22px;color:rgba(255,255,255,.85)}
+.foot .sp{flex:1}
+.foot__cv{height:40px;display:inline-flex;align-items:center;padding:0 18px;border-radius:20px;background:var(--lime);color:var(--ink);font-weight:600}
+.foot__up{width:40px;height:40px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-weight:600}
+.foot small{position:absolute;left:48px;bottom:6px;font-size:11px;color:rgba(255,255,255,.5)}
+
+/* 5 · Плёнка (идея Claude): две ленты с кадрами пересекают экран над и под заголовком, едут навстречу */
+.strip{position:absolute;left:-10%;width:120%;height:170px;padding:22px 0;background:#141414;overflow:hidden;box-shadow:0 18px 40px rgba(4,16,70,.3)}
+.strip::before,.strip::after{content:"";position:absolute;left:0;right:0;height:9px;
+  background:repeating-linear-gradient(90deg,transparent 0 9px,rgba(255,255,255,.85) 9px 21px,transparent 21px 30px);opacity:.9}
+.strip::before{top:6px}.strip::after{bottom:6px}
+.strip__row{display:flex;gap:10px;width:max-content;height:100%}
+.strip__f{height:100%;aspect-ratio:3/2;background:#262626;border-radius:3px;overflow:hidden;display:grid;place-items:center}
+.strip__f img{width:100%;height:100%;object-fit:cover}
+.strip__f.is-cut img{width:80%;height:80%;object-fit:contain}
+.strip--a{top:-36px;transform:rotate(-4deg)}
+.strip--b{top:auto;bottom:-24px;transform:rotate(3deg)}
+
+/* Служебная панель вариантов — со шевроном «свернуть» (её правило) */
+.pick{position:fixed;left:16px;bottom:16px;z-index:90;display:flex;flex-wrap:wrap;align-items:center;gap:4px;max-width:calc(100vw - 32px);padding:5px;border-radius:16px;
+  background:rgba(11,20,60,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);font:500 13px/1 var(--text)}
+.pick__x{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;font-size:16px;transition:transform .25s}
+.pick.min .pick__x{transform:rotate(180deg)}
+.pick.min > :not(.pick__x){display:none}
+.pick span{padding:0 8px 0 4px;color:rgba(255,255,255,.6)}
+.pick button:not(.pick__x){height:32px;padding:0 12px;border-radius:12px}
+.pick button[aria-pressed=true]{background:#fff;color:var(--ink)}
+.pick i{width:1px;align-self:stretch;margin:4px;background:rgba(255,255,255,.2)}
+.pick p{flex-basis:100%;padding:6px 8px 4px;color:rgba(255,255,255,.7);font-size:12px;line-height:1.4;max-width:620px}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}}
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+<div class="before">↓ «Обо мне» выше · скролль к контактам</div>
+
+<section class="ct" id="contacts" aria-labelledby="ct-h">
+  <div class="ct__pin">
+    <div class="ct__fx" id="fx" aria-hidden="true"></div>
+    <div class="ct__core">
+      <h2 class="ct__h" id="ct-h">Let’s work<br>together</h2>
+      <div class="btns">
+        <a class="btn" href="https://t.me/emgusei" target="_blank" rel="noopener">Telegram <i aria-hidden="true">↗</i></a>
+        <button class="btn" type="button" data-copy="valentine.valetskaya@gmail.com" aria-label="Скопировать почту valentine.valetskaya@gmail.com">Почта <i aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg></i></button>
+        <a class="btn" href="https://www.linkedin.com/in/vvalentin%D0%B5/" target="_blank" rel="noopener">LinkedIn <i aria-hidden="true">↗</i></a>
+        <a class="btn" href="cv.pdf" target="_blank" rel="noopener">Резюме <i aria-hidden="true">↗</i></a>
+      </div>
+      <p class="ct__note">поводи курсором по&nbsp;небу</p>
+    </div>
+    <footer class="foot">
+      <img src="assets/hero-name-v7.webp" alt="Валентина Валецкая" width="1438" height="393">
+      <nav aria-label="Разделы"><a href="#">Кейсы</a><a href="#">Обо мне</a><a href="#contacts">Контакты</a></nav>
+      <span class="sp"></span>
+      <a class="foot__cv" href="cv.pdf" target="_blank" rel="noopener">CV ↗</a><a class="foot__up" href="#" aria-label="Наверх">↑</a>
+      <small>© 2026 Валентина Валецкая · Нидерланды</small>
+    </footer>
+  </div>
+</section>
+
+<nav class="pick" id="pick" aria-label="Варианты контактов">
+  <button class="pick__x" type="button" aria-label="Свернуть панель" aria-expanded="true">‹</button>
+  <span>Контакты:</span>
+  <button type="button" data-v="orbit">1 · Орбита</button>
+  <button type="button" data-v="arc">2 · Дуга</button>
+  <button type="button" data-v="trail">3 · След</button>
+  <button type="button" data-v="fall">4 · Полёт</button>
+  <button type="button" data-v="film">5 · Плёнка</button>
+  <i></i><button type="button" id="arcSide" hidden>дуга снизу</button>
+  <p id="desc"></p>
+</nav>
+<div class="toast" role="status"></div>
+
+<script src="js/sky.js?v=11230410"></script>
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Sky([{ sel: '#contacts', d: .5, low: 1, pal: { sky: ['#071f72', '#163d9c', '#4c79c2'], L: '#f8efe0', H: '#9aa3c2' } }]);
+
+  /* Контент. ЗАГЛУШКИ из assets/ — заменить на её 8–12 картинок (плёнка, глина, концепты, плакаты, фотик).
+     kind: photo — фото целиком; frame — вырезанный человек в стеклянной рамке; cut — предмет без фона. */
+  const ITEMS = [
+    { src: 'contacts-photo', kind: 'frame', alt: 'Валя с котами' },
+    { src: 'web-obj-camera', kind: 'cut', alt: 'Плёночная мыльница' },
+    { src: 'deck-photo', kind: 'photo', alt: 'Портрет' },
+    { src: 'in-stat', kind: 'cut', alt: 'Концепт статистики' },
+    { src: 'web-obj-flower', kind: 'cut', alt: 'Керамика' },
+    { src: 'subs-card', kind: 'photo', alt: 'Концепт подписчиков' },
+    { src: 'in-path', kind: 'cut', alt: 'Концепт онбординга' },
+    { src: 'hero-photo', kind: 'cut', alt: 'Портрет' },
+    { src: 'in-car', kind: 'cut', alt: 'Концепт карусели' },
+    { src: 'case1-card', kind: 'cut', alt: 'Концепт' }
+  ].map(o => ({ ...o, url: `assets/${o.src}.webp` }));
+
+  const DESC = {
+    orbit: 'Твой набросок 172:4148: картинки и ✦ идут по наклонному эллипсу вокруг заголовка, ближняя — крупнее, дальние уходят за заголовок и тают. Сами крутятся, скролл докручивает, можно тянуть мышью. Скролл не перехватывается.',
+    arc: 'По мотивам Arc Pro Carousel: одинаковые стеклянные карточки на большой дуге, к краям мельче и прозрачнее. Едут сами, можно тянуть с инерцией. Дуга снизу — как горизонт, сверху — как радуга над заголовком.',
+    trail: 'По мотивам Smooth Image Trail: в покое — только заголовок и кнопки. Курсор над небом становится кружком со ✦, за ним выпадают картинки со случайным наклоном и тают. Над заголовком и кнопками след не появляется.',
+    fall: 'По мотивам Infinite Scroll Fall: контакты и футер — один экран. Пока скроллишь, летим вперёд сквозь поле фото (дальние тонут в «тумане» цвета неба), коридор по центру свободен для заголовка и кнопок. Внизу страницы полёт продолжается колесом и сам по себе.',
+    film: 'Идея Claude: две плёночные ленты с кадрами пересекают экран над и под заголовком и едут навстречу друг другу. Наведёшь — лента притормаживает. Отсылка к твоим плёночным фото, без 3D.'
+  };
+
+  const fx = $('#fx'), body = document.body;
+  const el = (tag, cls) => { const e = document.createElement(tag); if (cls) e.className = cls; return e; };
+  const card = (it, kind = it.kind, w = 170, h = w) => { const d = el('div', 'it it--' + kind + (it.kind === 'photo' ? ' is-photo' : ''));
+    d.style.width = w + 'px'; if (kind !== 'cut') d.style.height = h + 'px';
+    const i = new Image(); i.src = it.url; i.alt = ''; i.decoding = 'async'; d.appendChild(i); d.dataset.w = w; d.dataset.h = h; return d; };
+  const SPARK = '<svg viewBox="0 0 26 26" class="spark"><path d="M13 0c.9 7.2 5 11.6 13 13-8 1.4-12.1 5.8-13 13-.9-7.2-5-11.6-13-13 8-1.4 12.1-5.8 13-13z"/></svg>';
+  const box = () => fx.getBoundingClientRect();
+  const visible = () => { const r = $('#contacts').getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
+
+  /* Перетаскивание с инерцией — для орбиты и дуги (только по пустому небу; кнопки остаются кнопками) */
+  const dragger = (onMove) => { let on = false, lx = 0, lt = 0, v = 0;
+    const down = e => { on = true; lx = e.clientX; lt = performance.now(); v = 0; fx.setPointerCapture(e.pointerId); fx.classList.add('drag'); };
+    const move = e => { if (!on) return; const dx = e.clientX - lx, now = performance.now(); v = dx / Math.max(8, now - lt); lx = e.clientX; lt = now; onMove(dx); };
+    const up = () => { on = false; fx.classList.remove('drag'); };
+    fx.addEventListener('pointerdown', down); fx.addEventListener('pointermove', move); fx.addEventListener('pointerup', up); fx.addEventListener('pointercancel', up);
+    return { inertia: dt => { if (on) return 0; v *= Math.pow(.94, dt / 16); return Math.abs(v) > .002 ? v * dt : 0; },
+      off: () => { fx.removeEventListener('pointerdown', down); fx.removeEventListener('pointermove', move); fx.removeEventListener('pointerup', up); fx.removeEventListener('pointercancel', up); } }; };
+
+  const V = {};
+
+  /* 1 · Орбита */
+  V.orbit = () => {
+    const nodes = [], SP = [1, 4, 6, 9]; // после каких картинок встаёт ✦
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('class', 'orbit-line');
+    const ell = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse'); svg.appendChild(ell); fx.appendChild(svg);
+    ITEMS.forEach((it, i) => { const big = it.kind !== 'cut', n = card(it, it.kind, big ? 200 : 160, 200); n.dataset.rot = ((i * 37) % 24 - 12); fx.appendChild(n); nodes.push({ n, big });
+      if (SP.includes(i)) { const s = el('div'); s.innerHTML = SPARK; const sp = s.firstChild; fx.appendChild(sp); nodes.push({ n: sp, spark: true }); } });
+    const N = nodes.length, step = Math.PI * 2 / N, TILT = -5 * Math.PI / 180;
+    let A = 0, last = performance.now(), sy = scrollY, raf;
+    const dr = dragger(dx => { A += dx * .0035; });
+    const onScroll = () => { const d = scrollY - sy; sy = scrollY; if (visible()) A += d * .0016; }; addEventListener('scroll', onScroll, { passive: true });
+    const frame = now => { const dt = Math.min(50, now - last); last = now; if (!reduce) A += dt * (Math.PI * 2 / 80000); A += dr.inertia(dt) * .0035;
+      const b = box(), cx = b.width / 2, cy = b.height * .5, rx = Math.min(b.width * .4, 610), ry = b.height * .3;
+      ell.setAttribute('cx', cx); ell.setAttribute('cy', cy); ell.setAttribute('rx', rx); ell.setAttribute('ry', ry); ell.setAttribute('transform', `rotate(${TILT * 180 / Math.PI} ${cx} ${cy})`);
+      const c = Math.cos(TILT), s = Math.sin(TILT);
+      nodes.forEach((o, i) => { const a = A + i * step, ex = rx * Math.sin(a), ey = ry * Math.cos(a), x = cx + ex * c - ey * s, y = cy + ex * s + ey * c,
+          d = Math.cos(a), k = (d + 1) / 2, sc = .5 + .68 * k;
+        if (o.spark) { o.n.style.transform = `translate(${x - 13}px,${y - 13}px) scale(${.6 + .6 * k})`; o.n.style.opacity = .35 + .65 * k; o.n.style.zIndex = d > 0 ? 30 : 5; return; }
+        const w = +o.n.dataset.w, h = o.big ? +o.n.dataset.h : w, ry3 = o.big ? Math.sin(a) * 38 : 0;
+        o.n.style.transform = `translate(${x - w / 2}px,${y - h / 2}px) perspective(700px) rotateY(${ry3}deg) rotate(${o.big ? 0 : o.n.dataset.rot}deg) scale(${sc})`;
+        o.n.style.opacity = (.18 + .82 * k * k).toFixed(3); o.n.style.zIndex = Math.round(10 + d * 10) + (d > -.1 ? 20 : 0);
+        o.n.style.filter = d < -.25 ? `blur(${((-d - .25) * 3).toFixed(1)}px)` : ''; });
+      raf = requestAnimationFrame(frame); };
+    raf = requestAnimationFrame(frame);
+    return () => { cancelAnimationFrame(raf); removeEventListener('scroll', onScroll); dr.off(); };
+  };
+
+  /* 2 · Дуга */
+  let arcTop = false;
+  V.arc = () => {
+    const list = [...ITEMS, ...ITEMS], W = 168, H = 216, GAP = 28, P = W + GAP, L = list.length * P, R = 1500;
+    const nodes = list.map(it => { const n = card(it, 'card', W, H); fx.appendChild(n); return n; });
+    let O = 0, last = performance.now(), raf; const dr = dragger(dx => { O += dx; });
+    const frame = now => { const dt = Math.min(50, now - last); last = now; if (!reduce) O -= dt * .03; O += dr.inertia(dt);
+      const b = box(), cx = b.width / 2, top = arcTop, cy = top ? b.height * .17 - R : b.height * .84 + R;
+      nodes.forEach((n, i) => { let p = ((i * P + O) % L + L) % L - L / 2; const th = p / R, x = cx + R * Math.sin(th), y = top ? cy + R * Math.cos(th) : cy - R * Math.cos(th),
+          e = Math.min(1, Math.abs(x - cx) / (b.width / 2 + 60)), sc = 1 - .32 * e * e;
+        n.style.transform = `translate(${x - W / 2}px,${y - H / 2}px) rotate(${(top ? -th : th) * 180 / Math.PI}deg) scale(${sc})`;
+        n.style.opacity = Math.max(0, 1 - .9 * e * e * e).toFixed(3); n.style.visibility = e >= 1 ? 'hidden' : ''; });
+      raf = requestAnimationFrame(frame); };
+    raf = requestAnimationFrame(frame);
+    return () => { cancelAnimationFrame(raf); dr.off(); };
+  };
+
+  /* 3 · След за курсором */
+  V.trail = () => {
+    let lx = null, ly = null, acc = 0, idx = 0; const MAX = 7, live = [];
+    const spawn = (x, y) => { const it = ITEMS[idx++ % ITEMS.length], w = 130 + Math.random() * 40, n = card(it, it.kind === 'cut' ? 'cut' : it.kind, w, w);
+      n.style.transform = `translate(${x - w / 2}px,${y - w / 2}px) rotate(${(Math.random() * 24 - 12).toFixed(1)}deg)`; fx.appendChild(n);
+      const a = n.animate([{ scale: .55, opacity: 0 }, { scale: 1, opacity: 1, offset: .14 }, { scale: 1, opacity: 1, offset: .6 }, { scale: .92, opacity: 0, translate: '0 18px' }],
+        { duration: 1700, easing: 'cubic-bezier(.2,.8,.2,1)' });
+      a.onfinish = () => n.remove(); live.push(n); if (live.length > MAX) { const o = live.shift(); o.remove(); } };
+    const mv = e => { const b = box(), x = e.clientX - b.left, y = e.clientY - b.top, r = $('.ct__core').getBoundingClientRect();
+      const overBtns = e.clientX > r.left - 40 && e.clientX < r.right + 40 && e.clientY > r.top - 40 && e.clientY < r.bottom + 40;
+      if (lx !== null) acc += Math.hypot(x - lx, y - ly); lx = x; ly = y;
+      if (acc > 85 && !overBtns && !reduce) { acc = 0; spawn(x, y); } };
+    const leave = () => { lx = ly = null; };
+    $('#contacts').addEventListener('pointermove', mv); $('#contacts').addEventListener('pointerleave', leave);
+    V.trail.spawn = spawn;
+    return () => { $('#contacts').removeEventListener('pointermove', mv); $('#contacts').removeEventListener('pointerleave', leave); };
+  };
+
+  /* 4 · Полёт */
+  V.fall = () => {
+    const N = 18, D = 3000, rnd = (i, k) => { const x = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return x - Math.floor(x); };
+    const nodes = Array.from({ length: N }, (_, i) => { const it = ITEMS[i % ITEMS.length], n = card(it, 'card', 150, 200);
+      const ang = rnd(i, 1) * Math.PI * 2, rad = 620 + rnd(i, 2) * 520; // коридор по центру свободен
+      fx.appendChild(n); return { n, x: Math.cos(ang) * rad, y: Math.sin(ang) * rad * .62, z0: -(i / N) * D }; });
+    let drift = 0, extra = 0, last = performance.now(), raf;
+    const wheel = e => { if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2 && e.deltaY > 0) extra += e.deltaY * 1.2; };
+    addEventListener('wheel', wheel, { passive: true });
+    const frame = now => { const dt = Math.min(50, now - last); last = now; if (!reduce) drift += dt * .05;
+      const s = $('#contacts'), r = s.getBoundingClientRect(), p = Math.max(0, Math.min(1, -r.top / (r.height - innerHeight))), cam = p * 2600 + drift + extra;
+      nodes.forEach(o => { const z = (((o.z0 + cam) % D) + D) % D - D + 420, fog = Math.min(1, Math.max(0, (z + 1700) / 1000)), near = z > 280 ? Math.max(0, 1 - (z - 280) / 140) : 1;
+        o.n.style.transform = `translate3d(${o.x - 75}px,${o.y - 100}px,${z}px)`; o.n.style.opacity = (fog * near).toFixed(3); });
+      raf = requestAnimationFrame(frame); };
+    raf = requestAnimationFrame(frame);
+    return () => { cancelAnimationFrame(raf); removeEventListener('wheel', wheel); };
+  };
+
+  /* 5 · Плёнка */
+  V.film = () => { const anims = [];
+    ['a', 'b'].forEach((k, j) => { const s = el('div', 'strip strip--' + k), row = el('div', 'strip__row');
+      const order = j ? [...ITEMS].reverse() : ITEMS;
+      [...order, ...order].forEach(it => { const f = el('div', 'strip__f' + (it.kind === 'photo' ? '' : ' is-cut')), i = new Image(); i.src = it.url; i.alt = ''; f.appendChild(i); row.appendChild(f); });
+      s.appendChild(row); fx.appendChild(s);
+      const a = row.animate(j ? [{ transform: 'translateX(-50%)' }, { transform: 'translateX(0)' }] : [{ transform: 'translateX(0)' }, { transform: 'translateX(-50%)' }], { duration: 60000, iterations: Infinity });
+      if (reduce) a.pause(); anims.push(a);
+      s.addEventListener('pointerenter', () => a.updatePlaybackRate(.2)); s.addEventListener('pointerleave', () => a.updatePlaybackRate(1)); });
+    return () => anims.forEach(a => a.cancel()); };
+
+  /* Переключение вариантов: ?v=orbit|arc|trail|fall|film */
+  let stop = null, cur = '';
+  const set = v => { if (!V[v]) v = 'orbit'; if (stop) stop(); fx.innerHTML = ''; fx.style.cssText = '';
+    body.className = 'v-' + v + (v === 'arc' && arcTop ? ' arc-top' : ''); cur = v; stop = V[v]();
+    $$('.pick [data-v]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+    $('#arcSide').hidden = v !== 'arc'; $('#arcSide').textContent = arcTop ? 'дуга сверху' : 'дуга снизу'; $('#desc').textContent = DESC[v];
+    const u = new URL(location); u.searchParams.set('v', v); if (v === 'arc') u.searchParams.set('arc', arcTop ? 'top' : 'bottom'); else u.searchParams.delete('arc'); history.replaceState(null, '', u); };
+  const q = new URLSearchParams(location.search); arcTop = q.get('arc') === 'top';
+  $$('.pick [data-v]').forEach(b => b.addEventListener('click', () => set(b.dataset.v)));
+  $('#arcSide').addEventListener('click', () => { arcTop = !arcTop; set('arc'); });
+  $('.pick__x').addEventListener('click', e => { const p = $('#pick'), m = p.classList.toggle('min'); e.currentTarget.setAttribute('aria-expanded', String(!m)); e.currentTarget.setAttribute('aria-label', m ? 'Развернуть панель' : 'Свернуть панель'); });
+  set(q.get('v') || 'orbit');
+  window.__lab = { set, V };
+
+  const toastEl = $('.toast'); let tt;
+  const toast = m => { toastEl.textContent = m; toastEl.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => toastEl.classList.remove('on'), 2400); };
+  $$('[data-copy]').forEach(b => b.addEventListener('click', async () => { try { await navigator.clipboard.writeText(b.dataset.copy); toast('Почта скопирована: ' + b.dataset.copy); } catch { toast(b.dataset.copy); } }));
+})();
+</script>
+</body>
+</html>
