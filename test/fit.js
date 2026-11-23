@@ -31,5 +31,20 @@
     const u = new URL(location); u.searchParams.set('fit', m); history.replaceState(null, '', u);
     dispatchEvent(new Event('resize')); }; // web.js пересчитает своё, затем over() — своё; герой заново раздвинет узлы
   Object.keys(P).forEach(k => { const b = document.createElement('button'); b.type = 'button'; b.dataset.f = k; b.textContent = P[k].name; b.addEventListener('click', () => set(k)); pick.appendChild(b); });
+  // вторая строка панели: «Обо мне» и футер
+  const row = (label, key, opts, def) => { const l = document.createElement('span'); l.textContent = label; l.style.marginLeft = '8px'; pick.appendChild(l);
+    let cur = q.get(key) || def; root.dataset[key] = cur;
+    opts.forEach(([v, t]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.dataset[key] = v;
+      const mark = () => pick.querySelectorAll(`[data-${key}]`).forEach(x => x.tagName === 'BUTTON' && x.setAttribute('aria-pressed', String(x.dataset[key] === cur)));
+      b.addEventListener('click', () => { cur = v; root.dataset[key] = v; const u = new URL(location); u.searchParams.set(key, v); history.replaceState(null, '', u); mark(); });
+      pick.appendChild(b); mark(); }); };
+  const br = document.createElement('i'); br.style.cssText = 'flex-basis:100%;height:0'; pick.appendChild(br);
+  row('«Обо мне» заголовок:', 'abouth', [['now', 'как сейчас'], ['contacts', 'как в контактах'], ['off', 'без']], 'now');
+  row('Футер:', 'footnav', [['on', 'с меню'], ['off', 'без меню']], 'off');
   pick.appendChild(desc); document.body.appendChild(pick); set(mode);
+
+  // Плавность папок: размытая копия картинки внутри передней стенки (вместо живого backdrop-filter)
+  document.querySelectorAll('.h-fix .ic').forEach(ic => { const src = ic.querySelector('.ic__in'), front = ic.querySelector('.ic__front'); if (!src || !front) return;
+    const c = src.cloneNode(); c.className = 'ic__blur'; c.removeAttribute('style');
+    Object.assign(c.style, { left: src.style.left, top: `calc(${src.style.top} - 50px)`, width: src.style.width }); front.appendChild(c); });
 })();
