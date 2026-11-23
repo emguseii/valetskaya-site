@@ -445,4 +445,10 @@ ul{list-style:none}
 /* ropes=float: тянуть нельзя, узлы чуть парят, при наведении верёвка слегка вздрагивает (JS) */
 .ropes-float .node{cursor:pointer;will-change:translate} /* отдельный слой: подпись плывёт плавно, без «шагов» по пикселям */
 .ropes-float .lines path{stroke-linejoin:round}
+/* петля: верёвка перекинута через верхний край бирки и продета в дырочку (её просьба 23.11 ~03:19) */
+.tag__loop{display:none}
+.v7:is(.h-fix,.h-old) .tag__loop{display:block;position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:1;transform:rotate(var(--r))}
+.tag__loop path{fill:none;stroke:var(--lime);stroke-width:2.4;stroke-linecap:round}
+.tag__loop .tag__back{stroke:#c9e033}
+.tag__loop circle{fill:none}
 .h-fix .big__img--plain,.h-old .big__img--plain{display:none}

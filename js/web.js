@@ -141,7 +141,7 @@ document.documentElement.classList.add('js');
     const items = $$('.node').map((n, i) => ({ n, p: lineFor(n.id), r: null, ph: i * 1.9, px: 7 + (i % 3) * 1.6, py: 9 + (i % 2) * 2, pb: 6 + (i % 4) * 1.3 }));
     const prep = () => { const k = S(), sb = svg.getBoundingClientRect();
     items.forEach(it => { if (!it.p) return; it.r = sample(it.p);
-      const hole = $('.tag__hole', it.n);
+      const hole = $('.tag__j', it.n); // точка, где верёвка расходится в петлю над биркой
       if (hole) { const h = hole.getBoundingClientRect(), c = { x: (h.left + h.width / 2 - sb.left) / k, y: (h.top + h.height / 2 - sb.top) / k };
         const pts = it.r.pts, n = pts.length - 1, z = pts[n], ex = c.x - z.x, ey = c.y - z.y;
         it.r.pts = pts.map((q, i) => { const w = Math.pow(i / n, 3); return new DOMPoint(q.x + ex * w, q.y + ey * w); }); }
