@@ -48,6 +48,7 @@
   const br2 = document.createElement('i'); br2.style.cssText = 'flex-basis:100%;height:0'; pick.appendChild(br2);
   row('Роль:', 'role', [['bubble', 'бабл'], ['window', 'в заголовке окна'], ['line', 'строкой'], ['tag', 'биркой']], 'tag');
   row('Папки:', 'folder', [['glass', 'стекло'], ['solid', 'непрозрачные']], 'glass');
+  row('Фон кейсов:', 'caseb', [['glass', 'стекло (сейчас)'], ['blue', 'синий'], ['light', 'светлее неба'], ['deep', 'тёмно-синий'], ['white', 'белый · синий акцент'], ['marker', 'белый · лаймовый маркер']], 'white');
   row('Кейсы:', 'cases', [['now', 'как сейчас'], ['s1', 'Ш1 · индекс слева'], ['s2', 'Ш2 · крупный + два']], 's1');
   // верёвки: web.js читает при загрузке — переключение перезагружает страницу
   { const l = document.createElement('span'); l.textContent = 'Верёвки:'; l.style.marginLeft = '8px'; pick.appendChild(l);
