@@ -16,45 +16,43 @@
   document.body.appendChild(holder);
 
   // Карта смещений — одна картинка на обе оси: красный канал — сдвиг по X, зелёный — по Y.
-  // У краёв (полоса BAND px) пиксели берутся «изнутри» — изгиб, как у толстого стекла; в середине смещения нет.
-  // Оптимизация 23.11: было 2 карты и 6 проходов смещения (по каналу на радужную кайму) — ≈6 кадров/с;
-  // стало 1 карта и 1 проход, кайма — тонкие цветные кромки в CSS.
-  const BAND = 54, SCALE = 70;
-  const ramp = n => { const b = Math.min(BAND, n / 3), p = v => (v / n * 100).toFixed(2) + '%';
+  // У краёв (полоса band px) пиксели берутся «изнутри» — изгиб, как у толстого стекла; в середине смещения нет.
+  // Оптимизация 23.11: 1 карта и 1 проход смещения вместо 2 карт и 6 проходов (≈×2 быстрее); радужная кайма — цветные кромки в CSS;
+  // карта рисуется один раз в canvas (готовая PNG); фильтр работает только у элементов на экране.
+  const ramp = (n, band) => { const b = Math.min(band, n / 3), p = v => (v / n * 100).toFixed(2) + '%';
     return [[0, 255], [b * .18, 236], [b * .45, 186], [b, 128], [n - b, 128], [n - b * .45, 70], [n - b * .18, 20], [n, 0]].map(([o, v]) => [p(o), v]); };
-  // карта рисуется один раз в canvas и отдаётся готовой PNG — браузеру не нужно заново рисовать SVG-градиенты на каждом кадре
-  const map = (w, h) => {
+  const map = (w, h, band) => {
     const c = Object.assign(document.createElement('canvas'), { width: w, height: h }), g = c.getContext('2d');
     const grad = (x2, y2, n, col) => { const lg = g.createLinearGradient(0, 0, x2, y2);
-      ramp(n).forEach(([o, v]) => lg.addColorStop(parseFloat(o) / 100, col(v))); return lg; };
+      ramp(n, band).forEach(([o, v]) => lg.addColorStop(parseFloat(o) / 100, col(v))); return lg; };
     g.fillStyle = grad(w, 0, w, v => `rgb(${v},0,0)`); g.fillRect(0, 0, w, h);
     g.globalCompositeOperation = 'lighter';
     g.fillStyle = grad(0, h, h, v => `rgb(0,${v},0)`); g.fillRect(0, 0, w, h);
     return c.toDataURL('image/png');
   };
 
-  // Оптимизация 2 (23.11): преломление считается только в 4 полосах по краям (≈40 % площади карточки, а не вся),
-  // каждая полоса видит свой кусок общей карты смещений. В середине стекло прозрачное и ничего не стоит.
+  /* Что стеклим (23.11): одна настройка на вид элемента, одинаковые элементы делят один фильтр.
+     Сила изгиба пропорциональна размеру: у маленьких — тоньше полоса и меньше сдвиг, иначе картинка «рвётся».
+     Большая открытая папка (при наведении) остаётся матовой: на ней текст, его надо читать. */
+  const KINDS = [
+    { id: 'lq-case', sel: '.v7 .case', band: 54, scale: 70 },   // кейсы 430×524
+    { id: 'lq-file', sel: '.v7 .file__pv', band: 26, scale: 34 }, // другие работы 260×200
+    { id: 'lq-ic', sel: '.ic__front', band: 14, scale: 18 }       // передняя стенка папок в герое 120×45
+  ];
   const build = () => {
-    const card = document.querySelector('.v7 .case'); if (!card) return;
-    const w = Math.round(card.offsetWidth), h = Math.round(card.offsetHeight), b = Math.round(Math.min(BAND, w / 3, h / 3));
-    if (holder.dataset.size === w + 'x' + h) return; holder.dataset.size = w + 'x' + h;
-    const href = map(w, h);
-    const strips = { t: [0, 0, w, b], b: [0, h - b, w, b], l: [0, b, b, h - 2 * b], r: [w - b, b, b, h - 2 * b] };
-    holder.innerHTML = Object.entries(strips).map(([k, [x, y, sw, sh]]) =>
-      `<filter id="lq-${k}" x="0" y="0" width="${sw}" height="${sh}" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-        <feImage href="${href}" x="${-x}" y="${-y}" width="${w}" height="${h}" preserveAspectRatio="none" result="m"/>
-        <feDisplacementMap in="SourceGraphic" in2="m" scale="${SCALE}" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>`).join('');
-    document.querySelectorAll('.v7 .case').forEach(c => {
-      Object.entries(strips).forEach(([k, [x, y, sw, sh]]) => {
-        const el = c.querySelector('.lq--' + k) || c.appendChild(Object.assign(document.createElement('i'), { className: 'lq lq--' + k }));
-        Object.assign(el.style, { left: x + 'px', top: y + 'px', width: sw + 'px', height: sh + 'px' }); }); });
+    let html = '';
+    KINDS.forEach(k => { const el = document.querySelector(k.sel); if (!el) return;
+      const w = Math.round(el.offsetWidth), h = Math.round(el.offsetHeight); if (!w || !h) return;
+      html += `<filter id="${k.id}" x="0" y="0" width="${w}" height="${h}" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feImage href="${map(w, h, k.band)}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none" result="m"/>
+        <feDisplacementMap in="SourceGraphic" in2="m" scale="${k.scale}" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>`; });
+    if (holder.dataset.html !== html) { holder.innerHTML = html; holder.dataset.html = html; }
   };
   if (canLiquid) { build(); addEventListener('resize', () => { clearTimeout(build.t); build.t = setTimeout(build, 150); });
-    // фильтр считается только у карточек в зоне видимости
+    // фильтр считается только у элементов в зоне видимости (класс .in-view)
     const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('in-view', e.isIntersecting)), { rootMargin: '100px' });
-    document.querySelectorAll('.v7 .case').forEach(c => io.observe(c)); }
+    KINDS.forEach(k => document.querySelectorAll(k.sel).forEach(el => io.observe(el))); }
 
   const apply = m => { Object.values(KEY).forEach(c => root.classList.remove(c)); root.classList.add(KEY[m]);
     const u = new URL(location); u.searchParams.set('glass', m); history.replaceState(null, '', u);
