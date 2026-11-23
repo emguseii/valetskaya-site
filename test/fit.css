@@ -99,3 +99,18 @@ html[data-cases=s2] .case:nth-of-type(2){grid-column:7/10;grid-row:1}
 html[data-cases=s2] .case:nth-of-type(3){grid-column:10/13;grid-row:1}
 html[data-cases=s2] .cases-index{grid-column:7/13;grid-row:2;align-self:end}
 html[data-cases=s2] .case:nth-of-type(1) .case__h{font-size:48px;max-width:560px}
+
+/* 24.11 · фон больших карточек кейсов непрозрачный — чтобы карточки читались на облаках (её просьба) */
+html[data-caseb=blue] .v7 .case,html[data-caseb=light] .v7 .case,html[data-caseb=deep] .v7 .case{backdrop-filter:none;-webkit-backdrop-filter:none;
+  box-shadow:inset 0 0 72px rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.3),0 30px 60px -34px rgba(4,12,50,.6)}
+html[data-caseb=blue] .v7 .case{background:var(--case)}
+html[data-caseb=light] .v7 .case{background:#2f5fd8}
+html[data-caseb=deep] .v7 .case{background:#0a2474}
+
+/* 24.11 · белый фон карточек кейсов: текст тёмный, акцент — синий или лаймовый маркер (лайм на белом не читается) */
+html[data-caseb=white] .v7 .case,html[data-caseb=marker] .v7 .case{background:#fff;color:var(--ink);backdrop-filter:none;-webkit-backdrop-filter:none;
+  box-shadow:inset 0 0 0 1px rgba(3,56,158,.12),0 30px 60px -30px rgba(4,12,50,.55)}
+html[data-caseb=white] .v7 .case__h,html[data-caseb=marker] .v7 .case__h{color:var(--ink);text-shadow:none}
+html[data-caseb=white] .v7 .case__h em{color:var(--blue)}
+html[data-caseb=marker] .v7 .case__h em{color:var(--ink);background:var(--lime);padding:0 .08em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+html[data-caseb=white] .v7 .case:hover,html[data-caseb=marker] .v7 .case:hover,html[data-caseb=white] .v7 .case:focus-visible,html[data-caseb=marker] .v7 .case:focus-visible{box-shadow:inset 0 0 0 1px rgba(3,56,158,.2),0 40px 60px -30px rgba(4,12,50,.6)}
