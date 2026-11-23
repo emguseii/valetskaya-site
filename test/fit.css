@@ -4,7 +4,7 @@
    Варианты (html[data-fit]): now — как на сайте; A — по высоте окна; B — A + воздух; C — B ещё компактнее, в ритме контактов. */
 
 /* Во всех вариантах: кнопки контактов крупнее — подпись стилем Web/Title/Folder (Onest SemiBold 18) */
-.cx__btns{width:540px;gap:var(--s-8);margin-top:38px} /* промежуток — из системы отступов: 8 (было 12) */
+.cx__btns{width:456px;gap:var(--s-8);margin-top:38px} /* промежуток — из системы отступов: 8 (было 12) */
 .cx__btn{height:64px;padding:0 12px 0 24px;border-radius:20px;font:600 18px/1 var(--text)}
 .cx__btn i{width:40px;height:40px;font-size:16px}
 .cx__btn svg{width:17px;height:17px}
@@ -62,8 +62,8 @@ html .tip{display:none}
 html[data-cases^=s] .cases__grid{grid-template-columns:repeat(12,minmax(0,1fr));max-width:1328px;margin:0 auto;gap:var(--s-64) var(--s-40);align-items:start;justify-content:stretch}
 html[data-cases^=s] .files{max-width:1328px;margin-left:auto;margin-right:auto;justify-content:flex-start}
 html[data-cases^=s] .cases-index{display:block;color:#fff}
-.cases-index__l{display:block;font:500 12px/1 var(--mono);letter-spacing:.02em;color:rgba(255,255,255,.7)}
-.cases-index__h{display:block;margin-top:16px;font:400 88px/.86 var(--display);letter-spacing:-.03em;text-transform:uppercase}
+.cases-index__l{display:none}
+.cases-index__h{display:block;margin-top:0;font:400 88px/.86 var(--display);letter-spacing:-.03em;text-transform:uppercase}
 /* Ш1 · Индекс слева: подпись — колонки 1–3, кейсы — 4–6, 7–9, 10–12; маленькие работы — с колонки 4 */
 html[data-cases=s1] .cases-index{grid-column:1/4;grid-row:1}
 html[data-cases=s1] .case:nth-of-type(1){grid-column:4/7}
@@ -120,3 +120,61 @@ html[data-aboutair=fade] .cx__fx{opacity:var(--cxv,1)}
 
 /* ── Контакты: центр блока — посередине видимой части (между верхним меню 30 px и футером), а не всей секции (24.11) ── */
 .cx__core{top:calc(50% + 30px / 2)} /* 30 px — высота верхнего меню .bar */
+
+/* ── Футер: CV и «наверх» рядом — промежуток 8 из системы отступов (было 40 — общий gap футера) ── */
+.foot__up{margin-left:calc(var(--s-8) - 40px)}
+
+/* ── «Обо мне»: стеклянная подложка — заливка как была у стеклянных карточек кейсов (синий 20 % + размытие + свечение) ── */
+html[data-aboutbg=glass] .v7 .pile::before{content:"";position:absolute;inset:40px 40px -20px;z-index:-1;border-radius:48px;
+  background:rgba(3,56,158,.2);backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);
+  box-shadow:inset 0 0 72px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.3)}
+
+/* ── Кейсы Ш3–Ш5 (24.11, «меньше букв и шума, вертикальнее»): заголовок в карточке скрыт — снаружи номер, короткое название, год ── */
+.case-cap{display:none;cursor:pointer}
+html[data-cases=s3] .case-cap,html[data-cases=s4] .case-cap,html[data-cases=s5] .case-cap{display:grid;color:#fff}
+html[data-cases=s3] .v7 .case__h,html[data-cases=s4] .v7 .case__h,html[data-cases=s5] .v7 .case__h{display:none}
+html[data-cases=s3] .v7 .case__img,html[data-cases=s4] .v7 .case__img,html[data-cases=s5] .v7 .case__img{top:7%;height:93%}
+html[data-cases=s3] .v7 .case--car .case__spin,html[data-cases=s4] .v7 .case--car .case__spin,html[data-cases=s5] .v7 .case--car .case__spin{top:22%;left:8%;width:84%}
+.case-cap__n{font:500 18px/1 var(--mono);color:rgba(255,255,255,.6)}
+.case-cap__t{font:400 40px/.9 var(--display);letter-spacing:-.03em;text-transform:uppercase}
+.case-cap__y{font:400 20px/1.3 var(--text);color:var(--lime)}
+.case-cap:hover .case-cap__t{color:var(--lime)}
+/* Ш3 · колонка: «Кейсы» слева и едет вместе со скроллом, справа кейсы друг под другом — карточка 4 колонки + подпись 4 колонки */
+html[data-cases=s3] .cases-index{grid-column:1/5;grid-row:1/4;align-self:start;position:sticky;top:80px}
+html[data-cases=s3] .case:nth-of-type(1){grid-column:5/9;grid-row:1}
+html[data-cases=s3] .case:nth-of-type(2){grid-column:5/9;grid-row:2}
+html[data-cases=s3] .case:nth-of-type(3){grid-column:5/9;grid-row:3}
+html[data-cases=s3] .case-cap{grid-column:9/13;align-self:end;align-content:end;gap:var(--s-12);padding-bottom:var(--s-8)}
+html[data-cases=s3] .case-cap--1{grid-row:1} html[data-cases=s3] .case-cap--2{grid-row:2} html[data-cases=s3] .case-cap--3{grid-row:3}
+html[data-cases=s3] .files{justify-content:flex-end;padding-left:0}
+/* Ш4 · лесенка: карточки по 6 колонок зигзагом, каждая следующая заходит на предыдущую по высоте; подпись — под карточкой одной строкой */
+html[data-cases=s4] .cases__grid{row-gap:var(--s-120)}
+html[data-cases=s4] .cases-index{grid-column:1/6;grid-row:1;align-self:start}
+html[data-cases=s4] .case:nth-of-type(1),html[data-cases=s4] .case-cap--1{grid-column:7/12;grid-row:1}
+html[data-cases=s4] .case:nth-of-type(2),html[data-cases=s4] .case-cap--2{grid-column:1/6;grid-row:2}
+html[data-cases=s4] .case:nth-of-type(3),html[data-cases=s4] .case-cap--3{grid-column:7/12;grid-row:3}
+html[data-cases=s4] .case:nth-of-type(2){margin-top:-280px}
+html[data-cases=s4] .case:nth-of-type(3){margin-top:-280px}
+html[data-cases=s4] .case-cap{grid-template-columns:auto 1fr auto;align-items:baseline;gap:var(--s-16);align-self:end;translate:0 calc(100% + var(--s-16))}
+html[data-cases=s4] .case-cap__t{font-size:32px}
+/* Ш5 · список: крупные строки «номер — название — год», карточка справа маленьким превью (без чипов) */
+html[data-cases=s5] .cases__grid{row-gap:0}
+html[data-cases=s5] .cases-index{grid-column:1/13;grid-row:1;margin-bottom:var(--s-40)}
+html[data-cases=s5] .case-cap{grid-column:1/10;grid-template-columns:80px 1fr auto;align-items:center;gap:var(--s-24);padding:var(--s-24) 0;border-top:1px solid rgba(255,255,255,.3);align-self:stretch}
+html[data-cases=s5] .case-cap__t{font-size:64px}
+html[data-cases=s5] .case-cap--1{grid-row:2} html[data-cases=s5] .case-cap--2{grid-row:3} html[data-cases=s5] .case-cap--3{grid-row:4}
+html[data-cases=s5] .case{grid-column:10/13;width:62%;justify-self:end;margin:var(--s-24) 0;border-radius:20px}
+html[data-cases=s5] .case:nth-of-type(1){grid-row:2} html[data-cases=s5] .case:nth-of-type(2){grid-row:3} html[data-cases=s5] .case:nth-of-type(3){grid-row:4}
+html[data-cases=s5] .v7 .chips{display:none}
+html[data-cases=s4] .files{justify-content:center;margin-top:var(--s-120)}
+html[data-cases=s5] .files{justify-content:flex-start}
+
+/* ── «Обо мне» стеклом — по её макету Figma 165:2635: буквы — белый 10 % + эффект Glass (преломление, свет −45°).
+   В CSS: маска по её вектору заголовка, внутри размытый и высветленный фон; светлая кромка — тенью обёртки; блик сверху слева ── */
+.pile__glass{display:none}
+html[data-abouth=glass] .v7 .pile__word{display:none}
+html[data-abouth=glass] .v7 .pile__glass{display:block;position:absolute;left:50%;margin-left:-347px;top:222px;width:695px;height:174px;z-index:1;pointer-events:none;
+  filter:drop-shadow(0 0 .6px rgba(255,255,255,.9)) drop-shadow(0 10px 24px rgba(4,16,70,.25))}
+.pile__glass i{position:absolute;inset:0;-webkit-mask:url(../assets/about-title.webp) center/100% 100% no-repeat;mask:url(../assets/about-title.webp) center/100% 100% no-repeat;
+  background:linear-gradient(135deg,rgba(255,255,255,.5),rgba(255,255,255,.08) 28%,rgba(255,255,255,.06) 70%,rgba(160,200,255,.35));
+  backdrop-filter:blur(4px) saturate(1.6) brightness(1.18);-webkit-backdrop-filter:blur(4px) saturate(1.6) brightness(1.18)}
