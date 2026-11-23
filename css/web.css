@@ -168,7 +168,7 @@ ul{list-style:none}
 .file{position:relative;width:300px;text-align:center}
 .file__pv{position:relative;display:block;width:260px;height:200px;margin:0 auto;border-radius:18px;background:#fff;padding:10px;box-shadow:0 18px 40px -22px rgba(0,10,60,.5);transition:transform .4s var(--ease)}
 .file__pv img{width:100%;height:100%;object-fit:cover;border-radius:12px;background:#eef1f8}
-.file__pv .chip{position:absolute;left:20px;top:20px;height:28px;font-size:13px;padding:0 10px}
+.file__pv .chip{position:absolute;left:20px;top:20px} /* 8.9 (23.11): размер, шрифт и цвет — как у чипов больших карточек; место (верх/низ) — решим в 8.10 */
 .file__pv--ad b{display:grid;place-items:center;height:100%;border-radius:12px;background:#eef1f8;color:var(--blue);font:700 60px/1 var(--text)}
 .file__nda{filter:blur(5px) saturate(.8);transform:scale(1.04)}
 .file__t{display:block;margin-top:16px;font:600 18px/23px var(--text)}
@@ -311,17 +311,14 @@ ul{list-style:none}
 /* ───── v8 · 22.11 вечер: кейсы по Web/Case Card 41:346 ─────
    Стекло на небе: синий 20 % + размытие + внутреннее свечение 72 px (белый 15 %) + волосяная линия.
    Заголовок RT Obligat 32 / 86 % / −4 %, поля 24. Обложка — с 104 px до низа (430×420), тем же кадром, что в компоненте.
-   Чипы — внизу слева поверх тёмной растяжки 88 px. Ховер: вместо лаймового чипа карточка приподнимается, обложка едет вверх. */
+   Чипы — внизу слева. Ховер: вместо лаймового чипа карточка приподнимается, обложка едет вверх. */
 .v7 .case{aspect-ratio:430/524;border-radius:28px;padding:24px 24px 0;display:block;
   background:rgba(3,56,158,.2);backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);
   box-shadow:inset 0 0 72px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.3);
   transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
-.v7 .case::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16.8%;z-index:2;pointer-events:none;
-  background:linear-gradient(180deg,rgba(34,34,34,0) 0%,rgba(34,34,34,.28) 32%,rgba(34,34,34,.9) 83%,rgba(34,34,34,1) 100%)}
 .v7 .case__h{font-size:32px;line-height:.86;letter-spacing:-.04em;max-width:382px}
 .v7 .chips{position:absolute;left:24px;bottom:24px;z-index:3;gap:6px}
 .v7 .case__img,.v7 .case__img--2{left:0;top:19.85%;bottom:auto;width:100%;height:80.15%;object-fit:cover;object-position:50% 0}
-.v7 .case--car::after{display:none}
 /* 23.11: тёмная растяжка под чипами убрана — чёрный градиент на голубом стекле выглядел чужим; чипы читаются сами (свой тёмный фон) */
 .v7 .case::after{display:none}
 .v7 .case__spin{left:10.23%;right:auto;width:78.84%;top:37.4%;bottom:auto}
@@ -466,3 +463,4 @@ ul{list-style:none}
 .ropes-float .tag:is(:hover,:focus-visible){filter:drop-shadow(0 0 16px rgba(255,255,255,.55)) drop-shadow(0 0 2px rgba(255,255,255,.6))}
 @media (prefers-reduced-motion:reduce){.v7:is(.h-fix,.h-old) .tag:is(:hover,:focus-visible) :is(.tag__c,.tag__loop){--sw:0deg}}
 .h-fix .big__img--plain,.h-old .big__img--plain{display:none}
+
