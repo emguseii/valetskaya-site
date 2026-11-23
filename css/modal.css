@@ -6,6 +6,11 @@
 .cm__progress{position:sticky;top:calc(-1 * var(--pad-top,48px));margin:calc(-1 * var(--pad-top,48px)) calc(-1 * var(--pad-x,56px)) var(--s-32);height:6px;z-index:3;background:rgba(22,22,22,.06)}
 .cm__progress i{display:block;height:100%;background:var(--lime);transform-origin:0 50%;transform:scaleX(0)}
 .cm__nav{position:fixed;right:max(calc((100vw - 1100px) / 2 + 20px), 40px);top:50%;transform:translateY(-50%);z-index:4;display:flex;flex-direction:column;gap:var(--s-8)}
+/* 23.11: пока окно кейса въезжает (анимация rise с transform), fixed-навигация считается от окна и потом прыгает вправо.
+   Показываем её только после окончания въезда */
+.cm__nav{opacity:0;animation:cmNavIn .2s ease .46s forwards}
+@keyframes cmNavIn{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.cm__nav{animation:none;opacity:1}}
 .cm__nav a{position:relative;display:block;width:28px;height:14px}
 .cm__nav a::before{content:"";position:absolute;right:0;top:5px;width:16px;height:3px;border-radius:1.5px;background:rgba(22,22,22,.22);transition:width .25s var(--ease),background .25s}
 .cm__nav a.on::before{width:28px;background:var(--ink)}
