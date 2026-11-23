@@ -49,3 +49,29 @@ html[data-fit=C] .cases__grid{grid-template-columns:repeat(3,minmax(0,344px))}
 .fitpick.min .fitpick__x{transform:rotate(180deg)}
 .fitpick.min > :not(.fitpick__x){display:none}
 .fitpick p{flex-basis:100%;padding:6px 8px 4px;color:rgba(255,255,255,.72);font-size:12px;line-height:1.4}
+
+/* ── Папки: непрозрачные (компромисс ради плавности) — ничего не пересчитывается при движении,
+   верёвки не просвечивают, фон после ховера не меняется ── */
+html[data-folder=solid] .h-fix .ic::before{display:none}
+html[data-folder=solid] .h-fix .ic__back path{fill:#3d63c6;stroke:rgba(255,255,255,.55)}
+html[data-folder=solid] .h-fix .ic__front{background:linear-gradient(180deg,#a9bdf0,#86a1e3);backdrop-filter:none;-webkit-backdrop-filter:none;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.45),inset 0 1px 0 rgba(255,255,255,.7),0 9px 27px rgba(10,41,92,.22)}
+html[data-folder=solid] .h-fix .ic__front::after,html[data-folder=solid] .ic__blur{display:none}
+html[data-folder=solid] .h-fix .big::before{backdrop-filter:none;-webkit-backdrop-filter:none;background:#3a5fc2;border-radius:25px}
+html[data-folder=solid] .h-fix .big__shape path{fill:#3a5fc2}
+
+/* ── Роль ── */
+html:not([data-role=bubble]) .tip{display:none}
+.role-line,.role-tag,.role-rope{display:none}
+html[data-role=window] .win__top span{font:600 13px/1 var(--text)}
+/* строкой в стиле кейсов: RT Obligat, первое слово лаймом (как «NEW статистика») */
+html[data-role=line] .role-line{display:block;position:absolute;left:968px;top:104px;z-index:3;font:400 46px/.86 var(--display);letter-spacing:-.04em;text-transform:uppercase;color:#fff;transform:rotate(-4deg)}
+.role-line em{font-style:normal;color:var(--lime)}
+/* биркой — по её наброску Figma 198:4747: лаймовая бирка на хвосте рукописной фамилии */
+html[data-role=tag] .role-tag{display:block;position:absolute;left:982px;top:92px;z-index:3;width:206px;padding:20px 14px 14px 34px;border-radius:24px;background:var(--lime);color:var(--ink);text-align:center;
+  transform:rotate(-9deg);box-shadow:0 10px 28px rgba(0,10,61,.18)}
+.role-tag i{position:absolute;left:14px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:#03389e}
+.role-tag span{display:block;font:500 12px/1 var(--mono);color:#3d4200}
+.role-tag b{display:block;margin-top:6px;font:700 18px/1.15 var(--text);text-transform:uppercase}
+html[data-role=tag] .role-rope{display:block;position:absolute;inset:0;width:1440px;height:900px;z-index:2;pointer-events:none;overflow:visible}
+.role-rope path{fill:none;stroke:var(--lime);stroke-width:2.4;stroke-linecap:round}
