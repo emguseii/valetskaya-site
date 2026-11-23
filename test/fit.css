@@ -4,10 +4,33 @@
    Варианты (html[data-fit]): now — как на сайте; A — по высоте окна; B — A + воздух; C — B ещё компактнее, в ритме контактов. */
 
 /* Во всех вариантах: кнопки контактов крупнее — подпись стилем Web/Title/Folder (Onest SemiBold 18) */
-.cx__btns{width:540px;gap:14px;margin-top:38px}
+.cx__btns{width:540px;gap:var(--s-8);margin-top:38px} /* промежуток — из системы отступов: 8 (было 12) */
 .cx__btn{height:64px;padding:0 12px 0 24px;border-radius:20px;font:600 18px/1 var(--text)}
 .cx__btn i{width:40px;height:40px;font-size:16px}
 .cx__btn svg{width:17px;height:17px}
+
+/* Кейсы разрежены по её разметке: по горизонтали x = 40, по вертикали 1,6x = 64 (оба значения — из системы отступов) */
+.cases__grid{gap:var(--s-40)}
+.files{gap:var(--s-40);margin-top:var(--s-64)}
+
+/* Окно с глазами: нижняя панель непрозрачная, цвета фона — сквозь неё не видно начала верёвок */
+.win__bot{background:#1b42a6}
+
+/* Плавность папок: без «живого» размытия на плывущей папке — стекло нарисовано статично (размытая копия картинки
+   внутри передней стенки, JS), папка двигается цельным слоем на дробные пиксели, без округления */
+.smooth-float .h-fix .ic::before{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(255,255,255,.07)}
+.smooth-float .h-fix .ic__front{backdrop-filter:none;-webkit-backdrop-filter:none;overflow:hidden;isolation:isolate;background:rgba(214,226,255,.22)}
+.smooth-float .h-fix .ic__front::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.34),rgba(255,255,255,.1) 38%,rgba(255,255,255,.16) 70%,rgba(255,255,255,.24))}
+.ic__blur{position:absolute;z-index:-1;max-width:none;filter:blur(7px) saturate(1.4);transition:transform .35s var(--ease)}
+.folder:hover .ic__blur{transform:translateY(-6px)}
+.smooth-float .ropes-float .node{will-change:transform}
+
+/* Футер без навигации: меню наверху и так всегда на экране */
+html[data-footnav=off] .foot__nav{display:none}
+
+/* «Обо мне»: размер заголовка */
+html[data-abouth=contacts] .v7 .pile__word{font-size:104px;top:280px}
+html[data-abouth=off] .v7 .pile__word{display:none}
 
 /* B · Воздух: шире промежутки между экранами и карточками, колонка кейсов уже */
 html[data-fit=B]{--gap-screen:160px;--gap-grid:32px}
