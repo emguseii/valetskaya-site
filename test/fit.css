@@ -1,0 +1,28 @@
+/* ТЕСТОВАЯ КОПИЯ · варианты масштаба блоков (23.11). Основной сайт не трогает.
+   Проблема (её слова): контакты по масштабу нравятся больше всего, блоки выше — «слишком огромные и не такие воздушные».
+   Причина: герой и контакты подстраиваются под высоту окна, а кейсы и «Обо мне» (zoom --sb) — только под ширину.
+   Варианты (html[data-fit]): now — как на сайте; A — по высоте окна; B — A + воздух; C — B ещё компактнее, в ритме контактов. */
+
+/* Во всех вариантах: кнопки контактов крупнее — подпись стилем Web/Title/Folder (Onest SemiBold 18) */
+.cx__btns{width:540px;gap:14px;margin-top:38px}
+.cx__btn{height:64px;padding:0 12px 0 24px;border-radius:20px;font:600 18px/1 var(--text)}
+.cx__btn i{width:40px;height:40px;font-size:16px}
+.cx__btn svg{width:17px;height:17px}
+
+/* B · Воздух: шире промежутки между экранами и карточками, колонка кейсов уже */
+html[data-fit=B]{--gap-screen:160px;--gap-grid:32px}
+html[data-fit=B] .cases__grid{grid-template-columns:repeat(3,minmax(0,384px))}
+/* C · Ритм контактов: ещё больше воздуха, карточки ещё компактнее */
+html[data-fit=C]{--gap-screen:180px;--gap-grid:32px}
+html[data-fit=C] .cases__grid{grid-template-columns:repeat(3,minmax(0,344px))}
+
+/* Служебная панель — со шевроном «свернуть» (её правило) */
+.fitpick{position:fixed;left:16px;bottom:16px;z-index:90;display:flex;flex-wrap:wrap;align-items:center;gap:4px;max-width:min(720px,calc(100vw - 32px));padding:5px;border-radius:16px;
+  background:rgba(11,20,60,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);font:500 13px/1 var(--text);color:#fff}
+.fitpick span{padding:0 8px 0 4px;color:rgba(255,255,255,.6)}
+.fitpick button{height:32px;padding:0 12px;border-radius:12px;color:#fff}
+.fitpick button[aria-pressed=true]{background:#fff;color:var(--ink)}
+.fitpick .fitpick__x{width:32px;padding:0;font-size:16px;transition:transform .25s}
+.fitpick.min .fitpick__x{transform:rotate(180deg)}
+.fitpick.min > :not(.fitpick__x){display:none}
+.fitpick p{flex-basis:100%;padding:6px 8px 4px;color:rgba(255,255,255,.72);font-size:12px;line-height:1.4}
