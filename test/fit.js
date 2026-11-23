@@ -10,7 +10,7 @@
   };
   const BOX = { y: 56, w: 1320, h: 790 }, BAR = 30, PAD = 24;
   const q = new URLSearchParams(location.search);
-  let mode = P[q.get('fit')] ? q.get('fit') : 'A'; // 24.11 её выбор: по умолчанию A
+  let mode = 'A'; // 24.11 её выбор: по умолчанию A
   // web.js считает --s/--sb в своём обработчике resize (он зарегистрирован раньше) — здесь перекрываем
   const over = () => { root.dataset.fit = mode; const p = P[mode];
     const W = innerWidth, H = innerHeight, s0 = Math.min((W - 2 * PAD) / BOX.w, (H - BAR - 2 * PAD) / BOX.h, 1.4), s = s0 * p.hero;
@@ -28,12 +28,12 @@
   const pick = document.createElement('nav'); pick.className = 'fitpick'; pick.setAttribute('aria-label', 'Варианты масштаба (тест)');
   const x = document.createElement('button'); x.type = 'button'; x.className = 'fitpick__x'; x.textContent = '‹'; x.setAttribute('aria-label', 'Свернуть панель');
   x.addEventListener('click', () => { const m = pick.classList.toggle('min'); x.setAttribute('aria-label', m ? 'Развернуть панель' : 'Свернуть панель'); });
-  const lab = document.createElement('span'); lab.textContent = 'ТЕСТ · масштаб:'; const desc = document.createElement('p');
+  const lab = document.createElement('span'); lab.textContent = 'ТЕСТ'; const desc = document.createElement('p');
   pick.append(x, lab);
   const set = m => { mode = m; pick.querySelectorAll('[data-f]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.f === m))); desc.textContent = P[m].desc;
     const u = new URL(location); u.searchParams.set('fit', m); history.replaceState(null, '', u);
     dispatchEvent(new Event('resize')); }; // web.js пересчитает своё, затем over() — своё; герой заново раздвинет узлы
-  Object.keys(P).forEach(k => { const b = document.createElement('button'); b.type = 'button'; b.dataset.f = k; b.textContent = P[k].name; b.addEventListener('click', () => set(k)); pick.appendChild(b); });
+  // 24.11: масштаб выбран — A (по высоте окна); варианты «Сейчас» и B убраны из панели
   // вторая строка панели: «Обо мне» и футер
   const row = (label, key, opts, def) => { const l = document.createElement('span'); l.textContent = label; l.style.marginLeft = '8px'; pick.appendChild(l);
     let cur = q.get(key) || def; root.dataset[key] = cur;
@@ -42,7 +42,7 @@
       b.addEventListener('click', () => { cur = v; root.dataset[key] = v; const u = new URL(location); u.searchParams.set(key, v); history.replaceState(null, '', u); mark(); });
       pick.appendChild(b); mark(); }); };
   const br = document.createElement('i'); br.style.cssText = 'flex-basis:100%;height:0'; pick.appendChild(br);
-  row('«Обо мне» заголовок:', 'abouth', [['over', 'стекло поверх карточек'], ['glass', 'стекло под карточками'], ['now', 'белый']], 'over');
+  row('«Обо мне» заголовок:', 'abouth', [['over', 'стекло поверх карточек'], ['glass', 'стекло под карточками'], ['now', 'белый'], ['contacts', 'как в контактах']], 'over');
   root.dataset.footnav = 'off'; // 24.11: футер без меню
   const br2 = document.createElement('i'); br2.style.cssText = 'flex-basis:100%;height:0'; pick.appendChild(br2);
   // 24.11 её решения: роль — в заголовке окна, папки — стекло (развилки убраны из панели)
@@ -53,12 +53,12 @@
     [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало'], ['0', 'чистое небо']].forEach(([v, t]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.setAttribute('aria-pressed', String(+v === +cur));
       b.addEventListener('click', () => { const u = new URL(location); u.searchParams.set('sky1', v); location.href = u; }); pick.appendChild(b); }); }
   row('Уголки на глазах:', 'cnr', [['lime', 'лаймовые'], ['white', 'белые'], ['glass', 'прозрачные'], ['blue', 'синие'], ['off', 'без']], 'white');
-  row('Фон кейсов:', 'caseb', [['white', 'белый'], ['glass', 'стекло'], ['deep', 'тёмно-синий']], 'white');
+  row('Фон кейсов:', 'caseb', [['white', 'белый'], ['glass', 'стекло']], 'white');
   root.dataset.aboutair = 'air'; // 24.11: больше воздуха
   row('Кнопки контактов:', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло']], 'icons');
   row('«Обо мне» фон:', 'aboutbg', [['none', 'без'], ['glass', 'стеклянная подложка']], 'glass');
   root.dataset.cases = 's2'; // 24.11: кейсы — Ш2 (крупный + два)
-  pick.appendChild(desc); document.body.appendChild(pick); set(mode);
+  document.body.appendChild(pick); set(mode);
 
   // Кейсы, швейцарская сетка: подпись блока (черновик текста — отредактируем, если раскладка понравится)
   document.querySelector('.cases__grid').insertAdjacentHTML('afterbegin', '<div class="cases-index"><b class="cases-index__h">Кейсы</b></div>');
