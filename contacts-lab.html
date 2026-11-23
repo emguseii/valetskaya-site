@@ -10,7 +10,7 @@
    Центр у всех вариантов один: заголовок + 4 кнопки (главное действие блока — связаться / скопировать почту),
    картинки никогда не заходят на кнопки. Картинки — заглушки из assets/, список — в ITEMS ниже (готово к админке). */
 *{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overscroll-behavior-y:none} /* без «пружины» в конце страницы — экран не прыгает */
 body{font:16px/1.4 var(--text);color:#fff;background:#163d9c;overflow-x:hidden}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 a{color:inherit;text-decoration:none}
@@ -54,20 +54,19 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
 .spark path{fill:#fff}
 
 /* 1 · Орбита (её набросок 172:4148) */
-.orbit-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.orbit-line ellipse{fill:none;stroke:rgba(255,255,255,.28);stroke-width:1.5}
 .v-orbit .ct__fx{cursor:grab}.v-orbit .ct__fx.drag{cursor:grabbing}
 
 /* 2 · Дуга */
 .v-arc .ct__fx{cursor:grab}.v-arc .ct__fx.drag{cursor:grabbing}
-.v-arc.arc-top .ct__core{top:58%}
+.v-arc .ct__core{top:36%}
+.v-arc.arc-top .ct__core{top:56%}
+.v-orbit .ct__core{top:40%}
 
 /* 4 · Полёт: контакты + футер вместе, при скролле летим сквозь поле фото */
 .ct__pin{position:relative;height:100%}
 .v-fall .ct__fx{perspective:800px;perspective-origin:50% 46%;overflow:hidden}
 .v-fall .it{left:50%;top:46%}
-.foot{display:none}
-.v-fall .foot{display:flex;position:absolute;left:0;right:0;bottom:0;z-index:25;align-items:center;gap:40px;padding:22px 48px 26px;
+.foot{display:flex;position:absolute;left:0;right:0;bottom:0;z-index:25;align-items:center;gap:40px;padding:22px 48px 26px;
   background:linear-gradient(180deg,rgba(7,31,114,0),rgba(7,31,114,.55));font:500 14px/1.5 var(--text)}
 .foot img{width:190px;height:auto}
 .foot nav{display:flex;gap:22px;color:rgba(255,255,255,.85)}
@@ -86,6 +85,7 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
 .it--apple.is-cutout img{object-fit:contain;object-position:50% 100%}
 /* Дуга v2: без подложки — фото скруглённые, предметы вырезаны */
 .it--bare{translate:-50% -50%}
+.v-fall .it--bare.is-photo{border-radius:0}
 .it--bare.is-photo{border-radius:22px;overflow:hidden;box-shadow:0 20px 40px -18px rgba(4,16,64,.5)}
 .it--bare img{width:100%;height:auto;filter:drop-shadow(0 14px 18px rgba(4,16,64,.28))}
 .it--bare.is-photo img{filter:none}
@@ -194,10 +194,10 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
   ];
 
   const DESC = {
-    orbit: 'Орбита v3: ровный круг в настоящей перспективе, все карточки одной формы (плакат 3:4), размер — только от удалённости. Сзади уменьшаются до минимума, тают до 0 и уходят за заголовок. Пока серые заглушки под твои плакаты.',
-    arc: 'Дуга v2: картинки без подложки. Едут сами; скролл мягко разгоняет (потолок скорости низкий, чтобы не укачивало), потом плавно тормозят. Можно тянуть с инерцией. Сверху или снизу — кнопкой справа.',
-    fall: 'Полёт v2: контакты и футер — один статичный экран, двигаются только картинки (как есть, без подложки). Пока блок въезжает — уже летим; внизу страницы колесо и свайп продолжают полёт, картинки подлетают вплотную и растут.',
-    hang: 'Подвес v2 (по твоему референсу): на лаймовой верёвке висит окно-карточка контактов — без глаз, кнопки шрифтом Onest с подписями, лёгкая естественная тень. Качается само, скролл раскачивает. Внизу трава.'
+    orbit: 'Орбита v3: ровный круг в настоящей перспективе, все карточки одной формы (плакат 3:4), размер — только от удалённости. Сзади уменьшаются до минимума, тают до 0 и уходят за заголовок. 7 серых заглушек под твои плакаты, без линии круга.',
+    arc: 'Дуга v2: картинки без подложки. Едут сами, медленно; когда контакты встали на весь экран, скролл вниз страницу не двигает — едут карточки, скролл вверх — как обычно. Можно тянуть с инерцией. Сверху или снизу — кнопкой справа.',
+    fall: 'Полёт v3: статичный экран, двигаются только картинки (как есть, без подложки и скруглений), разложены ровно по кругу. Когда контакты встали на весь экран, скролл вниз страницу не двигает — летим вперёд, картинки подлетают и растут; скролл вверх — как обычно.',
+    hang: 'Подвес v2 (по твоему референсу): на лаймовой верёвке висит окно-карточка контактов — без глаз, кнопки шрифтом Onest с подписями, лёгкая естественная тень. Качается само; скролл вниз в конце страницы раскачивает, страница стоит. Внизу трава.'
   };
 
   const fx = $('#fx'), body = document.body, core = $('.ct__core'), btns = $('.btns');
@@ -222,34 +222,41 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
   const scrollVel = () => { let sy = scrollY, v = 0; const on = () => { const d = scrollY - sy; sy = scrollY; if (visible()) v += d; };
     addEventListener('scroll', on, { passive: true }); return { take: () => { const t = v; v = 0; return t; }, off: () => removeEventListener('scroll', on) }; };
 
+  /* Её правило (23.11 ~22:00): когда контакты встали на весь экран (это конец страницы), скролл ВНИЗ страницу не двигает —
+     он двигает картинки. Скролл вверх — обычный. Колесо/трекпад, свайп, стрелка вниз / PageDown / пробел. */
+  const atEnd = () => innerHeight + scrollY >= document.documentElement.scrollHeight - 2;
+  const endScroll = () => { let pend = 0, ty = null;
+    const wheel = e => { if (e.deltaY > 0 && atEnd()) { e.preventDefault(); pend += e.deltaMode === 1 ? e.deltaY * 40 : e.deltaY; } };
+    const ts = e => { ty = e.touches[0].clientY; };
+    const tm = e => { if (ty === null) return; const y = e.touches[0].clientY, d = ty - y; ty = y; if (d > 0 && atEnd()) { e.preventDefault(); pend += d * 2; } };
+    const key = e => { if (!atEnd() || e.target.closest('input,textarea')) return; const k = { ArrowDown: 120, PageDown: 600, ' ': 600 }[e.key]; if (k && !e.shiftKey) { e.preventDefault(); pend += k; } };
+    addEventListener('wheel', wheel, { passive: false }); addEventListener('touchstart', ts, { passive: true }); addEventListener('touchmove', tm, { passive: false }); addEventListener('keydown', key);
+    return { take: dt => { const u = pend * Math.min(1, .012 * dt); pend -= u; return u; },   // плавно «доедаем» накопленный скролл
+      off: () => { removeEventListener('wheel', wheel); removeEventListener('touchstart', ts); removeEventListener('touchmove', tm); removeEventListener('keydown', key); } }; };
+
   const V = {};
 
   /* 1 · Орбита v3: настоящая перспектива. Кольцо лежит в горизонтальной плоскости, смотрим чуть сверху (β), камера на D.
      Все карточки одинаковые (плакат 3:4), размер — только от удалённости. Задняя половина уменьшается до минимума,
      тает до 0 и уходит за заголовок. Крутится само, скролл докручивает, можно тянуть мышью. */
   V.orbit = () => {
-    const N = 10, CW = 120, CH = 160, nodes = [];
+    const N = 7, CW = 112, CH = 150, nodes = [];
     for (let i = 0; i < N; i++) { const n = el('div', 'it it--ph'); n.style.width = CW + 'px'; n.style.height = CH + 'px'; n.textContent = 'плакат ' + (i + 1); fx.appendChild(n); nodes.push(n); }
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('class', 'orbit-line');
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path'); path.setAttribute('fill', 'none'); path.setAttribute('stroke', 'rgba(255,255,255,.22)'); path.setAttribute('stroke-width', '1.5');
-    svg.appendChild(path); fx.prepend(svg);
     const BETA = 17 * Math.PI / 180, D = 1150, step = Math.PI * 2 / N;
-    let ang = 0, last = performance.now(), raf; const dr = dragger(dx => { ang += dx * .003; }), sv = scrollVel();
+    let ang = 0, last = performance.now(), raf; const dr = dragger(dx => { ang += dx * .003; }), sv = scrollVel(), es = endScroll();
     const proj = (a, R, cx, cy) => { const x = R * Math.sin(a), zc = R * Math.cos(a), z = zc * Math.cos(BETA), y = zc * Math.sin(BETA), k = D / (D - z);
       return { x: cx + x * k, y: cy + y * k, k, depth: Math.cos(a) }; };
     const smooth = (a, b, v) => { const t = Math.max(0, Math.min(1, (v - a) / (b - a))); return t * t * (3 - 2 * t); };
-    const frame = now => { const dt = Math.min(50, now - last); last = now; if (!reduce) ang += dt * (Math.PI * 2 / 70000); ang += dr.inertia(dt) * .003 + sv.take() * .0014;
-      const b = box(), cx = b.width / 2, cy = b.height * .5, R = Math.min(b.width * .37, 550), kf = D / (D - R * Math.cos(BETA));
-      // линия орбиты — только передняя половина (задняя пряталась бы за заголовком)
-      let d = ''; for (let t = -1.2; t <= 1.2001; t += .05) { const p = proj(t, R, cx, cy); d += (d ? 'L' : 'M') + p.x.toFixed(1) + ' ' + p.y.toFixed(1); } path.setAttribute('d', d);
-      nodes.forEach((n, i) => { const p = proj(ang + i * step, R, cx, cy), sc = p.k * 1.3 / kf;  // спереди ≈ 1,3 базового размера
+    const frame = now => { const dt = Math.min(50, now - last); last = now; if (!reduce) ang += dt * (Math.PI * 2 / 70000); ang += dr.inertia(dt) * .003 + sv.take() * .0014 + es.take(dt) * .0016;
+      const b = box(), cx = b.width / 2, cy = b.height * .45, R = Math.min(b.width * .37, 550), kf = D / (D - R * Math.cos(BETA));
+      nodes.forEach((n, i) => { const p = proj(ang + i * step, R, cx, cy), sc = p.k * 1.2 / kf;  // спереди ≈ 1,2 базового размера
         const vis = smooth(-.15, .45, p.depth);                                                         // сзади — 0 %
         n.style.transform = `translate(${(p.x - CW / 2).toFixed(1)}px,${(p.y - CH / 2).toFixed(1)}px) scale(${sc.toFixed(3)})`;
         n.style.opacity = vis.toFixed(3); n.style.visibility = vis < .01 ? 'hidden' : '';
         n.style.zIndex = p.depth > .2 ? 30 + Math.round(p.depth * 10) : 2; });               // передние — над всем, задние — под заголовком
       raf = requestAnimationFrame(frame); };
     raf = requestAnimationFrame(frame);
-    return () => { cancelAnimationFrame(raf); dr.off(); sv.off(); };
+    return () => { cancelAnimationFrame(raf); dr.off(); sv.off(); es.off(); };
   };
 
   /* 2 · Дуга v2: без подложки, скролл разгоняет */
@@ -257,19 +264,19 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
   V.arc = () => {
     const list = [...ITEMS, ...ITEMS], W = 176, GAP = 46, P = W + GAP, L = list.length * P, R = 1500;
     const nodes = list.map(it => { const n = card(it, 'bare', W); fx.appendChild(n); return n; });
-    let O = 0, vel = 0, last = performance.now(), raf; const dr = dragger(dx => { O += dx; }), sv = scrollVel();
+    let O = 0, last = performance.now(), raf; const dr = dragger(dx => { O += dx; }), sv = scrollVel(), es = endScroll();
     const frame = now => { const dt = Math.min(50, now - last); last = now;
-      vel += Math.abs(sv.take()) * .25;                 // скролл подталкивает ленту
-      vel *= Math.pow(.97, dt / 16); vel = Math.min(vel, 9); // мягкое торможение; потолок низкий, чтобы не укачивало
-      if (!reduce) O -= dt * .03 + vel * dt / 16; O += dr.inertia(dt);
-      const b = box(), cx = b.width / 2, top = arcTop, cy = top ? b.height * .17 - R : b.height * .84 + R;
+      if (!reduce) O -= dt * .025;                       // сами едут медленно
+      O -= Math.abs(sv.take()) * .35 + es.take(dt);      // пока блок въезжает — чуть подкручиваются; в конце страницы скролл вниз = лента едет
+      O += dr.inertia(dt);
+      const b = box(), cx = b.width / 2, top = arcTop, cy = top ? b.height * .17 - R : b.height * .72 + R;
       nodes.forEach((n, i) => { const p = ((i * P + O) % L + L) % L - L / 2, th = p / R, x = cx + R * Math.sin(th), y = top ? cy + R * Math.cos(th) : cy - R * Math.cos(th),
           e = Math.min(1, Math.abs(x - cx) / (b.width / 2 + 60)), sc = 1 - .32 * e * e;
         n.style.transform = `translate(${x}px,${y}px) rotate(${(top ? -th : th) * 180 / Math.PI}deg) scale(${sc})`;
         n.style.opacity = Math.max(0, 1 - .9 * e * e * e).toFixed(3); n.style.visibility = e >= 1 ? 'hidden' : ''; });
       raf = requestAnimationFrame(frame); };
     raf = requestAnimationFrame(frame);
-    return () => { cancelAnimationFrame(raf); dr.off(); sv.off(); };
+    return () => { cancelAnimationFrame(raf); dr.off(); sv.off(); es.off(); };
   };
 
   /* 3 · Полёт v2: экран статичный (ничего не прилипает и не подъезжает), двигаются только картинки.
@@ -277,21 +284,17 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
   V.fall = () => {
     const N = 16, D = 3200, rnd = (i, k) => { const x = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return x - Math.floor(x); };
     const nodes = Array.from({ length: N }, (_, i) => { const it = ITEMS[i % ITEMS.length], n = card(it, 'bare', it.kind === 'photo' ? 210 : 230);
-      const ang = rnd(i, 1) * Math.PI * 2, rad = 560 + rnd(i, 2) * 480; // коридор по центру свободен
+      const ang = i * 2.39996 + .4, rad = 600 + ((i * .618034) % 1) * 420; // золотой угол: соседние по глубине — в разных сторонах, без кучек
       fx.appendChild(n); return { n, x: Math.cos(ang) * rad, y: Math.sin(ang) * rad * .6, z0: -(i / N) * D }; });
-    let drift = 0, extra = 0, ty = null, last = performance.now(), raf;
-    const atEnd = () => innerHeight + scrollY >= document.documentElement.scrollHeight - 2;
-    const wheel = e => { if (atEnd() && e.deltaY > 0) extra += e.deltaY * 1.6; };
-    const ts = e => { ty = e.touches[0].clientY; }, tm = e => { if (ty === null) return; const y = e.touches[0].clientY; if (atEnd() && ty - y > 0) extra += (ty - y) * 3; ty = y; };
-    addEventListener('wheel', wheel, { passive: true }); addEventListener('touchstart', ts, { passive: true }); addEventListener('touchmove', tm, { passive: true });
-    const frame = now => { const dt = Math.min(50, now - last); last = now; if (!reduce) drift += dt * .06;
+    let drift = 0, extra = 0, last = performance.now(), raf; const es = endScroll();
+    const frame = now => { const dt = Math.min(50, now - last); last = now; if (!reduce) drift += dt * .06; extra += es.take(dt) * 1.6;
       const r = $('#contacts').getBoundingClientRect(), enter = Math.max(0, Math.min(1, (innerHeight - r.top) / innerHeight)), cam = enter * 900 + drift + extra;
       nodes.forEach(o => { const z = (((o.z0 + cam) % D) + D) % D - D + 560,                     // от −2640 до +560: подлетают вплотную и растут
-          fog = Math.min(1, Math.max(0, (z + 2000) / 900)), near = z > 420 ? Math.max(0, 1 - (z - 420) / 140) : 1;
+          fog = Math.min(1, Math.max(0, (z + 1450) / 750)), near = z > 420 ? Math.max(0, 1 - (z - 420) / 140) : 1;
         o.n.style.transform = `translate3d(${o.x}px,${o.y}px,${z}px)`; o.n.style.opacity = (fog * near).toFixed(3); });
       raf = requestAnimationFrame(frame); };
     raf = requestAnimationFrame(frame);
-    return () => { cancelAnimationFrame(raf); removeEventListener('wheel', wheel); removeEventListener('touchstart', ts); removeEventListener('touchmove', tm); };
+    return () => { cancelAnimationFrame(raf); es.off(); };
   };
 
   /* 4 · Подвес: окно «Валя.app» на лаймовой верёвке, трава снизу. Маятник: само чуть качается, скролл раскачивает */
@@ -302,14 +305,14 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
         <path d="M320 0V${ROPE - 64}"/><path d="M320 ${ROPE - 64}L60 ${ROPE + 40}M320 ${ROPE - 64}L580 ${ROPE + 40}"/><circle cx="320" cy="${ROPE - 64}" r="4" fill="var(--lime)"/></svg>
       <div class="hang__win" style="margin-top:-2px"><div class="hang__top"><i></i><i></i><i></i><span>Контакты.app</span></div><div class="hang__bot"></div></div>`;
     fx.appendChild(h); $('.hang__bot', h).appendChild(btns);
-    let th = 0, om = 0, t0 = performance.now(), last = t0, raf; const sv = scrollVel();
+    let th = 0, om = 0, t0 = performance.now(), last = t0, raf; const sv = scrollVel(), es = endScroll();
     const frame = now => { const dt = Math.min(50, now - last) / 1000; last = now;
-      om += sv.take() * .0011;                                              // толчок от скролла
+      om += sv.take() * .0011 + es.take(dt * 1000) * .0009;                 // толчок от скролла (и от скролла вниз в конце страницы)
       const drive = reduce ? 0 : Math.sin((now - t0) / 1000 * 1.25) * .012;  // лёгкое само-раскачивание
       om += (-9 * th - 1.1 * om + drive) * dt; th += om * dt; th = Math.max(-.16, Math.min(.16, th));
       h.style.transform = `rotate(${(th * 180 / Math.PI).toFixed(3)}deg)`; raf = requestAnimationFrame(frame); };
     raf = requestAnimationFrame(frame);
-    return () => { cancelAnimationFrame(raf); sv.off(); core.appendChild(btns); g.remove(); };
+    return () => { cancelAnimationFrame(raf); sv.off(); es.off(); core.appendChild(btns); g.remove(); };
   };
 
   /* Переключение вариантов: ?v=orbit|arc|fall|hang */
