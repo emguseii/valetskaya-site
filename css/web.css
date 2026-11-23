@@ -165,18 +165,18 @@ ul{list-style:none}
 
 /* Другие работы: три файла, без заголовка */
 .files{display:flex;justify-content:center;gap:30px;margin-top:90px}
-.file{position:relative;width:300px;text-align:center}
-.file__pv{position:relative;display:block;width:260px;height:200px;margin:0 auto;border-radius:18px;background:#fff;padding:10px;box-shadow:0 18px 40px -22px rgba(0,10,60,.5);transition:transform .4s var(--ease)}
-.file__pv img{width:100%;height:100%;object-fit:cover;border-radius:12px;background:#eef1f8}
-.file__pv .chip{position:absolute;left:20px;top:20px} /* 8.9 (23.11): размер, шрифт и цвет — как у чипов больших карточек; место (верх/низ) — решим в 8.10 */
-.file__pv--ad b{display:grid;place-items:center;height:100%;border-radius:12px;background:#eef1f8;color:var(--blue);font:700 60px/1 var(--text)}
+.file{position:relative;width:260px;text-align:center} /* Web/File 41:513 (её пересборка 24.11) */
+.file__pv{position:relative;display:block;width:260px;height:200px;margin:0 auto;border-radius:24px;background:rgba(255,255,255,.1);padding:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);transition:transform .4s var(--ease)}
+.file__pv img{width:100%;height:100%;object-fit:cover;border-radius:24px;background:rgba(0,0,0,.2)}
+.file__pv .chip{position:absolute;left:22px;bottom:22px} /* чип внизу слева, 12 от краёв обложки (41:513); размер/цвет — как у больших карточек */
+.file__pv--ad b{display:grid;place-items:center;height:100%;border-radius:24px;background:#edf2fa;color:#fff;font:700 48px/1 var(--text)} /* Web/Heading/File Mark */
 .file__nda{filter:blur(5px) saturate(.8);transform:scale(1.04)}
-.file__t{display:block;margin-top:16px;font:600 18px/23px var(--text)}
-.file__m{display:block;margin-top:4px;font:500 15px/19px var(--text);color:var(--lime)}
+.file__t{display:block;margin-top:16px;font:600 18px/23px var(--text)} /* Web/Title/Folder */
+.file__m{display:block;margin-top:5px;font:500 15px/19px var(--text);color:var(--lime)} /* Web/Meta */
 .file:hover .file__pv{transform:translateY(-6px)}
-.plate{position:absolute;left:20px;right:20px;top:100%;margin-top:12px;padding:10px 16px;border-radius:12px;background:var(--ink);text-align:left;font-size:14px;line-height:1.4;
+.plate{position:absolute;left:50%;width:max-content;white-space:nowrap;top:100%;margin:12px 0 0;padding:12px 16px;border-radius:24px;background:rgba(0,0,0,.2);text-align:left;font:400 14px/1.4 var(--text);translate:-50% 0;
   opacity:0;transform:translateY(-4px);transition:opacity .25s,transform .25s;pointer-events:none}
-.plate b{display:block;color:var(--lime);font-weight:600}
+.plate b{display:block;margin-bottom:2px;color:var(--lime);font:600 15px/1.3 var(--text)}
 .file.plate-on .plate{opacity:1;transform:none}
 .shake{animation:shake .5s}
 @keyframes shake{20%{transform:translateX(-9px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
@@ -281,10 +281,6 @@ ul{list-style:none}
 .v7 .case:active{transform:translateY(-4px) scale(.99)}
 
 /* Другие работы: было — белые залитые плашки (другой материал). Стало — то же стекло, что у кейсов */
-.v7 .file__pv{background:rgba(22,34,92,.30);backdrop-filter:blur(22px) saturate(1.15);-webkit-backdrop-filter:blur(22px) saturate(1.15);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);border-radius:20px;padding:8px}
-.v7 .file__pv img{border-radius:14px;background:rgba(255,255,255,.08)}
-.v7 .file__pv--ad b{border-radius:14px;background:rgba(255,255,255,.08);color:#fff;font-family:var(--display);font-weight:400;font-size:72px}
 .v7 .file:hover .file__pv{box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}
 
 /* Тёмный лист. Было: нейтрально-чёрный #0f1318 — чужой по температуре синему небу, плотный прямоугольник
