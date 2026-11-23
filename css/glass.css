@@ -55,7 +55,15 @@
 .glasspick{position:fixed;right:16px;bottom:16px;z-index:95;display:flex;flex-direction:column;gap:6px;width:270px;padding:12px;border-radius:18px;
   background:rgba(12,14,24,.82);color:#fff;font:500 13px/1.2 var(--text);box-shadow:0 12px 30px -10px rgba(0,0,0,.5);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.glasspick b{font-weight:600;font-size:12px;opacity:.7;margin:0 4px 2px}
+.glasspick__head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 2px 4px}
+.glasspick b{font-weight:600;font-size:12px;opacity:.7}
+.glasspick .glasspick__fold{flex:none;width:28px;height:28px;padding:0;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,255,255,.08);border:0}
+.glasspick .glasspick__fold:hover{background:rgba(255,255,255,.16)}
+.glasspick__fold svg{transition:transform .25s var(--ease)}
+.glasspick.is-folded{width:auto;gap:0}
+.glasspick.is-folded .glasspick__head{margin:0 0 0 4px}
+.glasspick.is-folded > :not(.glasspick__head){display:none}
+.glasspick.is-folded .glasspick__fold svg{transform:rotate(180deg)}
 .glasspick button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:9px 12px;border-radius:12px;color:#fff;text-align:left;
   background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);cursor:pointer}
 .glasspick button small{font-size:11.5px;opacity:.65}

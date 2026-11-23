@@ -65,14 +65,21 @@
      Доли — десктопные браузеры в России, Statcounter, июнь 2026: Chrome 51,2 + Яндекс 28,8 + Opera 7,6 + Edge 6,1 ≈ 94 % (все на Chromium);
      Firefox 2,9 + Safari 1,8 ≈ 5 %; браузеры без размытия — старые версии, меньше 1 %. */
   const sw = document.createElement('div'); sw.className = 'glasspick'; sw.setAttribute('role', 'group'); sw.setAttribute('aria-label', 'Стекло в разных браузерах');
-  sw.innerHTML = `<b>Стекло в браузерах</b>
+  sw.innerHTML = `<div class="glasspick__head"><b>Стекло в браузерах</b>
+    <button type="button" class="glasspick__fold" aria-expanded="true" aria-label="Свернуть панель"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
     <button type="button" data-m="liquid"><span>Жидкое стекло</span><small>Chrome, Яндекс, Opera, Edge · ≈94&nbsp;%</small></button>
     <button type="button" data-m="blur"><span>Размытие, как было</span><small>Safari, Firefox · ≈5&nbsp;%</small></button>
     <button type="button" data-m="flat"><span>Фон 20&nbsp;%</span><small>старые браузеры · &lt;1&nbsp;%</small></button>
     <em class="glasspick__note" hidden>Этот браузер не умеет жидкое стекло — открой в Chrome</em>
     <i>доли: десктоп, Россия, Statcounter, июнь 2026</i>`;
   document.body.appendChild(sw);
-  const $$sw = [...sw.querySelectorAll('button')], note = sw.querySelector('.glasspick__note');
+  const $$sw = [...sw.querySelectorAll('button[data-m]')], note = sw.querySelector('.glasspick__note');
+  // шеврон: свернуть/развернуть панель, состояние запоминается в браузере
+  const fold = sw.querySelector('.glasspick__fold'), setFold = v => { sw.classList.toggle('is-folded', v);
+    fold.setAttribute('aria-expanded', String(!v)); fold.setAttribute('aria-label', v ? 'Развернуть панель' : 'Свернуть панель');
+    try { localStorage.setItem('glasspick-folded', v ? '1' : ''); } catch (e) {} };
+  fold.addEventListener('click', () => setFold(!sw.classList.contains('is-folded')));
+  try { if (localStorage.getItem('glasspick-folded')) setFold(true); } catch (e) {}
   $$sw.forEach(b => b.addEventListener('click', () => apply(b.dataset.m)));
   const q = new URLSearchParams(location.search).get('glass');
   apply(KEY[q] ? q : auto);
