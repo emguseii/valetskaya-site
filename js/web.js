@@ -240,9 +240,11 @@ document.documentElement.classList.add('js');
   // Ровная сетка 3×2, игрушка (индекс 2) справа от заголовка
   // v8: группа поверх «ОБО МНЕ» — лёгкий наклон, карточки наезжают только краями, каждая читается.
   // Порядок как в разметке: ВКонтакте, что делала, игрушка, после работы, курсы, сильная сторона, образование.
-  const CLUSTER = [[130, 64], [418, 84], [930, 70], [1066, 118], [448, 402], [756, 390], [148, 384]];
+  // window.PILE_LAYOUT ([left, top, наклон] на каждую карточку) — раскладку можно задать снаружи; на тесте 24.11 — по Figma 165:2635
+  const PL = window.PILE_LAYOUT;
+  const CLUSTER = PL ? PL.map(([l, t]) => [l, t]) : [[130, 64], [418, 84], [930, 70], [1066, 118], [448, 402], [756, 390], [148, 384]];
   const stackAt = (el, i) => ({ l: CLUSTER[i][0], t: CLUSTER[i][1] });
-  const rot = [-4, 2.5, -7, 4, -2, 3, 2.5];
+  const rot = PL ? PL.map(p => p[2]) : [-4, 2.5, -7, 4, -2, 3, 2.5];
   const setPos = (el, p) => { el.style.left = p.l + 'px'; el.style.top = p.t + 'px'; };
   const stack = (animate) => { items.forEach((el, i) => { el.classList.toggle('settle', !!animate); el.style.transitionDelay = animate ? (items.length - i) * 40 + 'ms' : '0ms';
     setPos(el, stackAt(el, i)); el.style.setProperty('--r', rot[i] + 'deg'); el.dataset.spread = ''; el.style.zIndex = 10 + i; });
