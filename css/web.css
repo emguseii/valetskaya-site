@@ -56,16 +56,20 @@ ul{list-style:none}
 .tip img{width:100%}
 
 /* Окно — стекло, уголки лаймовые */
+/* 8.4 (23.11): материал как у карточек кейсов (синий + размытие + внутреннее свечение + линия), но прозрачнее и размытие меньше */
 .win{position:absolute;left:427px;top:232px;width:586px;height:239px;z-index:2;border-radius:28px;overflow:hidden;
-  background:rgba(255,255,255,.1);backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.85),0 18px 34px rgba(0,0,0,.22)}
+  background:rgba(3,56,158,.08);backdrop-filter:blur(8px) saturate(1.15);-webkit-backdrop-filter:blur(8px) saturate(1.15);
+  box-shadow:inset 0 0 72px rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.55),0 18px 34px rgba(0,0,0,.22)}
 .win__top{height:28px;display:flex;align-items:center;gap:6px;padding:0 21px;position:relative}
 .win__top i{width:8px;height:8px;border-radius:50%;background:#ff5f57}.win__top i:nth-child(2){background:#febc2e}.win__top i:nth-child(3){background:#28c840}
 .win__top span{position:absolute;left:0;right:0;text-align:center;font-size:12px;font-weight:500;pointer-events:none}
 .win__eyes{position:relative;height:147px;overflow:hidden}
 .win__eyes img{width:100%;height:100%;object-fit:cover;transform:scale(1.22);transform-origin:50% 60%} /* кадр плотнее к глазам: брови и щёки уходят за край (23.11) */
-.cnr{position:absolute;inset:10px 18px;pointer-events:none;--c:var(--lime);
-  background:linear-gradient(var(--c),var(--c)) 0 0/20px 4px,linear-gradient(var(--c),var(--c)) 0 0/4px 20px,linear-gradient(var(--c),var(--c)) 100% 0/20px 4px,linear-gradient(var(--c),var(--c)) 100% 0/4px 20px,
-   linear-gradient(var(--c),var(--c)) 0 100%/20px 4px,linear-gradient(var(--c),var(--c)) 0 100%/4px 20px,linear-gradient(var(--c),var(--c)) 100% 100%/20px 4px,linear-gradient(var(--c),var(--c)) 100% 100%/4px 20px;background-repeat:no-repeat;border-radius:2px}
+/* 8.2 (23.11): уголки — её векторы из Shared/Window 41:119: «Г» 20×20 со скруглённым изгибом, линия 4 px, круглые концы,
+   18 px от краёв фото. Цвет — токен лайма (форма — маской) */
+.cnr{position:absolute;inset:16px;pointer-events:none;background:var(--lime);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 22V8a6 6 0 0 1 6-6h14' fill='none' stroke='%23000' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") 0 0/24px 24px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M22 22V8a6 6 0 0 0-6-6H2' fill='none' stroke='%23000' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") 100% 0/24px 24px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 2v14a6 6 0 0 0 6 6h14' fill='none' stroke='%23000' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") 0 100%/24px 24px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M22 2v14a6 6 0 0 1-6 6H2' fill='none' stroke='%23000' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") 100% 100%/24px 24px no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 22V8a6 6 0 0 1 6-6h14' fill='none' stroke='%23000' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") 0 0/24px 24px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M22 22V8a6 6 0 0 0-6-6H2' fill='none' stroke='%23000' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") 100% 0/24px 24px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 2v14a6 6 0 0 0 6 6h14' fill='none' stroke='%23000' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") 0 100%/24px 24px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M22 2v14a6 6 0 0 1-6 6H2' fill='none' stroke='%23000' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") 100% 100%/24px 24px no-repeat}
 .win__bot{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 14px}
 .pill{height:28px;display:inline-flex;align-items:center;padding:0 12px;border-radius:14px;background:#fff;color:var(--ink);font:500 13px/1 var(--mono);transition:background .2s}
 .pill:hover{background:var(--lime)}
@@ -437,7 +441,7 @@ ul{list-style:none}
 .h-fix .big__pv .big__img,.h-old .big__pv .big__img{left:var(--l);top:var(--t);bottom:auto;width:var(--w);height:auto;transform:none}
 
 /* fix + old: бирки с дыркой и лаймовые верёвки «Старой версии» (в fix — по её решению 23.11) */
-.v7:is(.h-fix,.h-old) .tag__c{transform:rotate(var(--r))!important;border-radius:28px;padding:30px 14px 16px;box-shadow:0 10px 28px rgba(0,0,0,.16);
+.v7:is(.h-fix,.h-old) .tag__c{border-radius:28px;padding:30px 14px 16px;box-shadow:0 10px 28px rgba(0,0,0,.16);
   -webkit-mask:radial-gradient(circle 5px at 115px 17px,transparent 4.5px,#000 5px);mask:radial-gradient(circle 5px at 115px 17px,transparent 4.5px,#000 5px)}
 .v7:is(.h-fix,.h-old) .tag__hole{display:block;background:none;box-shadow:none;border:2px solid rgba(3,56,158,.35);left:109px;top:11px;width:12px;height:12px}
 .v7:is(.h-fix,.h-old) .tag__l{font-family:var(--mono)}
@@ -449,8 +453,16 @@ ul{list-style:none}
 .ropes-float .lines path{stroke-linejoin:round}
 /* петля: верёвка перекинута через верхний край бирки и продета в дырочку (её просьба 23.11 ~03:19) */
 .tag__loop{display:none}
-.v7:is(.h-fix,.h-old) .tag__loop{display:block;position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:1;transform:rotate(var(--r))}
+.v7:is(.h-fix,.h-old) .tag__loop{display:block;position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:1}
 .tag__loop path{fill:none;stroke:var(--lime);stroke-width:2.4;stroke-linecap:round}
 .tag__loop .tag__back{stroke:#c9e033}
 .tag__loop circle{fill:none}
+/* 8.6 (23.11) ховер бирки — примерка: лёгкое свечение + бирка чуть качается на верёвке к вертикали
+   (поворот вокруг узла над биркой, где верёвка расходится в петлю; петля поворачивается вместе с биркой, верёвка остаётся на месте) */
+.v7:is(.h-fix,.h-old) .tag__c,.v7:is(.h-fix,.h-old) .tag__loop{--sw:0deg;transition:transform .5s var(--spring)}
+.v7:is(.h-fix,.h-old) .tag__c{transform:rotate(var(--r)) translateY(calc(-14px - 50%)) rotate(var(--sw)) translateY(calc(50% + 14px))!important}
+.v7:is(.h-fix,.h-old) .tag__loop{transform:rotate(var(--r)) translateY(calc(-14px - 50%)) rotate(var(--sw)) translateY(calc(50% + 14px))}
+.v7:is(.h-fix,.h-old) .tag:is(:hover,:focus-visible) :is(.tag__c,.tag__loop){--sw:calc(var(--r) * -.5)}
+.ropes-float .tag:is(:hover,:focus-visible){filter:drop-shadow(0 0 16px rgba(255,255,255,.55)) drop-shadow(0 0 2px rgba(255,255,255,.6))}
+@media (prefers-reduced-motion:reduce){.v7:is(.h-fix,.h-old) .tag:is(:hover,:focus-visible) :is(.tag__c,.tag__loop){--sw:0deg}}
 .h-fix .big__img--plain,.h-old .big__img--plain{display:none}

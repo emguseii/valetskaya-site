@@ -141,7 +141,7 @@ document.documentElement.classList.add('js');
      слегка изгибается (±4 px, свой период), начало под глазами не двигается. Верёвка к бирке цепляется ровно за дырочку.
      Геометрия верёвок готовится ДО появления (без скачка при старте), парение разгоняется с нуля за 2,5 с. */
   if (FLOAT) {
-    const items = $$('.node').map((n, i) => ({ n, p: lineFor(n.id), r: null, ph: i * 1.9, px: 7 + (i % 3) * 1.6, py: 9 + (i % 2) * 2, pb: 6 + (i % 4) * 1.3 }));
+    const items = $$('.node').map((n, i) => ({ n, glass: n.classList.contains('folder'), p: lineFor(n.id), r: null, ph: i * 1.9, px: 7 + (i % 3) * 1.6, py: 9 + (i % 2) * 2, pb: 6 + (i % 4) * 1.3 }));
     /* Ширина первого экрана = ширина сетки кейсов (её правка 23.11 ~13:57). Масштаб героя ограничен высотой экрана,
        поэтому на широких и невысоких экранах папки и бирки стоят тесно, а кейсы ниже — шире. Не увеличивая высоту,
        раздвигаем узлы по горизонтали от центра так, чтобы крайние встали вровень с краями сетки кейсов
@@ -174,9 +174,13 @@ document.documentElement.classList.add('js');
     addEventListener('resize', () => { clearTimeout(spread.t); spread.t = setTimeout(() => { spread(); if (!running) still(); }, 120); });
     const go = () => { if (reduce) return; running = true; const t0 = performance.now();
       (function loop(now) { const t = now / 1000, ramp = smooth(Math.min(1, (now - t0) / 2500));
+        const px = S() * (devicePixelRatio || 1), snap = v => Math.round(v * px) / px;
         items.forEach(it => { const w = 2 * Math.PI, dx = Math.sin(t * w / it.px + it.ph) * 3 * ramp, dy = Math.sin(t * w / it.py + it.ph * .7) * 3 * ramp,
             bow = Math.sin(t * w / it.pb + it.ph * 1.3) * 4 * ramp, x = it.ox + dx;
-          it.n.style.translate = `${x.toFixed(3)}px ${dy.toFixed(3)}px`; if (it.r) stretch(it.p, it.r, x, dy, bow); });
+          // 8.3 (23.11): папки сдвигаются только на целые пиксели экрана — иначе размытие передней стенки пересчитывается
+          // на дробных сдвигах и граница «фото / стенка» дрожит. Бирки (без размытия) плывут плавно, как раньше.
+          const fx = it.glass ? snap(x) : x, fy = it.glass ? snap(dy) : dy;
+          it.n.style.translate = `${fx.toFixed(3)}px ${fy.toFixed(3)}px`; if (it.r) stretch(it.p, it.r, fx, fy, bow); });
         requestAnimationFrame(loop); })(t0); };
     setTimeout(go, T.lines + 6 * T.step + T.line + 300);
   }
