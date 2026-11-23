@@ -140,20 +140,38 @@ document.documentElement.classList.add('js');
      Геометрия верёвок готовится ДО появления (без скачка при старте), парение разгоняется с нуля за 2,5 с. */
   if (FLOAT) {
     const items = $$('.node').map((n, i) => ({ n, p: lineFor(n.id), r: null, ph: i * 1.9, px: 7 + (i % 3) * 1.6, py: 9 + (i % 2) * 2, pb: 6 + (i % 4) * 1.3 }));
-    const prep = () => { const k = S(), sb = svg.getBoundingClientRect();
+    /* Ширина первого экрана = ширина сетки кейсов (её правка 23.11 ~13:57). Масштаб героя ограничен высотой экрана,
+       поэтому на широких и невысоких экранах папки и бирки стоят тесно, а кейсы ниже — шире. Не увеличивая высоту,
+       раздвигаем узлы по горизонтали от центра так, чтобы крайние встали вровень с краями сетки кейсов
+       (k от 0,8 до 1,8). Имя, окно с глазами и «Product Designer» остаются на местах; верёвки тянутся за узлами. */
+    const spread = () => { const cs = $$('.v7 .case'), k0 = S(); if (!cs.length) return;
+      const sl = stage.getBoundingClientRect().left, rs = cs.map(c => c.getBoundingClientRect()),
+        TL = (Math.min(...rs.map(r => r.left)) - sl) / k0, TR = (Math.max(...rs.map(r => r.right)) - sl) / k0, C = 720;
+      // левая и правая половины раздвигаются каждая своим коэффициентом — крайние узлы встают ровно по краям сетки
+      const K = { l: 1.8, r: 1.8 };
+      items.forEach(it => { const w = it.n.offsetWidth, xc = it.n.offsetLeft + w / 2, d = xc - C; if (Math.abs(d) < 60) return;
+        if (d < 0) K.l = Math.min(K.l, (TL + w / 2 - C) / d); else K.r = Math.min(K.r, (TR - w / 2 - C) / d); });
+      K.l = Math.max(.8, K.l); K.r = Math.max(.8, K.r); // и сжимаем немного, если герой шире сетки
+      items.forEach(it => { const w = it.n.offsetWidth, d = it.n.offsetLeft + w / 2 - C; it.ox = d * ((d < 0 ? K.l : K.r) - 1); }); };
+    let running = false;
+    const still = () => items.forEach(it => { it.n.style.translate = `${it.ox.toFixed(2)}px 0px`; if (it.r) stretch(it.p, it.r, it.ox, 0); });
+    const prep = () => { spread(); items.forEach(it => { it.n.style.translate = `${it.ox.toFixed(2)}px 0px`; });
+    const k = S(), sb = svg.getBoundingClientRect();
     items.forEach(it => { if (!it.p) return; it.r = sample(it.p);
-      const hole = $('.tag__j', it.n); // точка, где верёвка расходится в петлю над биркой
-      if (hole) { const h = hole.getBoundingClientRect(), c = { x: (h.left + h.width / 2 - sb.left) / k, y: (h.top + h.height / 2 - sb.top) / k };
+      const hole = $('.tag__j', it.n); // точка, где верёвка расходится в петлю над биркой (уже с учётом раздвижки)
+      if (hole) { const h = hole.getBoundingClientRect(), c = { x: (h.left + h.width / 2 - sb.left) / k - it.ox, y: (h.top + h.height / 2 - sb.top) / k };
         const pts = it.r.pts, n = pts.length - 1, z = pts[n], ex = c.x - z.x, ey = c.y - z.y;
-        it.r.pts = pts.map((q, i) => { const w = Math.pow(i / n, 3); return new DOMPoint(q.x + ex * w, q.y + ey * w); }); }
-      stretch(it.p, it.r, 0, 0); }); };
+        it.r.pts = pts.map((q, i) => { const w = Math.pow(i / n, 3); return new DOMPoint(q.x + ex * w, q.y + ey * w); }); } });
+    still(); };
+    items.forEach(it => { it.ox = 0; });
     // на load: шрифты и масштаб уже на месте, узлы ещё не начали появляться
     if (document.readyState === 'complete') prep(); else addEventListener('load', prep);
-    const go = () => { if (reduce) return; const t0 = performance.now();
+    addEventListener('resize', () => { clearTimeout(spread.t); spread.t = setTimeout(() => { spread(); if (!running) still(); }, 120); });
+    const go = () => { if (reduce) return; running = true; const t0 = performance.now();
       (function loop(now) { const t = now / 1000, ramp = smooth(Math.min(1, (now - t0) / 2500));
         items.forEach(it => { const w = 2 * Math.PI, dx = Math.sin(t * w / it.px + it.ph) * 3 * ramp, dy = Math.sin(t * w / it.py + it.ph * .7) * 3 * ramp,
-            bow = Math.sin(t * w / it.pb + it.ph * 1.3) * 4 * ramp;
-          it.n.style.translate = `${dx.toFixed(3)}px ${dy.toFixed(3)}px`; if (it.r) stretch(it.p, it.r, dx, dy, bow); });
+            bow = Math.sin(t * w / it.pb + it.ph * 1.3) * 4 * ramp, x = it.ox + dx;
+          it.n.style.translate = `${x.toFixed(3)}px ${dy.toFixed(3)}px`; if (it.r) stretch(it.p, it.r, x, dy, bow); });
         requestAnimationFrame(loop); })(t0); };
     setTimeout(go, T.lines + 6 * T.step + T.line + 300);
   }
