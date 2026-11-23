@@ -109,3 +109,14 @@ html[data-cxb=icons] .cx__icons{display:flex}
 .cx__ic:hover{background:rgba(255,255,255,.24);transform:translateY(-2px)}
 .cx__ic:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){.cx__ic{transition:none}}
+
+/* ── Первый экран: узлы раздвигаются не дальше ×1,1 — герой уменьшен до 70 %, большие сдвиги заворачивали верёвки в петли ── */
+:root{--spread-max:1.1}
+
+/* ── Воздух вокруг «Обо мне» (24.11): больше отступ сверху и до контактов; в варианте fade картинки контактов проявляются позже ── */
+html[data-aboutair=air] .v7 .about,html[data-aboutair=fade] .v7 .about{padding-top:calc(var(--gap-screen) * 1.5)}
+html[data-aboutair=air] .cx,html[data-aboutair=fade] .cx{margin-top:var(--s-120)}
+html[data-aboutair=fade] .cx__fx{opacity:var(--cxv,1)}
+
+/* ── Контакты: центр блока — посередине видимой части (между верхним меню 30 px и футером), а не всей секции (24.11) ── */
+.cx__core{top:calc(50% + 30px / 2)} /* 30 px — высота верхнего меню .bar */
