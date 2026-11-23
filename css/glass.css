@@ -7,8 +7,6 @@
 /* 3. Без размытия (класс .glass-flat ставит js/glass.js — сам или с переключателя) */
 .glass-flat .v7 .case{background:rgba(3,56,158,.2);backdrop-filter:none;-webkit-backdrop-filter:none}
 .glass-flat .v7 .file__pv{background:rgba(22,34,92,.2);backdrop-filter:none;-webkit-backdrop-filter:none}
-.glass-flat .ic__front,.glass-flat .ic::before{backdrop-filter:none;-webkit-backdrop-filter:none}
-.glass-flat .ic__front{background:rgba(255,255,255,.2)}
 .glass-flat .v7 .chip{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(20,20,25,.7)}
 /* 2. Только размытие — стили web.css «как было», здесь ничего не меняем (.glass-blur) */
 
@@ -41,14 +39,6 @@
     inset 2px 0 2px -1px rgba(255,80,120,.35),inset -2px 0 2px -1px rgba(80,170,255,.4),0 26px 50px -22px rgba(4,12,50,.6)}
 .glass-liquid .v7 .file:hover .file__pv img{filter:brightness(1.06)}
 .glass-liquid .v7 .file__pv img{transition:filter .4s var(--ease)}
-
-/* Папки в герое: передняя стенка — жидкое стекло, сквозь неё видно и чуть изогнуто документ внутри.
-   Задняя стенка остаётся матовой (blur 34), иначе документ теряется на небе. */
-.glass-liquid .ic__front{background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.04) 40%,rgba(255,255,255,.06) 70%,rgba(255,255,255,.14));
-  backdrop-filter:none;-webkit-backdrop-filter:none;
-  box-shadow:inset -1px 1px 0 rgba(255,255,255,.85),inset 1px -1px 0 rgba(255,255,255,.2),inset 0 0 0 1px rgba(255,255,255,.22),
-    inset 1.5px 0 1.5px -1px rgba(255,80,120,.35),inset -1.5px 0 1.5px -1px rgba(80,170,255,.4),0 9px 27px rgba(10,41,92,.22)}
-.glass-liquid .ic__front.in-view{backdrop-filter:url(#lq-ic) saturate(1.2)}
 
 /* Читаемость: заголовок не сливается с облаками за прозрачным стеклом; чипы — плотные стеклянные плашки */
 .v7 .case__h{text-shadow:0 1px 12px rgba(4,12,50,.35)}
