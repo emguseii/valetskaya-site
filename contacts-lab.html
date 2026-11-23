@@ -23,9 +23,9 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
 .before{height:46vh;display:grid;place-items:end center;padding-bottom:40px;color:rgba(255,255,255,.55);font:500 13px/1 var(--mono)}
 
 /* ── Блок ── */
-.ct{position:relative;height:max(100vh,760px);overflow:hidden;isolation:isolate}
+.ct{position:relative;height:100vh;height:100svh;min-height:440px;overflow:hidden;isolation:isolate}
 .ct__fx{position:absolute;inset:0;z-index:1}
-.ct__core{position:absolute;left:50%;top:46%;z-index:20;transform:translate(-50%,-50%);width:760px;text-align:center;pointer-events:none}
+.ct__core{position:absolute;left:50%;top:46%;z-index:20;transform:translate(-50%,-50%) scale(var(--ck,1));width:760px;text-align:center;pointer-events:none}
 .ct__h{font:400 104px/.88 var(--display);white-space:nowrap;letter-spacing:-.02em;text-transform:uppercase;text-shadow:0 6px 30px rgba(4,16,70,.25)}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:440px;margin:34px auto 0;pointer-events:auto}
 .btn{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 10px 0 20px;border-radius:18px;
@@ -94,19 +94,21 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
 .v-hang .ct__core{top:19%}
 .v-hang .ct__h{font-size:150px;line-height:.84}
 .v-hang .ct__core .btns{display:none}
+.v-hang .foot{background:none;text-shadow:0 1px 8px rgba(0,30,0,.35)} /* без синего градиента внизу */
 .ground{position:absolute;left:0;right:0;bottom:0;z-index:0;width:100%;height:34%;object-fit:cover;object-position:50% 72%;-webkit-mask:linear-gradient(transparent,#000 22%);mask:linear-gradient(transparent,#000 22%);pointer-events:none}
 .hang{position:absolute;left:50%;top:-8px;width:640px;margin-left:-320px;transform-origin:50% 0;pointer-events:none;will-change:transform}
 .hang__rope{display:block;width:640px;overflow:visible}
 .hang__rope path{fill:none;stroke:var(--lime);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.hang__win{position:relative;border-radius:28px;overflow:hidden;pointer-events:auto;
-  background:rgba(3,56,158,.16);backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),0 14px 22px -10px rgba(0,8,40,.35),0 3px 6px rgba(0,8,40,.12)} /* лёгкая естественная тень */
-.hang__top{height:30px;display:flex;align-items:center;gap:6px;padding:0 22px;position:relative;font-size:12px;font-weight:500}
+.hang__win{position:relative;width:586px;height:239px;margin-left:27px;border-radius:28px;overflow:hidden;pointer-events:auto;
+  /* как окно с глазами на первом экране (.win): матовое стекло, 586×239 */
+  background:rgba(3,56,158,.08);backdrop-filter:blur(8px) saturate(1.15);-webkit-backdrop-filter:blur(8px) saturate(1.15);
+  box-shadow:inset 0 0 72px rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.55),0 18px 34px rgba(0,0,0,.22)}
+.hang__top{height:28px;display:flex;align-items:center;gap:6px;padding:0 22px;position:relative;font-size:12px;font-weight:500}
 .hang__top i{width:8px;height:8px;border-radius:50%;background:#ff5f57}.hang__top i:nth-child(2){background:#febc2e}.hang__top i:nth-child(3){background:#28c840}
 .hang__top span{position:absolute;left:0;right:0;text-align:center}
-.hang__bot{padding:8px 16px 18px}
+.hang__bot{padding:10px 14px 0}
 .hang__bot .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:auto;margin:0}
-.hang__bot .btn{height:64px;padding:0 12px 0 20px;border-radius:18px;background:#fff;color:var(--ink);font:600 17px/1.2 var(--text);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;text-align:left}
+.hang__bot .btn{height:84px;padding:0 12px 0 20px;border-radius:18px;background:#fff;color:var(--ink);font:600 17px/1.2 var(--text);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;text-align:left}
 .hang__bot .btn small{display:block;margin-top:3px;font:500 13px/1.2 var(--text);color:var(--muted)}
 .hang__bot .btn i{width:34px;height:34px;flex:none;background:rgba(3,56,158,.08);font-size:14px}
 .hang__bot .btn svg{stroke:var(--ink)}
@@ -194,13 +196,16 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
   ];
 
   const DESC = {
-    orbit: 'Орбита v3: ровный круг в настоящей перспективе, все карточки одной формы (плакат 3:4), размер — только от удалённости. Сзади уменьшаются до минимума, тают до 0 и уходят за заголовок. 7 серых заглушек под твои плакаты, без линии круга.',
+    orbit: 'Орбита v3: ровный круг в настоящей перспективе, все карточки одной формы (плакат 3:4), размер — только от удалённости. Сзади уменьшаются до минимума, тают до 0 и уходят за заголовок. 14 серых заглушек под плакаты: спереди видно ≈ 7, остальные сзади, прозрачные; без линии круга.',
     arc: 'Дуга v2: картинки без подложки. Едут сами, медленно; когда контакты встали на весь экран, скролл вниз страницу не двигает — едут карточки, скролл вверх — как обычно. Можно тянуть с инерцией. Сверху или снизу — кнопкой справа.',
     fall: 'Полёт v3: статичный экран, двигаются только картинки (как есть, без подложки и скруглений), разложены ровно по кругу. Когда контакты встали на весь экран, скролл вниз страницу не двигает — летим вперёд, картинки подлетают и растут; скролл вверх — как обычно.',
-    hang: 'Подвес v2 (по твоему референсу): на лаймовой верёвке висит окно-карточка контактов — без глаз, кнопки шрифтом Onest с подписями, лёгкая естественная тень. Качается само; скролл вниз в конце страницы раскачивает, страница стоит. Внизу трава.'
+    hang: 'Подвес v3 (по твоему референсу): на лаймовой верёвке висит окно контактов того же стиля и размера, что окно с глазами на первом экране (матовое стекло, 586×239), кнопки Onest с подписями. Качается само; скролл вниз в конце страницы раскачивает, страница стоит. Внизу трава.'
   };
 
   const fx = $('#fx'), body = document.body, core = $('.ct__core'), btns = $('.btns');
+  /* Под высоту окна (её скрины ~1290×600): центр и картинки уменьшаются, при высоком окне — чуть крупнее */
+  let CK = 1; const fit = () => { CK = Math.max(.6, Math.min(1.1, innerHeight / 900)); document.documentElement.style.setProperty('--ck', CK.toFixed(3)); };
+  fit(); addEventListener('resize', fit);
   const el = (tag, cls) => { const e = document.createElement(tag); if (cls) e.className = cls; return e; };
   const img = src => { const i = new Image(); i.src = src; i.alt = ''; i.decoding = 'async'; return i; };
   const card = (it, kind = it.kind, w = 170, h = w) => { const d = el('div', 'it it--' + kind + (it.kind === 'photo' ? ' is-photo' : ''));
@@ -240,7 +245,7 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
      Все карточки одинаковые (плакат 3:4), размер — только от удалённости. Задняя половина уменьшается до минимума,
      тает до 0 и уходит за заголовок. Крутится само, скролл докручивает, можно тянуть мышью. */
   V.orbit = () => {
-    const N = 7, CW = 112, CH = 150, nodes = [];
+    const N = 14, CW = 104, CH = 139, nodes = []; // видна передняя половина круга ≈ 7 карточек, остальные 7 — сзади, прозрачные
     for (let i = 0; i < N; i++) { const n = el('div', 'it it--ph'); n.style.width = CW + 'px'; n.style.height = CH + 'px'; n.textContent = 'плакат ' + (i + 1); fx.appendChild(n); nodes.push(n); }
     const BETA = 17 * Math.PI / 180, D = 1150, step = Math.PI * 2 / N;
     let ang = 0, last = performance.now(), raf; const dr = dragger(dx => { ang += dx * .003; }), sv = scrollVel(), es = endScroll();
@@ -248,9 +253,9 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
       return { x: cx + x * k, y: cy + y * k, k, depth: Math.cos(a) }; };
     const smooth = (a, b, v) => { const t = Math.max(0, Math.min(1, (v - a) / (b - a))); return t * t * (3 - 2 * t); };
     const frame = now => { const dt = Math.min(50, now - last); last = now; if (!reduce) ang += dt * (Math.PI * 2 / 70000); ang += dr.inertia(dt) * .003 + sv.take() * .0014 + es.take(dt) * .0016;
-      const b = box(), cx = b.width / 2, cy = b.height * .45, R = Math.min(b.width * .37, 550), kf = D / (D - R * Math.cos(BETA));
-      nodes.forEach((n, i) => { const p = proj(ang + i * step, R, cx, cy), sc = p.k * 1.2 / kf;  // спереди ≈ 1,2 базового размера
-        const vis = smooth(-.15, .45, p.depth);                                                         // сзади — 0 %
+      const b = box(), cx = b.width / 2, cy = b.height * .45, R = Math.min(b.width * .4, 600 * CK), kf = D / (D - R * Math.cos(BETA));
+      nodes.forEach((n, i) => { const p = proj(ang + i * step, R, cx, cy), sc = p.k * 1.15 * CK / kf;  // спереди ≈ 1,2 базового размера
+        const vis = smooth(-.12, .3, p.depth);                                                         // сзади — 0 %
         n.style.transform = `translate(${(p.x - CW / 2).toFixed(1)}px,${(p.y - CH / 2).toFixed(1)}px) scale(${sc.toFixed(3)})`;
         n.style.opacity = vis.toFixed(3); n.style.visibility = vis < .01 ? 'hidden' : '';
         n.style.zIndex = p.depth > .2 ? 30 + Math.round(p.depth * 10) : 2; });               // передние — над всем, задние — под заголовком
@@ -262,7 +267,7 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
   /* 2 · Дуга v2: без подложки, скролл разгоняет */
   let arcTop = false;
   V.arc = () => {
-    const list = [...ITEMS, ...ITEMS], W = 176, GAP = 46, P = W + GAP, L = list.length * P, R = 1500;
+    const list = [...ITEMS, ...ITEMS], W = Math.round(124 * CK), GAP = Math.round(40 * CK), P = W + GAP, L = list.length * P, R = 1500;
     const nodes = list.map(it => { const n = card(it, 'bare', W); fx.appendChild(n); return n; });
     let O = 0, last = performance.now(), raf; const dr = dragger(dx => { O += dx; }), sv = scrollVel(), es = endScroll();
     const frame = now => { const dt = Math.min(50, now - last); last = now;
@@ -300,9 +305,9 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
   /* 4 · Подвес: окно «Валя.app» на лаймовой верёвке, трава снизу. Маятник: само чуть качается, скролл раскачивает */
   V.hang = () => {
     const g = img('assets/contacts-ground.webp'); g.className = 'ground'; $('.ct__pin').insertBefore(g, fx);
-    const h = el('div', 'hang'), b = box(), ROPE = Math.round(b.height * .39);
+    const h = el('div', 'hang'), b = box(), ROPE = Math.round(b.height * .4 / CK);
     h.innerHTML = `<svg class="hang__rope" height="${ROPE + 40}" viewBox="0 0 640 ${ROPE + 40}" style="margin-bottom:-1px" aria-hidden="true">
-        <path d="M320 0V${ROPE - 64}"/><path d="M320 ${ROPE - 64}L60 ${ROPE + 40}M320 ${ROPE - 64}L580 ${ROPE + 40}"/><circle cx="320" cy="${ROPE - 64}" r="4" fill="var(--lime)"/></svg>
+        <path d="M320 0V${ROPE - 64}"/><path d="M320 ${ROPE - 64}L50 ${ROPE + 40}M320 ${ROPE - 64}L590 ${ROPE + 40}"/><circle cx="320" cy="${ROPE - 64}" r="4" fill="var(--lime)"/></svg>
       <div class="hang__win" style="margin-top:-2px"><div class="hang__top"><i></i><i></i><i></i><span>Контакты.app</span></div><div class="hang__bot"></div></div>`;
     fx.appendChild(h); $('.hang__bot', h).appendChild(btns);
     let th = 0, om = 0, t0 = performance.now(), last = t0, raf; const sv = scrollVel(), es = endScroll();
@@ -310,7 +315,7 @@ img{display:block;max-width:none;-webkit-user-drag:none;user-select:none}
       om += sv.take() * .0011 + es.take(dt * 1000) * .0009;                 // толчок от скролла (и от скролла вниз в конце страницы)
       const drive = reduce ? 0 : Math.sin((now - t0) / 1000 * 1.25) * .012;  // лёгкое само-раскачивание
       om += (-9 * th - 1.1 * om + drive) * dt; th += om * dt; th = Math.max(-.16, Math.min(.16, th));
-      h.style.transform = `rotate(${(th * 180 / Math.PI).toFixed(3)}deg)`; raf = requestAnimationFrame(frame); };
+      h.style.transform = `rotate(${(th * 180 / Math.PI).toFixed(3)}deg) scale(${CK.toFixed(3)})`; raf = requestAnimationFrame(frame); };
     raf = requestAnimationFrame(frame);
     return () => { cancelAnimationFrame(raf); sv.off(); es.off(); core.appendChild(btns); g.remove(); };
   };
