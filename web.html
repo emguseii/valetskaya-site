@@ -126,35 +126,29 @@
 </section>
 
 <!-- 4 · КОНТАКТЫ — её лист, ровные язычки ↗, облако с травой снизу -->
-<section class="contacts" id="contacts" aria-labelledby="contacts-h">
-  <h2 class="vh" id="contacts-h">Контакты</h2>
-  <div class="board">
-    <img class="me" src="assets/contacts-photo.webp" alt="Валя с котами" width="440" height="373">
-    <div class="sheet">
-      <img class="sheet__paper" src="assets/paper.webp" alt="" aria-hidden="true">
-      <img class="sheet__title" src="assets/lwt.webp" alt="let's work together">
-      <img class="sheet__cam" src="assets/web-obj-camera.webp" alt="Плёночная мыльница" draggable="false">
-      <div class="tabs" role="group" aria-label="Контакты — оторви нужный кусочек листа">
-        <button class="tab" type="button" data-href="https://t.me/emgusei"><b>Telegram ↗</b><span>@emgusei</span></button>
-        <button class="tab" type="button" data-href="cv.pdf"><b>Резюме ↗</b><span>скачать CV</span></button>
-        <button class="tab" type="button" data-copy="valentine.valetskaya@gmail.com"><b>Почта ↗</b><span>valentine.valetskaya<br>@gmail.com</span></button>
-        <button class="tab" type="button" data-href="https://www.linkedin.com/in/vvalentin%D0%B5/"><b>LinkedIn ↗</b><span>vvalentine</span></button>
-      </div>
+<section class="cx" id="contacts" aria-labelledby="contacts-h">
+  <!-- 4 · Контакты «Полёт» (её выбор 23.11 из contacts-lab.html): экран статичный, летят только картинки.
+       Когда контакты встали на весь экран (это конец страницы), скролл вниз страницу не двигает — летим вперёд; вверх — как обычно -->
+  <div class="cx__fx" aria-hidden="true"></div>
+  <div class="cx__core">
+    <h2 class="cx__h" id="contacts-h">Let’s work<br>together</h2>
+    <div class="cx__btns">
+      <a class="cx__btn" href="https://t.me/emgusei" target="_blank" rel="noopener">Telegram <i aria-hidden="true">↗</i></a>
+      <button class="cx__btn" type="button" data-copy-btn="valentine.valetskaya@gmail.com" aria-label="Скопировать почту valentine.valetskaya@gmail.com">Почта <i aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg></i></button>
+      <a class="cx__btn" href="https://www.linkedin.com/in/vvalentin%D0%B5/" target="_blank" rel="noopener">LinkedIn <i aria-hidden="true">↗</i></a>
+      <a class="cx__btn" href="cv.pdf" target="_blank" rel="noopener">Резюме <i aria-hidden="true">↗</i></a>
     </div>
   </div>
-  <img class="ground" src="assets/contacts-ground.webp" alt="" aria-hidden="true">
 </section>
 </main>
 
-<!-- 5 · ФУТЕР -->
+<!-- 5 · ФУТЕР — вместе с контактами один экран (Figma 172:2945) -->
 <footer class="foot">
-  <div class="foot__row">
-    <img class="foot__name" src="assets/hero-name-v7.webp" alt="Валентина Валецкая" width="1438" height="393">
-    <nav class="foot__col"><a href="#cases">Кейсы</a><a href="#about">Обо мне</a><a href="#contacts">Контакты</a></nav>
-    <nav class="foot__col"><a href="https://t.me/emgusei" target="_blank" rel="noopener">Telegram</a><a href="https://www.linkedin.com/in/vvalentin%D0%B5/" target="_blank" rel="noopener">LinkedIn</a><button type="button" data-copy-btn="valentine.valetskaya@gmail.com">Почта</button></nav>
-    <div class="foot__act"><a class="foot__cv" href="cv.pdf" target="_blank" rel="noopener">Скачать CV <span aria-hidden="true">↗</span></a><a class="foot__up" href="#top" aria-label="Наверх">↑</a></div>
-  </div>
-  <div class="foot__meta"><p>© 2026 Валентина Валецкая · Нидерланды · Шрифт заголовков <a href="https://www.rieslingtype.com/" target="_blank" rel="noopener">RT&nbsp;Obligat — Riesling Type</a></p></div>
+  <img class="foot__name" src="assets/hero-name-v7.webp" alt="Валентина Валецкая" width="1438" height="393">
+  <nav class="foot__nav" aria-label="Разделы внизу"><a href="#cases">Кейсы</a><a href="#about">Обо мне</a><a href="#contacts">Контакты</a></nav>
+  <span class="foot__sp"></span>
+  <a class="foot__cv" href="cv.pdf" target="_blank" rel="noopener">CV <span aria-hidden="true">↗</span></a><a class="foot__up" href="#top" aria-label="Наверх">↑</a>
+  <p class="foot__meta">© 2026 Валентина Валецкая · Нидерланды · Шрифт заголовков <a href="https://www.rieslingtype.com/" target="_blank" rel="noopener">RT&nbsp;Obligat — Riesling Type</a></p>
 </footer>
 
 <!-- Кейс — на весь экран, со своим адресом (#case-…), «назад» закрывает -->

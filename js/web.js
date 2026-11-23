@@ -261,28 +261,48 @@ document.documentElement.classList.add('js');
   tidy.addEventListener('click', () => stack(true));
   stack(false);
 
-  // Язычки (v8): лист изначально целый. Клик — кусок отрывается по зигзагу и падает, на листе остаётся зубчатый край;
-  // через 4 с кусок проявляется обратно (фейд). Дыра — маска на картинке бумаги, считается в координатах листа 620×447.
-  const sheet = $('.sheet'), paper = $('.sheet__paper'), torn = new Set();
-  const zig = (x, y, w, h, n = 25) => { let d = `M${x} ${y + 6}`; for (let i = 1; i <= n; i++) d += ` L${(x + w * i / n).toFixed(1)} ${i % 2 ? y : y + 6}`; return d + ` L${x + w} ${y + h} L${x} ${y + h} Z`; };
-  const mask = () => { const W = 620, H = 447; const holes = [...torn].map(t => zig(t.offsetLeft + $('.tabs').offsetLeft, $('.tabs').offsetTop, t.offsetWidth, H)).join(' ');
-    const svgM = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${W} ${H}' preserveAspectRatio='none'><path fill-rule='evenodd' fill='white' d='M0 0H${W}V${H}H0Z ${holes}'/></svg>`;
-    const url = torn.size ? `url("data:image/svg+xml,${encodeURIComponent(svgM)}")` : 'none';
-    paper.style.maskImage = paper.style.webkitMaskImage = url; paper.style.maskSize = paper.style.webkitMaskSize = '100% 100%'; };
-  $$('.tab').forEach(t => t.addEventListener('click', async () => {
-    if (t.classList.contains('torn')) return;
-    const tabs = $('.tabs'), x = tabs.offsetLeft + t.offsetLeft, y = tabs.offsetTop;
-    if (!reduce) { const pc = document.createElement('div'); pc.className = 'piece'; pc.innerHTML = t.innerHTML;
-      Object.assign(pc.style, { left: x + 'px', top: y + 'px', width: t.offsetWidth + 'px', height: (447 - y) + 'px', backgroundPosition: `${-x}px ${-y}px` });
-      sheet.appendChild(pc); setTimeout(() => pc.remove(), 1400); }
-    torn.add(t); t.classList.add('torn'); mask();
-    setTimeout(() => { torn.delete(t); const ghost = document.createElement('div'); ghost.className = 'regrow';
-      Object.assign(ghost.style, { left: x + 'px', top: y + 'px', width: t.offsetWidth + 'px', height: (447 - y) + 'px', backgroundPosition: `${-x}px ${-y}px` });
-      sheet.insertBefore(ghost, $('.tabs')); requestAnimationFrame(() => ghost.classList.add('on'));
-      setTimeout(() => { mask(); ghost.remove(); t.classList.remove('torn'); }, reduce ? 0 : 650); }, 4000);
-    if (t.dataset.copy) { try { await navigator.clipboard.writeText(t.dataset.copy); toast('Почта скопирована: ' + t.dataset.copy); } catch { toast(t.dataset.copy); } }
-    if (t.dataset.href) { const a = document.createElement('a'); a.href = t.dataset.href; a.target = '_blank'; a.rel = 'noopener'; setTimeout(() => a.click(), reduce ? 0 : 400); }
-  }));
+  /* 4–5 · Контакты «Полёт» (её выбор 23.11 из contacts-lab.html). Экран статичный, летят только картинки: поле карточек
+     в перспективе, коридор по центру свободен, дальние тонут в «тумане». Пока блок въезжает — уже летим.
+     Её правило: когда контакты встали на весь экран (это конец страницы), скролл ВНИЗ страницу не двигает — летим вперёд;
+     скролл вверх — как обычно. Колесо/трекпад, свайп, стрелка вниз / PageDown / пробел.
+     Картинки — пока заглушки из assets/ (заменить на её 8–12: плёнка, глина, концепты, плакаты, фотик). */
+  const CX_ITEMS = [
+    ['contacts-photo', 0], ['web-obj-camera', 0], ['deck-photo', 1], ['in-stat', 0], ['web-obj-flower', 0],
+    ['subs-card', 1], ['in-path', 0], ['hero-photo', 0], ['in-car', 0], ['case1-card', 0]
+  ].map(([src, photo]) => ({ url: `assets/${src}.webp`, photo }));
+  const cx = $('#contacts'), cxFx = $('.cx__fx');
+  if (cx && cxFx) {
+    const N = 16, D = 3200;
+    const cards = Array.from({ length: N }, (_, i) => { const it = CX_ITEMS[i % CX_ITEMS.length], n = document.createElement('div');
+      n.className = 'cx__it' + (it.photo ? ' is-photo' : ''); const im = new Image(); im.src = it.url; im.alt = ''; im.decoding = 'async'; im.loading = 'lazy'; n.appendChild(im); cxFx.appendChild(n);
+      const ang = i * 2.39996 + .4, rad = 600 + ((i * .618034) % 1) * 420; // золотой угол: соседние по глубине — в разных сторонах, без кучек
+      return { n, w: it.photo ? 210 : 230, x: Math.cos(ang) * rad, y: Math.sin(ang) * rad * .6, z0: -(i / N) * D }; });
+    // центр блока подстраивается под высоту окна: при невысоком окне заголовок и кнопки меньше, картинки тоже
+    let ck = 1; const cxFit = () => { const h = cx.offsetHeight; ck = Math.max(.6, Math.min(1.1, (h + 96) / 900));
+      root.style.setProperty('--ck', ck.toFixed(3)); cxFx.style.perspectiveOrigin = `50% ${h * .5}px`; cxFx.style.setProperty('--cy', h * .5 + 'px');
+      cards.forEach(o => { o.n.style.width = Math.round(o.w * ck) + 'px'; }); };
+    cxFit(); addEventListener('resize', cxFit);
+    // скролл вниз в конце страницы → вперёд
+    const atEnd = () => innerHeight + scrollY >= document.documentElement.scrollHeight - 2;
+    let pend = 0, ty = null;
+    addEventListener('wheel', e => { if (e.deltaY > 0 && atEnd()) { e.preventDefault(); pend += e.deltaMode === 1 ? e.deltaY * 40 : e.deltaY; } }, { passive: false });
+    addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
+    addEventListener('touchmove', e => { if (ty === null) return; const y = e.touches[0].clientY, d = ty - y; ty = y; if (d > 0 && atEnd()) { e.preventDefault(); pend += d * 2; } }, { passive: false });
+    addEventListener('keydown', e => { if (!atEnd() || e.target.closest('input,textarea') || !$('#modal').hidden) return;
+      const k = { ArrowDown: 120, PageDown: 600, ' ': 600 }[e.key]; if (k && !e.shiftKey) { e.preventDefault(); pend += k; } });
+    // кадр — только пока блок виден
+    let drift = 0, extra = 0, last = 0, raf = 0;
+    const frame = now => { const dt = Math.min(50, now - (last || now)); last = now; if (!reduce) drift += dt * .06;
+      const u = pend * Math.min(1, .012 * dt); pend -= u; extra += u * 1.6;
+      const r = cx.getBoundingClientRect(), enter = Math.max(0, Math.min(1, (innerHeight - r.top) / innerHeight)), cam = enter * 900 + drift + extra;
+      cards.forEach(o => { const z = (((o.z0 + cam) % D) + D) % D - D + 560,                 // от −2640 до +560: подлетают вплотную и растут
+          fog = Math.min(1, Math.max(0, (z + 1450) / 750)), near = z > 420 ? Math.max(0, 1 - (z - 420) / 140) : 1;
+        o.n.style.transform = `translate3d(${(o.x * ck).toFixed(1)}px,${(o.y * ck).toFixed(1)}px,${z.toFixed(1)}px)`; o.n.style.opacity = (fog * near).toFixed(3); });
+      raf = requestAnimationFrame(frame); };
+    new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && !raf) { last = 0; raf = requestAnimationFrame(frame); }
+      else if (!e.isIntersecting && raf) { cancelAnimationFrame(raf); raf = 0; } }), { rootMargin: '200px' }).observe(cx);
+  }
+
   $$('[data-copy-btn]').forEach(b => b.addEventListener('click', async () => { try { await navigator.clipboard.writeText(b.dataset.copyBtn); toast('Почта скопирована: ' + b.dataset.copyBtn); } catch { toast(b.dataset.copyBtn); } }));
 
   // Кейс — на весь экран со своим адресом; «назад» и × закрывают
