@@ -173,7 +173,7 @@ document.documentElement.classList.add('js');
     // на load: шрифты и масштаб уже на месте, узлы ещё не начали появляться
     if (document.readyState === 'complete') prep(); else addEventListener('load', prep);
     addEventListener('resize', () => { clearTimeout(spread.t); spread.t = setTimeout(() => { spread(); if (!running) still(); }, 120); });
-    const go = () => { if (reduce) return; running = true; const t0 = performance.now();
+    const go = () => { if (reduce || root.dataset.style === 'new') return; running = true; // style=new (тест 24.11): первый экран без парения const t0 = performance.now();
       (function loop(now) { const t = now / 1000, ramp = smooth(Math.min(1, (now - t0) / 2500));
         const px = S() * (devicePixelRatio || 1), snap = v => Math.round(v * px) / px;
         items.forEach(it => { const w = 2 * Math.PI, dx = Math.sin(t * w / it.px + it.ph) * 3 * ramp, dy = Math.sin(t * w / it.py + it.ph * .7) * 3 * ramp,

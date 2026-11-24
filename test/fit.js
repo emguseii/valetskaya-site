@@ -47,13 +47,14 @@
   // 0 · Общий масштаб блоков ниже первого экрана (её вопрос «сайт стал мельче»): множитель к масштабу A
   row('Весь сайт · масштаб', 'kz', [['1', '100 %'], ['1.1', '110 %'], ['1.2', '120 %']], '1');
   new MutationObserver(() => dispatchEvent(new Event('resize'))).observe(root, { attributes: true, attributeFilter: ['data-kz'] }); over();
+  // Весь сайт: новый стиль «один акцент на экран» (24.11) / как было. Читается при загрузке — кнопка перезагружает страницу
+  row('Весь сайт · стиль', 'style', [['new', 'новый · стильно, один акцент'], ['old', 'как было']], root.dataset.style, true);
   // 1 · Первый экран. Облака web.js читает при загрузке — кнопка перезагружает страницу (значение — в html[data-sky-top], ставит скрипт в <head>)
   row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало'], ['0', 'чистое небо']], root.dataset.skyTop, true);
   // 2 · Кейсы
-  row('Кейсы · сетка', 'cases', [['s2', 'Ш2 (выбрана)'], ['d1', 'Д1 · плитка'], ['d2', 'Д2 · три с подписями'], ['d3', 'Д3 · по одному, длиннее']], 's2');
+  row('Кейсы · сетка', 'cases', [['e1', 'С · стиль (как PROJECTS)'], ['s2', 'Ш2'], ['d1', 'Д1 · плитка'], ['d2', 'Д2 · три с подписями'], ['d3', 'Д3 · по одному, длиннее']], 'e1');
   row('Кейсы · фон карточек', 'caseb', [['white', 'белый'], ['glass', 'стекло']], 'white');
   // 3 · Обо мне
-  row('Обо мне · вид', 'about', [['figma', 'как в Figma, крупнее'], ['deck', 'колода']], 'deck');
   root.dataset.abouth = 'over'; // 24.11: заголовок «Обо мне» — стекло поверх карточек
   row('Обо мне · подложка', 'aboutbg', [['none', 'без'], ['glass', 'стеклянная']], 'none');
   // 4 · Контакты
@@ -61,7 +62,7 @@
   document.body.appendChild(pick); set(mode);
 
   // Кейсы, швейцарская сетка: подпись блока (черновик текста — отредактируем, если раскладка понравится)
-  document.querySelector('.cases__grid').insertAdjacentHTML('afterbegin', '<div class="cases-index"><b class="cases-index__h">Кейсы</b></div>');
+  document.querySelector('.cases__grid').insertAdjacentHTML('afterbegin', '<div class="cases-index"><b class="cases-index__h">Кейсы</b><span class="cases-index__m">(03) избранное<br>ВКонтакте<br>2024 — 2026</span></div>');
   // «Обо мне» стеклом (Figma 165:2635): форма букв — её вектор about-title.webp как маска, внутри — размытый и подсвеченный фон
   document.getElementById('pile').insertAdjacentHTML('afterbegin', '<div class="pile__glass" aria-hidden="true"><i class="bd"></i><i class="rim"></i></div>');
   // кромка букв: SVG-фильтр «форма минус сжатая форма» = светлый контур (filter нельзя вешать на родителя стекла — он отключает backdrop-filter)
@@ -123,28 +124,13 @@
     root.style.setProperty('--cxv', st(Math.max(0, Math.min(1, (e - .45) / .4))).toFixed(3)); };
   addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); })();
 
-/* «Обо мне» · колода: копии карточек в веере; верхняя (data-i=0) целиком, остальные выглядывают сдвигом и поворотом */
+/* «Обо мне» в новом стиле: вместо цветных карточек — сетка фактов с тонкими линиями (как ячейки в её референсе Services) */
 (() => { const pile = document.getElementById('pile'); if (!pile) return;
-  const src = [...pile.querySelectorAll('.card')]; if (!src.length) return;
-  // порядок колоды: от главного к личному
+  const src = [...pile.querySelectorAll(':scope > .card')];
+  const facts = document.createElement('div'); facts.className = 'facts';
   const order = ['card--white', 'card--lime', 'card--ink', 'card--paper', 'card--sky'];
-  const pickC = [...order.map(c => src.find(x => x.classList.contains(c) && !x.textContent.includes('образование'))), src.find(x => x.textContent.includes('образование'))].filter(Boolean);
-  const deck = document.createElement('div'); deck.className = 'deck'; deck.setAttribute('role', 'group'); deck.setAttribute('aria-label', 'Обо мне — карточки, листаются по клику');
-  const cards = pickC.map(c => { const d = c.cloneNode(true); d.className = c.className.replace(/\bcard\b/, 'card dk'); d.removeAttribute('style'); deck.appendChild(d); return d; });
-  pile.appendChild(deck);
-  const N = cards.length;
-  const ui = document.createElement('div'); ui.className = 'deck-ui';
-  ui.innerHTML = '<span class="deck-ui__n"><b>01</b> / ' + String(N).padStart(2, '0') + '</span><button type="button" aria-label="Следующая карточка"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><span class="deck-ui__hint">листай — кликом<br>или свайпом</span>';
-  pile.appendChild(ui);
-  const num = ui.querySelector('b'); let top = 0, busy = false;
-  const lay = () => cards.forEach((c, k) => { const i = (k - top + N) % N; c.dataset.i = i; c.style.zIndex = 100 - i;
-    c.style.transform = `translate(${i * 18}px, ${-i * 12}px) rotate(${i * 3.2}deg) scale(${1 - i * .035})`; c.style.opacity = i > 3 ? 0 : 1;
-    c.setAttribute('aria-hidden', String(i !== 0)); });
-  const next = () => { if (busy) return; busy = true; const c = cards[top]; c.classList.add('out');
-    setTimeout(() => { c.classList.remove('out'); top = (top + 1) % N; num.textContent = String(top + 1).padStart(2, '0'); lay(); busy = false; }, 420); };
-  ui.querySelector('button').addEventListener('click', next);
-  let sx = null;
-  deck.addEventListener('pointerdown', e => { sx = e.clientX; });
-  deck.addEventListener('pointerup', e => { if (sx === null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 40 || Math.abs(dx) < 6) next(); });
-  lay();
-})();
+  const list = [...order.map(c => src.find(x => x.classList.contains(c) && !x.textContent.includes('образование'))), src.find(x => x.textContent.includes('образование'))].filter(Boolean);
+  list.forEach((c, i) => { const l = c.querySelector('.card__l')?.textContent || '', h = c.querySelector('.card__h')?.textContent || '';
+    const body = c.querySelector('ul') ? [...c.querySelectorAll('li')].map(li => li.textContent).join('<br>') : (c.querySelector('p')?.innerHTML || '');
+    facts.insertAdjacentHTML('beforeend', `<div class="fact"><span class="fact__n">(${String(i + 1).padStart(2, '0')}) ${l}</span>${h ? `<b class="fact__h">${h}</b>` : ''}<p class="fact__p">${body}</p></div>`); });
+  pile.appendChild(facts); })();
