@@ -365,17 +365,6 @@ html[data-corners=sharp] .v7 .case,html[data-corners=sharp] .file,html[data-corn
 html[data-corners=sharp] .v7 .lines path{stroke:rgba(255,255,255,.9);stroke-width:1.6}
 html[data-corners=sharp] .v7 .lines path.on{stroke:#fff;stroke-width:2}
 html[data-corners=sharp] .tag__loop path{stroke:rgba(255,255,255,.9)}
-/* папка в острых углах — как у неё: синий корпус, белый язычок, подписи внутри */
-html[data-corners=sharp] .h-fix .ic{opacity:0}
-html[data-corners=sharp] .h-fix .folder::before{content:"";position:absolute;left:28px;top:12px;width:154px;height:22px;background:#fff;
-  clip-path:polygon(0 0,32% 0,38% 55%,100% 55%,100% 100%,0 100%);transition:opacity .2s var(--ease)}
-html[data-corners=sharp] .h-fix .folder::after{content:"";position:absolute;left:28px;top:24px;width:154px;height:80px;
-  background:linear-gradient(180deg,#2c55d8,#1a3aa8);box-shadow:0 12px 26px rgba(6,20,80,.35);transition:opacity .2s var(--ease)}
-html[data-corners=sharp] .h-fix .folder__t{z-index:1;top:42px;font:600 18px/23px var(--text)}
-html[data-corners=sharp] .h-fix .folder__m{z-index:1;top:68px;color:rgba(255,255,255,.85)}
-html[data-corners=sharp] .h-fix .folder.on::before,html[data-corners=sharp] .h-fix .folder.on::after{opacity:0}
-html[data-corners=sharp] .h-fix .big{z-index:3}
-
 /* ── Кейсы · Т1-ш: тот же макет «С · стиль», подписи шрифтом RT Obligat вместо моно ── */
 html[data-cases=e1o] .case-cap__t{font:400 34px/.9 var(--display);text-transform:uppercase;letter-spacing:-.02em}
 html[data-cases=e1o] .case-cap{align-items:flex-end}
