@@ -176,7 +176,9 @@ html[data-abouth=glass] .v7 .pile__glass,html[data-abouth=over] .v7 .pile__glass
 /* «Стекло поверх карточек» (её просьба 24.11, как в Figma 165:2635): заголовок — верхний слой, карточки уходят под него и видны сквозь буквы размытыми.
    Стекло плотнее: сильнее размытие и подсветка, кромка ярче */
 html[data-abouth=over] .v7 .pile__glass{z-index:9999}
-html[data-abouth=over] .pile__glass .bd{backdrop-filter:blur(8px) saturate(1.15) brightness(1.12);-webkit-backdrop-filter:blur(8px) saturate(1.15) brightness(1.12)}
+html[data-abouth=over] .pile__glass .bd{background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.04) 30%,rgba(255,255,255,.03) 68%,rgba(150,195,255,.12)); /* 24.11 14:21: заголовок незаметнее — почти прозрачное стекло */
+  backdrop-filter:blur(4px) brightness(1.04);-webkit-backdrop-filter:blur(4px) brightness(1.04)}
+html[data-abouth=over] .pile__glass .rim{opacity:.4}
 
 /* ── «Навести порядок» — круглая стеклянная кнопка с иконкой «вернуть» (24.11) ── */
 .pile__tidy{width:48px;height:48px;padding:0;border-radius:50%;display:grid;place-items:center}
