@@ -24,7 +24,7 @@ document.documentElement.classList.add('js');
     // высота героя — по содержимому, а не «весь экран»: при мелком масштабе браузера (67 %, 50 %) масштаб героя упирается
     // в предел 1,4, и раньше под ним оставалась пустая дыра до кейсов (её правка 23.11)
     root.style.setProperty('--hh', (BAR + 2 * PAD + BOX.h * s).toFixed(0) + 'px');
-    root.style.setProperty('--sb', (Math.min(w, 1.25) * .92).toFixed(4)); };
+    root.style.setProperty('--sb', (Math.min(w, H / 900, 1.25) * .92).toFixed(4)); }; // масштаб A (её выбор на тесте 24.11): кейсы и «Обо мне» — по ширине и высоте окна
   fit(); addEventListener('resize', fit);
 
   /* Примерочная героя (23.11): ?hero=now|fix|old. Без параметра — «Исправлено» (fix): её выбор 23.11 ~03:41, основной вид сайта.
@@ -338,7 +338,7 @@ if (!document.querySelector('link[href*="fit.css"]')) {
     document.querySelectorAll('.files .file').forEach((f, i) => { if (T[i]) f.insertAdjacentHTML('afterbegin', `<b class="file-ob" aria-hidden="true">${T[i]}</b>`); });
   }
   /* Верёвки не просвечивают сквозь пустые стеклянные папки: SVG-маска с «дырами» по рамкам папок, дыры едут вместе с папками */
-  const svg = document.querySelector('.lines'), icons = [...document.querySelectorAll('.win, .h-fix .folder .ic, .h-fix .folder .big')]; /* и раскрытая папка: верёвка не просвечивает сквозь её стекло */
+  const svg = document.querySelector('.lines'), icons = [...document.querySelectorAll('.win, .h-fix .folder .ic')]; /* раскрытую папку не вырезаем: верёвка доходит до неё целиком (её правка 24.11) */
   if (svg && icons.length) { const NS = 'http://www.w3.org/2000/svg', el = (t, a) => { const n = document.createElementNS(NS, t); for (const k in a) n.setAttribute(k, a[k]); return n; };
     const mask = el('mask', { id: 'ropeHide', maskUnits: 'userSpaceOnUse', x: -2000, y: -2000, width: 6000, height: 6000 });
     mask.appendChild(el('rect', { x: -2000, y: -2000, width: 6000, height: 6000, fill: '#fff' }));
