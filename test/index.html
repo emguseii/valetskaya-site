@@ -13,7 +13,7 @@
 <script>/* настройки, которые web.js читает при загрузке */ { const v = new URLSearchParams(location.search).get('sky1'); const st = new URLSearchParams(location.search).get('style') || 'old'; document.documentElement.dataset.style = st; document.documentElement.dataset.skyTop = v === null ? (st === 'new' ? '.15' : '.35') : v; }
 /* «Обо мне» как в Figma 165:2635: положение [left, top] и наклон каждой карточки (порядок как в разметке) */
 window.PILE_LAYOUT = [[188, 130, -6], [540, 72, 2], [881, 210, 7], [965, 142, -6], [561, 388, -6], [903, 395, 6], [242, 366, 4]];</script>
-<link rel="stylesheet" href="test/fit.css?v=25">
+<link rel="stylesheet" href="test/fit.css?v=26">
 </head>
 <body class="v7">
 <div class="sky" aria-hidden="true"></div>
@@ -169,7 +169,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => { a.href = location.pathn
 <script src="js/sky.js?v=11230410"></script>
 <script src="js/eyes.js?v=11230410"></script>
 <script src="js/cases.js?v=11230410"></script>
-<script src="js/web.js?v=11240430"></script>
-<script src="test/fit.js?v=25"></script>
+<script src="js/web.js?v=11241400"></script>
+<script src="test/fit.js?v=26"></script>
 </body>
 </html>
