@@ -508,14 +508,16 @@ html:not([data-cases]) .file__pv img,html:not([data-cases]) .file__pv b{position
 /* Первый экран: узлы раздвигаются не дальше ×1,1, как на тесте (большие сдвиги заворачивали верёвки в петли) */
 :root{--spread-max:1.1}
 
-/* ══ Футер по Figma 206:2814 «Web/Footer · v2» (её обновление 24.11 вечером) ══
-   Имя слева, кнопки справа (space-between), снизу вверх лёгкая синяя тень 0 → 55 %. «CV ↗» — лаймовая таблетка 64 с белой кромкой,
-   CV — RT Obligat 30, стрелка — Onest Bold 28; «↑» — круг 64, стекло 10 %, ховер — лайм. Между кнопками 12 */
-.foot{justify-content:space-between;background:linear-gradient(to bottom,rgba(7,31,114,0),rgba(7,31,114,.55))}
-.foot__act{display:flex;align-items:center;gap:12px}
-.foot__cv{height:64px;gap:4px;padding:16px 16px 18px;border:1px solid #fff;border-radius:999px;background:var(--lime);color:var(--ink);font:400 30px/1 var(--display);text-box:trim-both cap alphabetic}
-.foot__cv span{font:700 28px/1 var(--text)}
-.foot__up{width:64px;height:64px;border-radius:999px;background:rgba(255,255,255,.1);color:#fff;font:700 28px/1 var(--text);transition:background .2s var(--ease),color .2s var(--ease)}
+/* ══ Футер по Figma 230:4131 «Web/Footer · v2» (её правка 24.11 вечером) ══
+   Боковые поля 132 на 1440 (≈ по краям контента), на узких экранах — не меньше 48. Имя слева, кнопки справа,
+   снизу вверх лёгкая синяя тень 0 → 55 %. «CV ↗» — лаймовая таблетка 40 с белой кромкой: CV — RT Obligat 18,75, стрелка — Onest Bold 17,5;
+   «↑» — круг 40, стекло 10 %, ховер — лайм. Между кнопками 7,5 */
+.foot{--foot-x:max(48px,calc((100% - 1176px) / 2));justify-content:space-between;padding:0 var(--foot-x) 10px;background:linear-gradient(to bottom,rgba(7,31,114,0),rgba(7,31,114,.55))}
+.foot__meta{left:var(--foot-x)}
+.foot__act{display:flex;align-items:center;gap:7.5px}
+.foot__cv{height:40px;gap:2.5px;padding:10px 10px 11.25px;border:.625px solid #fff;border-radius:999px;background:var(--lime);color:var(--ink);font:400 18.75px/1 var(--display);text-box:trim-both cap alphabetic}
+.foot__cv span{font:700 17.5px/1 var(--text)}
+.foot__up{width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,.1);color:#fff;font:700 17.5px/1 var(--text);transition:background .2s var(--ease),color .2s var(--ease)}
 .foot__up:hover{background:var(--lime);color:var(--ink);filter:none}
 .foot__cv:focus-visible,.foot__up:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
 .foot__up:focus-visible{outline-color:#fff}
