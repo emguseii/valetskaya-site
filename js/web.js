@@ -103,7 +103,7 @@ document.documentElement.classList.add('js');
     cur && cur.classList.remove('on'); paths.forEach(p => p.classList.remove('on'));
     cur = n; n.classList.add('on'); lineFor(n.id)?.classList.add('on'); stage.classList.add('focus'); eyes.lookAt(n); };
   const closeF = (now) => { clearTimeout(intentT); const go = () => { cur && cur.classList.remove('on'); paths.forEach(p => p.classList.remove('on')); cur = null; stage.classList.remove('focus'); eyes.free(); };
-    if (now) go(); else offT = setTimeout(go, 80); };
+    if (now) go(); else offT = setTimeout(() => { if (!(cur && cur.matches(':hover'))) go(); }, 160); }; // 24.11: гистерезис — папка «плывёт» под курсором, без него наведение мигало
   $$('.folder').forEach(n => {
     n.addEventListener('pointerenter', e => { if (e.pointerType !== 'mouse') return; clearTimeout(intentT); intentT = setTimeout(() => open(n), 90); });
     n.addEventListener('pointerleave', () => closeF());

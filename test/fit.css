@@ -263,3 +263,6 @@ html[data-v="2"] #pile .card--hung{animation:hungSway 3.6s ease-in-out infinite 
 html[data-v="2"] #pile :is(.card,.toy).grab{animation:none}
 html[data-v="2"] .pile__glass{transition:opacity .5s ease}
 @media (prefers-reduced-motion:reduce){html[data-v="2"] #pile :is(.card,.toy){animation:none}}
+
+/* Большие кейсы по обновлённым компонентам Case / Big (Figma 238:8737 и соседние, 24.11 23:26): сначала заголовок и мета, под ними (через 32) обложка */
+html[data-v="2"] .nc__d{order:-1}

@@ -534,3 +534,6 @@ html:not([data-cases]) .file__pv img,html:not([data-cases]) .file__pv b{position
 
 /* Верёвки при наведении на папку: без размытия — blur вместе с маской давал «гирлянду» (мигание), 24.11 */
 .v7:is(.h-fix,.h-old) .stage.focus .lines path:not(.on){filter:none;opacity:.45}
+
+/* Наведение на папку (24.11, «гирлянда»): раскрытая папка сама держит наведение — курсор над большой карточкой не «выходит» из папки */
+.folder.on .big{pointer-events:auto}
