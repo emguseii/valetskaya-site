@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/tokens.css?v=11230410">
-<link rel="stylesheet" href="css/web.css?v=11230410">
+<link rel="stylesheet" href="css/web.css?v=11241500">
 <link rel="stylesheet" href="css/glass.css?v=11231430">
 <link rel="stylesheet" href="css/modal.css?v=11230410">
 </head>
@@ -37,12 +37,10 @@
     </svg>
 
     <img class="name" src="assets/hero-name-v7.webp" alt="Валентина Валецкая" width="1438" height="393">
-    <div class="tip"><img src="assets/tooltip.webp" alt="Product Designer" width="800" height="463"></div>
 
     <div class="win">
-      <div class="win__top"><i></i><i></i><i></i><span>Валя.app</span></div>
-      <div class="win__eyes"><img id="eyes" src="assets/eyes/center-relaxed.webp" alt="Глаза Вали следят за курсором" width="1172" height="294"><b class="cnr"></b></div>
-      <div class="win__bot"><a class="pill" href="https://t.me/emgusei" target="_blank" rel="noopener">TG ↗</a><a class="pill" href="cv.pdf" target="_blank" rel="noopener">CV ↓</a></div>
+      <div class="win__top"><i></i><i></i><i></i><span>Валя.app — Product Designer</span></div>
+      <div class="win__eyes"><img id="eyes" src="assets/eyes/center-relaxed.webp" alt="Глаза Вали следят за курсором" width="1172" height="294"></div>
     </div>
 
     <!-- Папки: стекло, внутри — кусочки кейса. При наведении папка раскрывается в большую -->
@@ -113,7 +111,7 @@
 <section class="about" id="about" aria-labelledby="about-h">
   <h2 class="vh" id="about-h">Обо мне</h2>
   <div class="pile" id="pile">
-    <img class="pile__title" src="assets/about-title.webp" alt="" aria-hidden="true"><b class="pile__word" aria-hidden="true">Обо мне</b>
+    <img class="pile__title" src="assets/about-title.webp" alt="" aria-hidden="true"><b class="pile__word" aria-hidden="true">Обо мне</b><div class="pile__glass" aria-hidden="true"><i class="bd"></i><i class="rim"></i></div>
     <article class="card card--white" style="left:120px;top:140px;width:300px"><span class="card__l">ВКонтакте · май 2024 — окт 2026</span><b class="card__h">2,5 года во&nbsp;ВКонтакте</b><p>Команда опыта автора в&nbsp;сообществах</p></article>
     <article class="card card--lime" style="left:470px;top:110px;width:320px"><span class="card__l">что делала</span><ul><li>Вела задачи от&nbsp;гипотезы до&nbsp;A/B‑теста</li><li>Собрала библиотеку компонентов, её&nbsp;переиспользуют другие команды</li><li>Интервью, юзабилити-тесты, ~400&nbsp;респондентов</li></ul></article>
     <img class="toy" src="assets/web-obj-flower.webp" alt="Керамическая баночка-клоун, сделала сама" draggable="false" style="left:880px;top:120px;width:94px;--r:-7deg">
@@ -122,7 +120,7 @@
     <article class="card card--ink" style="left:1000px;top:420px;width:290px"><span class="card__l">сильная сторона</span><b class="card__h">Системное мышление</b><p>Мои решения потом берут другие команды</p></article>
     <article class="card card--white" style="left:150px;top:560px;width:290px"><span class="card__l">образование</span><p>Uprock School · 2024<br>Contented · 2022–2023<br>НИ&nbsp;ТПУ · 2017–2022</p></article>
   </div>
-  <button class="pile__tidy" type="button" hidden>Навести порядок</button>
+  <button class="pile__tidy" type="button" hidden aria-label="Навести порядок" title="Навести порядок"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4 4.5v4h4"/></svg></button>
 </section>
 
 <!-- 4 · КОНТАКТЫ — её лист, ровные язычки ↗, облако с травой снизу -->
@@ -145,11 +143,12 @@
 <!-- 5 · ФУТЕР — вместе с контактами один экран (Figma 172:2945) -->
 <footer class="foot">
   <img class="foot__name" src="assets/hero-name-v7.webp" alt="Валентина Валецкая" width="1438" height="393">
-  <nav class="foot__nav" aria-label="Разделы внизу"><a href="#cases">Кейсы</a><a href="#about">Обо мне</a><a href="#contacts">Контакты</a></nav>
   <span class="foot__sp"></span>
   <a class="foot__cv" href="cv.pdf" target="_blank" rel="noopener">CV <span aria-hidden="true">↗</span></a><a class="foot__up" href="#top" aria-label="Наверх">↑</a>
   <p class="foot__meta">© 2026 Валентина Валецкая · Нидерланды · Шрифт заголовков <a href="https://www.rieslingtype.com/" target="_blank" rel="noopener">RT&nbsp;Obligat — Riesling Type</a></p>
 </footer>
+<!-- кромка стеклянного заголовка «Обо мне»: форма минус сжатая форма = светлый контур -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="glassRim" x="-5%" y="-5%" width="110%" height="110%"><feMorphology in="SourceAlpha" operator="erode" radius="1.6" result="e"/><feComposite in="SourceGraphic" in2="e" operator="out"/></filter></svg>
 
 <!-- Кейс — на весь экран, со своим адресом (#case-…), «назад» закрывает -->
 <div class="case-modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-h" hidden>
@@ -163,7 +162,7 @@
 <script src="js/sky.js?v=11230410"></script>
 <script src="js/eyes.js?v=11230410"></script>
 <script src="js/cases.js?v=11230410"></script>
-<script src="js/web.js?v=11230410"></script>
+<script src="js/web.js?v=11241500"></script>
 <script src="js/glass.js?v=11231430"></script>
 </body>
 </html>

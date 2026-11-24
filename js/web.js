@@ -48,7 +48,7 @@ document.documentElement.classList.add('js');
   /* ── Загрузка. Ориентир Apple HIG: интерфейсное движение 200–500 мс, короткий шаг каскада,
      всё появление ≈ 1,3 с вместо прежних 3. Линии выходят из окна, узлы встают на концах пружиной. */
   const T = { name: 0, win: 120, tip: 320, lines: 360, step: 70, line: 640 };
-  const show = (el, t) => setTimeout(() => { el.classList.add('in');
+  const show = (el, t) => el && setTimeout(() => { el.classList.add('in');
     el.addEventListener('animationend', () => { el.classList.remove('in'); el.classList.add('shown'); }, { once: true }); }, t);
   const intro = () => {
     if (reduce) { $$('.name,.tip,.win,.node').forEach(n => n.classList.add('shown')); eyes.sleep(false); return; }
@@ -242,9 +242,9 @@ document.documentElement.classList.add('js');
   // Порядок как в разметке: ВКонтакте, что делала, игрушка, после работы, курсы, сильная сторона, образование.
   // window.PILE_LAYOUT ([left, top, наклон] на каждую карточку) — раскладку можно задать снаружи; на тесте 24.11 — по Figma 165:2635
   const PL = window.PILE_LAYOUT;
-  const CLUSTER = PL ? PL.map(([l, t]) => [l, t]) : [[130, 64], [418, 84], [930, 70], [1066, 118], [448, 402], [756, 390], [148, 384]];
+  const CLUSTER = PL ? PL.map(([l, t]) => [l, t]) : [[188, 130], [540, 72], [881, 210], [965, 142], [561, 388], [903, 395], [242, 366]] /* по Figma 165:2635 (24.11) */;
   const stackAt = (el, i) => ({ l: CLUSTER[i][0], t: CLUSTER[i][1] });
-  const rot = PL ? PL.map(p => p[2]) : [-4, 2.5, -7, 4, -2, 3, 2.5];
+  const rot = PL ? PL.map(p => p[2]) : [-6, 2, 7, -6, -6, 6, 4];
   const setPos = (el, p) => { el.style.left = p.l + 'px'; el.style.top = p.t + 'px'; };
   const stack = (animate) => { items.forEach((el, i) => { el.classList.toggle('settle', !!animate); el.style.transitionDelay = animate ? (items.length - i) * 40 + 'ms' : '0ms';
     setPos(el, stackAt(el, i)); el.style.setProperty('--r', rot[i] + 'deg'); el.dataset.spread = ''; el.style.zIndex = 10 + i; });
@@ -323,4 +323,32 @@ document.documentElement.classList.add('js');
   $('.case-modal__x').addEventListener('click', close);
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) close(); });
+}
+
+/* 24.11 · перенесено из теста. В test/ это делает test/fit.js — там не дублируем */
+if (!document.querySelector('link[href*="fit.css"]')) {
+  /* Кейсы, сетка Т2 (Figma 222:3330): заголовок блока, подписи кейсов отдельными блоками, названия мелких кейсов */
+  const grid = document.querySelector('.cases__grid');
+  if (grid) {
+    grid.insertAdjacentHTML('afterbegin', '<div class="cases-index"><b class="cases-index__h">Кейсы</b><span class="cases-index__m">(03) избранное<br>ВКонтакте<br>2024 — 2026</span></div>');
+    grid.querySelectorAll('.case').forEach((c, i) => { const h = c.querySelector('.case__h'); if (!h) return;
+      const d = document.createElement('div'); d.className = 'case-ob case-ob--' + (i + 1); d.setAttribute('aria-hidden', 'true'); d.innerHTML = h.innerHTML;
+      d.addEventListener('click', () => c.click()); grid.appendChild(d); });
+    const T = ['Управление подписчиками', '<em>Компонент</em> → рекламный баннер', '<em>Кое-что</em> для профиля'];
+    document.querySelectorAll('.files .file').forEach((f, i) => { if (T[i]) f.insertAdjacentHTML('afterbegin', `<b class="file-ob" aria-hidden="true">${T[i]}</b>`); });
+  }
+  /* Верёвки не просвечивают сквозь пустые стеклянные папки: SVG-маска с «дырами» по рамкам папок, дыры едут вместе с папками */
+  const svg = document.querySelector('.lines'), icons = [...document.querySelectorAll('.win, .h-fix .folder .ic, .h-fix .folder .big')]; /* и раскрытая папка: верёвка не просвечивает сквозь её стекло */
+  if (svg && icons.length) { const NS = 'http://www.w3.org/2000/svg', el = (t, a) => { const n = document.createElementNS(NS, t); for (const k in a) n.setAttribute(k, a[k]); return n; };
+    const mask = el('mask', { id: 'ropeHide', maskUnits: 'userSpaceOnUse', x: -2000, y: -2000, width: 6000, height: 6000 });
+    mask.appendChild(el('rect', { x: -2000, y: -2000, width: 6000, height: 6000, fill: '#fff' }));
+    const holes = icons.map(ic => ({ ic, r: mask.appendChild(el('rect', { fill: '#000', rx: ic.classList.contains('win') ? 28 : ic.classList.contains('big') ? 24 : 9 })) }));
+    const defs = el('defs', {}); defs.appendChild(mask); svg.prepend(defs);
+    svg.querySelectorAll('path').forEach(p => p.setAttribute('mask', 'url(#ropeHide)'));
+    const tick = () => { const sb = svg.getBoundingClientRect(), k = sb.width / 1440 || 1;
+      holes.forEach(({ ic, r }) => { const b = ic.getBoundingClientRect(), on = getComputedStyle(ic).opacity > .05;
+        r.setAttribute('x', ((b.left - sb.left) / k + 1).toFixed(1)); r.setAttribute('y', ((b.top - sb.top) / k + 1).toFixed(1));
+        r.setAttribute('width', on ? Math.max(0, b.width / k - 2).toFixed(1) : 0); r.setAttribute('height', Math.max(0, b.height / k - 2).toFixed(1)); });
+      requestAnimationFrame(tick); };
+    requestAnimationFrame(tick); }
 }
