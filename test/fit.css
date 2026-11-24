@@ -370,3 +370,14 @@ html[data-cases=e2] .file__pv img,html[data-cases=e2] .file__pv b{position:absol
 html[data-cases=e2] .file__pv{position:relative}
 html[data-cases=e2] .file__pv .chip{display:none}
 html[data-cases=e2] .plate{display:none}
+
+/* ── Контакты · кнопки «иконки с подписью» по Figma 234:8018 (24.11 вечером): 4 колонки через 28, иконка 60 (белый 30 %), подпись IBM Plex Mono 13 капсом, 75 %.
+   Ховер (предложение, в Figma нет): колонка чуть приподнимается, подпись — белая ── */
+.cx__mono{display:none;justify-content:center;align-items:flex-start;gap:28px;margin-top:38px}
+html[data-cxb=mono] .cx__btns{display:none}
+html[data-cxb=mono] .cx__mono{display:flex}
+.cx__m{display:flex;flex-direction:column;align-items:center;gap:16px;min-width:60px;padding:0;background:none;color:rgba(255,255,255,.75);font:500 13px/1.3 var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:transform .3s var(--ease),color .2s var(--ease)}
+.cx__m img{width:60px;height:60px;display:block}
+.cx__m:hover{transform:translateY(-4px);color:#fff}
+.cx__m:focus-visible{outline:3px solid var(--lime);outline-offset:6px;border-radius:8px}
+@media (prefers-reduced-motion:reduce){.cx__m{transition:none}}

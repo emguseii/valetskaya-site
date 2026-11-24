@@ -60,7 +60,7 @@
   root.dataset.abouth = 'over'; // 24.11: заголовок «Обо мне» — стекло поверх карточек
   root.dataset.aboutbg = 'none'; // подложки у «Обо мне» нет
   // 4 · Контакты
-  row('Контакты · кнопки', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло']], 'icons');
+  row('Контакты · кнопки', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло'], ['mono', 'иконки с подписью (Figma 234:8018)']], 'icons');
   document.body.appendChild(pick); set(mode);
 
   // Кейсы, швейцарская сетка: подпись блока (черновик текста — отредактируем, если раскладка понравится)
@@ -93,6 +93,13 @@
     <button class="cx__ic" type="button" data-copy-proxy aria-label="Скопировать почту" title="Скопировать почту">${ico.mail}</button>
     <a class="cx__ic cx__ic--cv" href="${href('Резюме')}" target="_blank" rel="noopener" aria-label="Резюме (CV)" title="Резюме">CV</a></div>`);
   document.querySelector('[data-copy-proxy]').addEventListener('click', () => mailBtn && mailBtn.click());
+  // Кнопки контактов по её компоненту Figma 234:8018 «Button / Contacts» (24.11 вечером): иконка 60 (её PNG, белый 30 %) + подпись моно-капсом
+  document.querySelector('.cx__icons').insertAdjacentHTML('afterend', `<div class="cx__mono">
+    <a class="cx__m" href="${href('Telegram')}" target="_blank" rel="noopener"><img src="assets/contacts/Telegram.png" alt="" width="60" height="60"><span>Telegram</span></a>
+    <a class="cx__m" href="${href('LinkedIn')}" target="_blank" rel="noopener"><img src="assets/contacts/Linkedin.png" alt="" width="60" height="60"><span>LinkedIn</span></a>
+    <button class="cx__m" type="button" data-copy-proxy2 title="Скопировать почту"><img src="assets/contacts/Email.png" alt="" width="60" height="60"><span>Почта</span></button>
+    <a class="cx__m" href="${href('Резюме')}" target="_blank" rel="noopener"><img src="assets/contacts/CV.png" alt="" width="60" height="60"><span>Резюме</span></a></div>`);
+  document.querySelector('[data-copy-proxy2]').addEventListener('click', () => mailBtn && mailBtn.click());
 
   // Плавность папок: размытая копия картинки внутри передней стенки (вместо живого backdrop-filter)
   document.querySelectorAll('.h-fix .ic').forEach(ic => { const src = ic.querySelector('.ic__in'), front = ic.querySelector('.ic__front'); if (!src || !front) return;

@@ -483,7 +483,7 @@ html:not([data-cases]) .file__pv img,html:not([data-cases]) .file__pv b{position
 .win__top span{font:600 13px/1 var(--text)}
 
 /* Футер без меню (меню наверху и так всегда на экране); CV и «наверх» рядом — промежуток 8 */
-.foot__up{margin-left:calc(var(--s-8) - 40px)}
+
 
 /* «Обо мне» как в тесте: раскладка по Figma 165:2635 (web.js), крупнее ×1,2, больше воздуха сверху и до контактов */
 :root{--about-k:1} /* 24.11 15:00: «Обо мне» мельче — без ×1,2 */
@@ -507,3 +507,15 @@ html:not([data-cases]) .file__pv img,html:not([data-cases]) .file__pv b{position
 
 /* Первый экран: узлы раздвигаются не дальше ×1,1, как на тесте (большие сдвиги заворачивали верёвки в петли) */
 :root{--spread-max:1.1}
+
+/* ══ Футер по Figma 206:2814 «Web/Footer · v2» (её обновление 24.11 вечером) ══
+   Имя слева, кнопки справа (space-between), снизу вверх лёгкая синяя тень 0 → 55 %. «CV ↗» — лаймовая таблетка 64 с белой кромкой,
+   CV — RT Obligat 30, стрелка — Onest Bold 28; «↑» — круг 64, стекло 10 %, ховер — лайм. Между кнопками 12 */
+.foot{justify-content:space-between;background:linear-gradient(to bottom,rgba(7,31,114,0),rgba(7,31,114,.55))}
+.foot__act{display:flex;align-items:center;gap:12px}
+.foot__cv{height:64px;gap:4px;padding:16px 16px 18px;border:1px solid #fff;border-radius:999px;background:var(--lime);color:var(--ink);font:400 30px/1 var(--display);text-box:trim-both cap alphabetic}
+.foot__cv span{font:700 28px/1 var(--text)}
+.foot__up{width:64px;height:64px;border-radius:999px;background:rgba(255,255,255,.1);color:#fff;font:700 28px/1 var(--text);transition:background .2s var(--ease),color .2s var(--ease)}
+.foot__up:hover{background:var(--lime);color:var(--ink);filter:none}
+.foot__cv:focus-visible,.foot__up:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+.foot__up:focus-visible{outline-color:#fff}
