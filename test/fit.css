@@ -20,8 +20,7 @@
 .smooth-float .h-fix .ic::before{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(255,255,255,.07)}
 .smooth-float .h-fix .ic__front{backdrop-filter:none;-webkit-backdrop-filter:none;overflow:hidden;isolation:isolate;background:rgba(214,226,255,.22)}
 .smooth-float .h-fix .ic__front::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.34),rgba(255,255,255,.1) 38%,rgba(255,255,255,.16) 70%,rgba(255,255,255,.24))}
-.ic__blur{position:absolute;z-index:-1;max-width:none;filter:blur(7px) saturate(1.4);transition:transform .35s var(--ease)}
-.folder:hover .ic__blur{transform:translateY(-6px)}
+
 .smooth-float .ropes-float .node{will-change:transform}
 
 /* Футер без навигации: меню наверху и так всегда на экране */
@@ -30,17 +29,6 @@ html[data-footnav=off] .foot__nav{display:none}
 /* Масштаб по блокам: у кейсов и «Обо мне» — свой zoom (fit.js), у контактов — множитель к --ck */
 .cases{zoom:var(--sbc,var(--sb,1))}
 .about{zoom:calc(var(--sba,var(--sb,1)) * var(--about-k,1))}
-
-/* «Обо мне»: размер заголовка */
-html[data-abouth=contacts] .v7 .pile__word{font-size:104px;top:280px}
-html[data-abouth=off] .v7 .pile__word{display:none}
-
-/* B · Воздух: шире промежутки между экранами и карточками, колонка кейсов уже */
-html[data-fit=B]{--gap-screen:160px;--gap-grid:32px}
-html[data-fit=B] .cases__grid{grid-template-columns:repeat(3,minmax(0,384px))}
-/* C · Ритм контактов: ещё больше воздуха, карточки ещё компактнее */
-html[data-fit=C]{--gap-screen:180px;--gap-grid:32px}
-html[data-fit=C] .cases__grid{grid-template-columns:repeat(3,minmax(0,344px))}
 
 /* Служебная панель — со шевроном «свернуть» (её правило) */
 .fitpick{position:fixed;left:16px;bottom:16px;z-index:90;display:flex;flex-wrap:wrap;align-items:center;gap:4px;max-width:min(720px,calc(100vw - 32px));padding:5px;border-radius:16px;
@@ -57,118 +45,43 @@ html[data-fit=C] .cases__grid{grid-template-columns:repeat(3,minmax(0,344px))}
 html .tip{display:none}
 .win__top span{font:600 13px/1 var(--text)}
 
-/* ── Кейсы: швейцарская сетка (её запрос 24.11). 12 колонок, промежуток 40 (x), между рядами 64 (1,6x) ── */
-.cases-index{display:none}
-html[data-cases^=s] .cases__grid{grid-template-columns:repeat(12,minmax(0,1fr));max-width:1328px;margin:0 auto;gap:var(--s-64) var(--s-40);align-items:start;justify-content:stretch}
-html[data-cases^=s] .files{max-width:1328px;margin-left:auto;margin-right:auto;justify-content:flex-start}
-html[data-cases^=s] .cases-index{display:block;color:#fff}
-.cases-index__l{display:none}
-.cases-index__h{display:block;margin-top:0;font:400 88px/.86 var(--display);letter-spacing:-.03em;text-transform:uppercase}
-/* Ш1 · Индекс слева: подпись — колонки 1–3, кейсы — 4–6, 7–9, 10–12; маленькие работы — с колонки 4 */
-html[data-cases=s1] .cases-index{grid-column:1/4;grid-row:1}
-html[data-cases=s1] .case:nth-of-type(1){grid-column:4/7}
-html[data-cases=s1] .case:nth-of-type(2){grid-column:7/10}
-html[data-cases=s1] .case:nth-of-type(3){grid-column:10/13}
-html[data-cases=s1] .files{padding-left:calc((100% - 11 * var(--s-40)) / 12 * 3 + 3 * var(--s-40))}
-/* Ш2 · Крупный + два: кейс 1 — колонки 1–6 на два ряда, кейсы 2–3 — 7–9 и 10–12, под ними подпись */
-html[data-cases=s2] .case:nth-of-type(1){grid-column:1/7;grid-row:1/3}
-html[data-cases=s2] .case:nth-of-type(2){grid-column:7/10;grid-row:2;align-self:end}
-html[data-cases=s2] .case:nth-of-type(3){grid-column:10/13;grid-row:2;align-self:end}
-html[data-cases=s2] .cases-index{grid-column:7/13;grid-row:1;align-self:start} /* 24.11: «Кейсы» наверх, карточки 2–3 — по нижнему краю большой */
-html[data-cases=s2] .case:nth-of-type(1) .case__h{font-size:48px;max-width:560px}
-
-/* ── Фон карточек кейсов (24.11): белый · стекло · тёмно-синий. Маленькие карточки — тем же фоном ── */
-html[data-caseb=deep] .v7 .case{background:#0a2474;backdrop-filter:none;-webkit-backdrop-filter:none;
-  box-shadow:inset 0 0 72px rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.3),0 30px 60px -34px rgba(4,12,50,.6)}
-html[data-caseb=white] .v7 .case{background:#fff;color:var(--ink);backdrop-filter:none;-webkit-backdrop-filter:none;
-  box-shadow:inset 0 0 0 1px rgba(3,56,158,.12),0 30px 60px -30px rgba(4,12,50,.55)}
-html[data-caseb=white] .v7 .case__h{color:var(--ink);text-shadow:none}
-html[data-caseb=white] .v7 .case__h em{color:var(--blue)}
-html[data-caseb=white] .v7 .case:hover,html[data-caseb=white] .v7 .case:focus-visible{box-shadow:inset 0 0 0 1px rgba(3,56,158,.2),0 40px 60px -30px rgba(4,12,50,.6)}
-html[data-caseb=white] .file__pv{background:#fff;box-shadow:inset 0 0 0 1px rgba(3,56,158,.12),0 20px 40px -24px rgba(4,12,50,.5)}
-html[data-caseb=white] .file__pv img{background:#eef2fa}
-html[data-caseb=deep] .file__pv{background:#0a2474;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3),0 20px 40px -24px rgba(4,12,50,.6)}
+ 
 
 /* ── Чипы без «грязи»: непрозрачные, без размытия поверх картинки. На белом и стекле — графит, на тёмно-синем — светлое стекло-плашка ── */
 .chip{background:var(--ink);color:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
-html[data-caseb=deep] .chip{background:#2a4bb0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
 
 /* ── Кейс «4 A/B-теста»: карусель ниже заголовка — не наезжает (заголовок в узкой колонке занимает 5 строк) ── */
 .v7 .case--car .case__spin{top:48%;left:14%;width:72%}
-
-/* ── Кнопки контактов иконками из стекла (вариант 24.11) ── */
-.cx__icons{display:none;justify-content:center;gap:var(--s-16,16px);margin-top:38px}
-html[data-cxb=icons] .cx__btns{display:none}
-html[data-cxb=icons] .cx__icons{display:flex}
-.cx__ic{display:grid;place-items:center;width:72px;height:72px;border-radius:50%;color:#fff;font:600 20px/1 var(--text);letter-spacing:.02em;
-  background:rgba(255,255,255,.14);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.32),inset 0 0 24px rgba(255,255,255,.1),0 10px 30px rgba(4,20,80,.18);transition:background .2s,transform .2s var(--ease)}
-.cx__ic svg{width:30px;height:30px}
-.cx__ic .f{fill:#fff}
-.cx__ic .s{fill:none;stroke:#fff;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
-.cx__ic:hover{background:rgba(255,255,255,.24);transform:translateY(-2px)}
-.cx__ic:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
-@media (prefers-reduced-motion:reduce){.cx__ic{transition:none}}
 
 /* ── Первый экран: узлы раздвигаются не дальше ×1,1 — герой уменьшен до 70 %, большие сдвиги заворачивали верёвки в петли ── */
 :root{--spread-max:1.1}
 
 /* ── Воздух вокруг «Обо мне» (24.11): больше отступ сверху и до контактов; в варианте fade картинки контактов проявляются позже ── */
-html[data-aboutair=air] .v7 .about,html[data-aboutair=fade] .v7 .about{padding-top:calc(var(--gap-screen) * 1.5)}
-html[data-aboutair=air] .cx,html[data-aboutair=fade] .cx{margin-top:var(--s-120)}
-html[data-aboutair=fade] .cx__fx{opacity:var(--cxv,1)}
+html[data-aboutair=air] .v7 .about{padding-top:calc(var(--gap-screen) * 1.5)}
+html[data-aboutair=air] .cx{margin-top:var(--s-120)}
 
 /* ── Контакты: центр блока — посередине видимой части (между верхним меню 30 px и футером), а не всей секции (24.11) ── */
 .cx__core{top:calc(50% + 30px / 2)} /* 30 px — высота верхнего меню .bar */
 
 /* ── Футер: CV и «наверх» рядом — промежуток 8 из системы отступов (было 40 — общий gap футера) ── */
 
-
 /* ── «Обо мне»: стеклянная подложка — заливка как была у стеклянных карточек кейсов (синий 20 % + размытие + свечение) ── */
   background:rgba(3,56,158,.2);backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);
   box-shadow:inset 0 0 72px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.3)}
 
-/* ── Кейсы Ш3–Ш5 (24.11, «меньше букв и шума, вертикальнее»): заголовок в карточке скрыт — снаружи номер, короткое название, год ── */
-.case-cap{display:none;cursor:pointer}
-.case-cap__n{font:500 18px/1 var(--mono);color:rgba(255,255,255,.6)}
-.case-cap__t{font:400 40px/.9 var(--display);letter-spacing:-.03em;text-transform:uppercase}
-.case-cap__y{font:400 20px/1.3 var(--text);color:var(--lime)}
-.case-cap:hover .case-cap__t{color:var(--lime)}
-/* Ш3 · колонка: «Кейсы» слева и едет вместе со скроллом, справа кейсы друг под другом — карточка 4 колонки + подпись 4 колонки */
-html[data-cases=s3] .cases-index{grid-column:1/5;grid-row:1/4;align-self:start;position:sticky;top:80px}
-html[data-cases=s3] .case:nth-of-type(1){grid-column:5/9;grid-row:1}
-html[data-cases=s3] .case:nth-of-type(2){grid-column:5/9;grid-row:2}
-html[data-cases=s3] .case:nth-of-type(3){grid-column:5/9;grid-row:3}
-html[data-cases=s3] .case-cap{grid-column:9/13;align-self:end;align-content:end;gap:var(--s-12);padding-bottom:var(--s-8)}
-html[data-cases=s3] .case-cap--1{grid-row:1} html[data-cases=s3] .case-cap--2{grid-row:2} html[data-cases=s3] .case-cap--3{grid-row:3}
-html[data-cases=s3] .files{justify-content:flex-end;padding-left:0}
-/* Ш4 · лесенка: карточки по 6 колонок зигзагом, каждая следующая заходит на предыдущую по высоте; подпись — под карточкой одной строкой */
-html[data-cases=s4] .cases__grid{row-gap:var(--s-120)}
-html[data-cases=s4] .cases-index{grid-column:1/6;grid-row:1;align-self:start}
-html[data-cases=s4] .case:nth-of-type(1),html[data-cases=s4] .case-cap--1{grid-column:7/12;grid-row:1}
-html[data-cases=s4] .case:nth-of-type(2),html[data-cases=s4] .case-cap--2{grid-column:1/6;grid-row:2}
-html[data-cases=s4] .case:nth-of-type(3),html[data-cases=s4] .case-cap--3{grid-column:7/12;grid-row:3}
-html[data-cases=s4] .case:nth-of-type(2){margin-top:-280px}
-html[data-cases=s4] .case:nth-of-type(3){margin-top:-280px}
-html[data-cases=s4] .case-cap{grid-template-columns:auto 1fr auto;align-items:baseline;gap:var(--s-16);align-self:end;translate:0 calc(100% + var(--s-16))}
-html[data-cases=s4] .case-cap__t{font-size:32px}
-/* Ш5 · список: крупные строки «номер — название — год», карточка справа маленьким превью (без чипов) */
-html[data-cases=s5] .cases__grid{row-gap:0}
-html[data-cases=s5] .cases-index{grid-column:1/13;grid-row:1;margin-bottom:var(--s-40)}
-html[data-cases=s5] .case-cap{grid-column:1/10;grid-template-columns:80px 1fr auto;align-items:center;gap:var(--s-24);padding:var(--s-24) 0;border-top:1px solid rgba(255,255,255,.3);align-self:stretch}
-html[data-cases=s5] .case-cap__t{font-size:64px}
-html[data-cases=s5] .case-cap--1{grid-row:2} html[data-cases=s5] .case-cap--2{grid-row:3} html[data-cases=s5] .case-cap--3{grid-row:4}
-html[data-cases=s5] .case{grid-column:10/13;width:62%;justify-self:end;margin:var(--s-24) 0;border-radius:20px}
-html[data-cases=s5] .case:nth-of-type(1){grid-row:2} html[data-cases=s5] .case:nth-of-type(2){grid-row:3} html[data-cases=s5] .case:nth-of-type(3){grid-row:4}
-html[data-cases=s5] .v7 .chips{display:none}
-html[data-cases=s4] .files{justify-content:center;margin-top:var(--s-120)}
-html[data-cases=s5] .files{justify-content:flex-start}
+/* ── Кейсы Ш3–Ш5 (24.11, «меньше букв и шума, вертикальнее»): заголовок в карточке скрыт — снаружи номер, короткое название{display:none;cursor:pointer}
+
+  
+
+  
+
+  
 
 /* ── «Обо мне» стеклом — по её макету Figma 165:2635: буквы — белый 10 % + эффект Glass (преломление, свет −45°).
    В CSS: маска по её вектору заголовка, внутри размытый и высветленный фон; светлая кромка — тенью обёртки; блик сверху слева ── */
 .pile__glass{display:none}
-html[data-abouth=glass] .v7 .pile__word,html[data-abouth=over] .v7 .pile__word{display:none}
-html[data-abouth=glass] .v7 .pile__glass,html[data-abouth=over] .v7 .pile__glass{display:block;position:absolute;left:373px;top:235px;width:695px;height:174px;z-index:1;pointer-events:none} /* место — как в Figma 165:2635 */
+html[data-abouth=over] .v7 .pile__word{display:none}
+html[data-abouth=over] .v7 .pile__glass{display:block;position:absolute;left:373px;top:235px;width:695px;height:174px;z-index:1;pointer-events:none} /* место — как в Figma 165:2635 */
 .pile__glass i{position:absolute;inset:0;-webkit-mask:url(../assets/about-title.webp) center/100% 100% no-repeat;mask:url(../assets/about-title.webp) center/100% 100% no-repeat}
 .pile__glass .bd{background:linear-gradient(135deg,rgba(255,255,255,.45),rgba(255,255,255,.1) 30%,rgba(255,255,255,.08) 68%,rgba(150,195,255,.35));
   backdrop-filter:blur(6px) saturate(1.15) brightness(1.12);-webkit-backdrop-filter:blur(6px) saturate(1.15) brightness(1.12)}
@@ -188,9 +101,7 @@ html[data-abouth=over] .pile__glass .rim{opacity:.4}
 .pile__tidy:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
 
 /* ── Уголки на глазах (24.11 примерка): лаймовые / белые / прозрачные (белый 45 %) / синие / без ── */
-html[data-cnr=white] .cnr{background:#fff}
-html[data-cnr=glass] .cnr{background:rgba(255,255,255,.45)}
-html[data-cnr=blue] .cnr{background:var(--blue)}
+
 html[data-cnr=off] .cnr{display:none}
 
 /* ── Панель теста: строка на каждый переключатель, название слева в своей колонке ── */
@@ -199,41 +110,10 @@ html[data-cnr=off] .cnr{display:none}
 .fitrow__l{flex:0 0 200px;padding:0 8px 0 4px;color:rgba(255,255,255,.6)}
 
 /* ── Маленькие кейсы в сетке Ш2 (24.11): та же сетка 12 колонок, по 4 колонки; дизайн как у больших карточек, меньше ── */
-html[data-cases=s2] .files,html[data-cases^=d] .files{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--s-40);max-width:1328px;margin:var(--s-64) auto 0;padding:0}
-html[data-cases=s2] .file,html[data-cases^=d] .file{grid-column:span 4;width:auto;display:flex;flex-direction:column;text-align:left;border-radius:28px;padding:24px 24px 0;overflow:visible;
-  background:#fff;box-shadow:inset 0 0 0 1px rgba(3,56,158,.12),0 30px 60px -30px rgba(4,12,50,.55);transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
-html[data-cases=s2] .file__t,html[data-cases^=d] .file__t{order:1;margin:0;font:400 24px/.9 var(--display);letter-spacing:-.03em;text-transform:uppercase;color:var(--ink);text-shadow:none}
-html[data-cases=s2] .file__m,html[data-cases^=d] .file__m{order:2;margin-top:var(--s-8);font:500 15px/1.3 var(--text);color:var(--blue);text-shadow:none}
-html[data-cases=s2] .file__pv,html[data-cases^=d] .file__pv{order:3;width:auto;height:auto;aspect-ratio:2/1;margin:var(--s-24) -24px 0;padding:0;border-radius:0 0 28px 28px;overflow:hidden;background:#eef2fa;box-shadow:none}
-html[data-cases=s2] .file__pv img,html[data-cases^=d] .file__pv img{border-radius:0;background:#eef2fa}
-html[data-cases=s2] .file__pv--ad b,html[data-cases^=d] .file__pv--ad b{border-radius:0}
-html[data-cases=s2] .file__pv .chip,html[data-cases^=d] .file__pv .chip{left:24px;bottom:24px}
-html[data-cases=s2] .file:hover,html[data-cases^=d] .file:hover{transform:translateY(-8px)}
-html[data-cases=s2] .file:hover .file__pv,html[data-cases^=d] .file:hover .file__pv{transform:none;box-shadow:none}
-html[data-cases=s2] .plate,html[data-cases^=d] .plate{left:24px;translate:0 0;text-align:left}
-html[data-caseb=glass] .file{background:rgba(3,56,158,.2);backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);box-shadow:inset 0 0 72px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.3)}
-html[data-caseb=glass] .file__t{color:#fff}
-html[data-caseb=glass] .file__m{color:var(--lime)}
 
-/* ── Кейсы по мотивам brand.dropbox.com (24.11). Общее: сетка 12 колонок, «КЕЙСЫ» — строкой сверху, картинки крупные ── */
-html[data-cases^=d] .cases__grid{grid-template-columns:repeat(12,minmax(0,1fr));max-width:1328px;margin:0 auto;gap:var(--s-40);align-items:start;justify-content:stretch}
-html[data-cases^=d] .cases-index{display:block;grid-column:1/13;grid-row:1;color:#fff}
-/* Д1 · плитка (главная Dropbox): три карточки вплотную, промежуток 12, скруглены только внешние углы всей плитки; маленькие — вторым рядом той же плитки */
-html[data-cases=d1] .cases__grid{column-gap:12px}
-html[data-cases=d1] .case:nth-of-type(1){grid-column:1/5;grid-row:2}
-html[data-cases=d1] .case:nth-of-type(2){grid-column:5/9;grid-row:2}
-html[data-cases=d1] .case:nth-of-type(3){grid-column:9/13;grid-row:2}
-html[data-cases=d1] .v7 .case{border-radius:0}
-html[data-cases=d1] .v7 .case:nth-of-type(1){border-top-left-radius:28px}
-html[data-cases=d1] .v7 .case:nth-of-type(3){border-top-right-radius:28px}
-html[data-cases=d1] .files{gap:12px;margin-top:12px}
-html[data-cases=d1] .file{border-radius:0}
-html[data-cases=d1] .file:first-child{border-bottom-left-radius:28px}
-html[data-cases=d1] .file:last-child{border-bottom-right-radius:28px}
-html[data-cases=d1] .file__pv{border-radius:0}
 
 /* ── Первый экран (24.11): папки пустые — без картинки кейса, только стекло; у окна с глазами нет кнопок TG и CV ── */
-.h-fix .ic__in,.ic__blur{display:none}
+.h-fix .ic__in{display:none}
 .h-fix .ic__back path{fill:rgba(255,255,255,.16);stroke:none}
 .h-fix .ic__front{background:linear-gradient(160deg,rgba(255,255,255,.42),rgba(255,255,255,.14) 45%,rgba(255,255,255,.22));box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 10px 24px rgba(10,30,90,.18)}
 .win__bot .pill{display:none}
@@ -243,67 +123,8 @@ html[data-cases=d1] .file__pv{border-radius:0}
 .v7 .pile{max-width:none;margin-left:calc(50% - 720px)}
 .about{overflow-x:clip}
 
-/* «Обо мне»: карточки снова растаскиваются (её решение 24.11 днём) */
 
-.cases-index__m{display:none}
-/* ── Кейсы «С · стиль» (24.11, по её референсам PROJECTS): одна главная картинка, остальное мельче по модулю с пустыми ячейками;
-   шрифт в двух размерах — огромный заголовок и мелкий моно-капс; без заголовков и чипов в карточках; лайм — одна точка (номер) ── */
-html:is([data-cases=e1],[data-cases=e1o]) .cases__grid{grid-template-columns:repeat(12,minmax(0,1fr));max-width:1328px;margin:0 auto;gap:var(--s-16) var(--s-40);align-items:start;justify-content:stretch}
-html:is([data-cases=e1],[data-cases=e1o]) .v7 .case__h,html:is([data-cases=e1],[data-cases=e1o]) .v7 .chips{display:none}
-html:is([data-cases=e1],[data-cases=e1o]) .v7 .case{border-radius:4px;box-shadow:none;background:rgba(255,255,255,.2);backdrop-filter:none;-webkit-backdrop-filter:none}
-html:is([data-cases=e1],[data-cases=e1o]) .v7 .case:hover,html:is([data-cases=e1],[data-cases=e1o]) .v7 .case:focus-visible{transform:none;box-shadow:0 0 0 1px #fff}
-html:is([data-cases=e1],[data-cases=e1o]) .v7 .case__img{top:6%;height:94%}
-html:is([data-cases=e1],[data-cases=e1o]) .v7 .case--car .case__spin{top:22%;left:8%;width:84%}
-html:is([data-cases=e1],[data-cases=e1o]) .case-cap{display:flex;gap:var(--s-12);align-items:baseline;color:#fff;font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em}
-html:is([data-cases=e1],[data-cases=e1o]) .case-cap__n{font:inherit;color:var(--lime)}
-html:is([data-cases=e1],[data-cases=e1o]) .case-cap__t{font:inherit;color:#fff}
-html:is([data-cases=e1],[data-cases=e1o]) .case-cap__y{font:inherit;color:rgba(255,255,255,.6);margin-left:auto}
-html:is([data-cases=e1],[data-cases=e1o]) .case-cap__y::after{content:"  ↗"}
-/* раскладка: главный кейс — колонки 1–6 на четыре ряда; справа модули по 3 колонки «шахматкой», пустые ячейки — часть композиции */
-html:is([data-cases=e1],[data-cases=e1o]) .case:nth-of-type(1){grid-column:1/7;grid-row:1/6;align-self:start}
-/* подпись — сразу под картинкой (высота карточки = ширина × 524/430), а не под правой колонкой */
-html:is([data-cases=e1],[data-cases=e1o]) .case-cap--1{grid-column:1/7;grid-row:1/6;align-self:start;margin-top:calc(121.86% + 16px)}
-html:is([data-cases=e1],[data-cases=e1o]) .case:nth-of-type(2){grid-column:7/10;grid-row:1}
-html:is([data-cases=e1],[data-cases=e1o]) .case-cap--2{grid-column:7/10;grid-row:2}
-html:is([data-cases=e1],[data-cases=e1o]) .case:nth-of-type(3){grid-column:10/13;grid-row:3}
-html:is([data-cases=e1],[data-cases=e1o]) .case-cap--3{grid-column:10/13;grid-row:4;align-self:start}
-html:is([data-cases=e1],[data-cases=e1o]) .cases-index{display:flex;grid-column:1/13;grid-row:6;margin-top:var(--s-40);align-items:flex-end;gap:var(--s-24);color:#fff}
-html:is([data-cases=e1],[data-cases=e1o]) .cases-index__h{font-size:120px;margin:0}
-html:is([data-cases=e1],[data-cases=e1o]) .cases-index__m{display:block;padding-bottom:10px;font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.75)}
-/* мелкие кейсы — тот же модуль: картинка без рамки, подпись моно-капсом */
-html:is([data-cases=e1],[data-cases=e1o]) .files{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--s-16) var(--s-40);max-width:1328px;margin:var(--s-120) auto 0;padding:0}
-html:is([data-cases=e1],[data-cases=e1o]) .file{grid-column:span 3;width:auto;display:flex;flex-direction:column;text-align:left;background:none!important;box-shadow:none!important;padding:0;backdrop-filter:none!important}
-html:is([data-cases=e1],[data-cases=e1o]) .file:first-child{grid-column:4/7}
-html:is([data-cases=e1],[data-cases=e1o]) .file:nth-child(2){grid-column:7/10}
-html:is([data-cases=e1],[data-cases=e1o]) .file:nth-child(3){grid-column:10/13}
-html:is([data-cases=e1],[data-cases=e1o]) .file__pv{order:1;width:auto;height:auto;aspect-ratio:4/3;margin:0;padding:0;border-radius:4px;overflow:hidden;background:#eef2fa;box-shadow:none}
-html:is([data-cases=e1],[data-cases=e1o]) .file__pv img{border-radius:0}
-html:is([data-cases=e1],[data-cases=e1o]) .file__pv--ad b{border-radius:0}
-html:is([data-cases=e1],[data-cases=e1o]) .file__pv .chip{display:none}
-html:is([data-cases=e1],[data-cases=e1o]) .file__t{order:2;margin-top:var(--s-12);font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:#fff;text-shadow:none}
-html:is([data-cases=e1],[data-cases=e1o]) .file__m{order:3;margin-top:2px;font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.6);text-shadow:none}
-html:is([data-cases=e1],[data-cases=e1o]) .files::before{content:"(+3) ещё в работе";grid-column:1/4;grid-row:1;align-self:start;font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.75)}
-
-/* ══ НОВЫЙ СТИЛЬ (24.11, html[data-style=new]): один акцент на экран, служебная типографика, без «наклеек» ══ */
-/* первый экран: окно с глазами — единственный акцент; верёвки тонкие белые и не движутся, бирки ровные, подписи моно */
-html[data-style=new] .v7 .lines path{stroke:rgba(255,255,255,.55)!important;stroke-width:1.2!important;stroke-dasharray:none}
-html[data-style=new] .v7 .lines path.on{stroke:#fff!important;stroke-width:1.6!important}
-html[data-style=new] .tag{--r:0deg!important}
-html[data-style=new] .v7 .tag__c{border-radius:10px!important;box-shadow:none!important}
-html[data-style=new] .v7 .tag__hole{border-color:rgba(3,56,158,.25)!important}
-html[data-style=new] .tag__loop path{stroke:rgba(255,255,255,.7)!important;stroke-width:1.2!important}
-html[data-style=new] .v7 .tag:is(:hover,:focus-visible) :is(.tag__c,.tag__loop){--sw:0deg!important}
-html[data-style=new] .ropes-float .tag:is(:hover,:focus-visible){filter:none}
-html[data-style=new] .tag__l{font:500 11px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-html[data-style=new] .tag__t{font:600 16px/1.25 var(--text)}
-html[data-style=new] .tag:hover .tag__c,html[data-style=new] .ropes-float .tag:hover{filter:none;rotate:none}
-html[data-style=new] .folder__t{font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em}
-html[data-style=new] .folder__m{font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.6)}
-html[data-style=new] .win__top span{font:500 12px/1 var(--mono);letter-spacing:.04em}
 /* «Обо мне»: стеклянный заголовок крупно слева, под ним шесть фактов в сетке 3×2 с тонкими линиями; без игрушки и цветных карточек */
-/* контакты: подписи футера — тем же моно */
-html[data-style=new] .foot__meta{font:500 11px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em}
-
 
 /* ══ 24.11 днём: её правки ══ */
 /* окно с глазами и папки — без обводок */
@@ -328,45 +149,8 @@ html[data-bigf=plain] .h-fix .big__h em{color:var(--lime)}
 html[data-corners=sharp] .v7 .tag__c{border-radius:0!important}
 html[data-corners=sharp] .v7 .card{border-radius:0!important}
 html[data-corners=sharp] .v7 .case,html[data-corners=sharp] .file,html[data-corners=sharp] .file__pv,html[data-corners=sharp] .file__pv img{border-radius:0!important}
-/* ── Кейсы · Т1-ш: тот же макет «С · стиль», подписи шрифтом RT Obligat вместо моно ── */
-html[data-cases=e1o] .case-cap__t{font:400 34px/.9 var(--display);text-transform:uppercase;letter-spacing:-.02em}
-html[data-cases=e1o] .case-cap{align-items:flex-end}
-html[data-cases=e1o] .file__t{font:400 28px/.9 var(--display);letter-spacing:-.02em}
 
-/* ── Кейсы · по её Figma 222:3330: зигзаг по сетке, крупные подписи RT Obligat под картинкой, мелкие кейсы строками справа ── */
-.case-ob,.file-ob{display:none}
-html[data-cases=e2] .cases__grid{grid-template-columns:repeat(12,minmax(0,1fr));max-width:1328px;margin:0 auto;gap:0 var(--s-40);align-items:start;justify-content:stretch}
-html[data-cases=e2] .v7 .case__h,html[data-cases=e2] .v7 .chips,html[data-cases=e2] .case-cap{display:none}
-html[data-cases=e2] .v7 .case{aspect-ratio:1.06/1;background:rgba(255,255,255,.2);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
-html[data-cases=e2][data-caseb=white] .v7 .case{background:#fff}
-html[data-cases=e2] .v7 .case:hover,html[data-cases=e2] .v7 .case:focus-visible{transform:translateY(-6px);box-shadow:0 24px 40px -28px rgba(4,12,50,.6)}
-html[data-cases=e2] .v7 .case__img{top:6%;height:94%}
-html[data-cases=e2] .v7 .case--car .case__spin{top:18%;left:6%;width:88%}
-html[data-cases=e2] .case-ob{display:block;color:#fff;font:400 56px/.9 var(--display);text-transform:uppercase;letter-spacing:-.02em;margin-top:var(--s-24)}
-html[data-cases=e2] .case-ob em{font-style:normal;color:var(--lime)}
-html[data-cases=e2] .cases-index{display:flex;grid-column:7/13;grid-row:1;align-self:start;align-items:flex-end;gap:var(--s-24);color:#fff}
-html[data-cases=e2] .cases-index__h{font-size:133px;margin:0}
-html[data-cases=e2] .cases-index__m{display:block;padding-bottom:14px;font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.75)}
-html[data-cases=e2] .case:nth-of-type(1){grid-column:1/7;grid-row:1}
-html[data-cases=e2] .case-ob--1{grid-column:1/7;grid-row:2}
-html[data-cases=e2] .case:nth-of-type(3){grid-column:7/10;grid-row:2;margin-top:var(--s-40)}
-html[data-cases=e2] .case-ob--3{grid-column:7/12;grid-row:3;font-size:44px}
-html[data-cases=e2] .case:nth-of-type(2){grid-column:3/7;grid-row:4;margin-top:var(--s-120)}
-html[data-cases=e2] .case-ob--2{grid-column:3/8;grid-row:5}
-/* мелкие кейсы: строки «название + подпись | картинка» в правой половине */
-html[data-cases=e2] .files{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--s-40);max-width:1328px;margin:var(--s-120) auto 0;padding:0}
-html[data-cases=e2] .files::before{content:"(+3) ещё в работе";grid-column:4/7;grid-row:1;justify-self:end;font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.75)}
-html[data-cases=e2] .file{grid-column:7/13;display:grid;grid-template-columns:1fr 1fr;column-gap:var(--s-40);align-items:start;width:auto;text-align:left;padding:0;background:none!important;box-shadow:none!important;backdrop-filter:none!important}
-html[data-cases=e2] .file:nth-child(1){grid-row:1} html[data-cases=e2] .file:nth-child(2){grid-row:2} html[data-cases=e2] .file:nth-child(3){grid-row:3}
-html[data-cases=e2] .file__t{display:none}
-html[data-cases=e2] .file-ob{display:block;grid-column:1;grid-row:1;color:#fff;font:400 36px/.9 var(--display);text-transform:uppercase;letter-spacing:-.02em}
-html[data-cases=e2] .file-ob em{font-style:normal;color:var(--lime)}
-html[data-cases=e2] .file__m{grid-column:1;grid-row:2;margin-top:var(--s-12);font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.6);text-shadow:none}
-html[data-cases=e2] .file__pv{grid-column:2;grid-row:1/4;width:auto;height:auto;aspect-ratio:4/3;margin:0;padding:0;border-radius:0;overflow:hidden;background:rgba(255,255,255,.2);box-shadow:none}
-html[data-cases=e2] .file__pv img,html[data-cases=e2] .file__pv b{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:cover;border-radius:0}
-html[data-cases=e2] .file__pv{position:relative}
-html[data-cases=e2] .file__pv .chip{display:none}
-html[data-cases=e2] .plate{display:none}
+  
 
 /* ── Контакты · кнопки «иконки с подписью» по Figma 234:8018 (24.11 вечером): 4 колонки через 28, иконка 60 (белый 30 %), подпись IBM Plex Mono 13 капсом, 75 %.
    Ховер (предложение, в Figma нет): колонка чуть приподнимается, подпись — белая ── */
@@ -423,8 +207,27 @@ html[data-cases=n1] .nc{display:grid;grid-template-columns:628px 628px;max-width
 /* Бирки: прямые углы, дырочка внутри (как на проде). Ховер — как на основном сайте (её решение 24.11, 21:27) */
 .v7 .tag__c{border-radius:0!important}
 
-
 /* «Навести порядок» — Web / Round Button / Replay (Figma 238:8138): круг 64, стекло 10 %, иконка replay 24 */
 .pile__tidy{width:64px;height:64px;background:rgba(255,255,255,.1);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
 .pile__tidy svg.replay{width:24px;height:24px;fill:#fff;stroke:none}
 
+
+
+/* ══ Вариант №2 (Figma 238:8845 + комментарии 24.11 вечером) ══ */
+/* верёвки — белое стекло: градиент с бликами (её эффект Glass в коде не повторить — мимикрия бликами), тоньше; у наведённой — ярче */
+html[data-v="2"] .v7 .lines path{stroke:url(#ropeGlass);stroke-width:1.5}
+html[data-v="2"] .v7 .lines path.on{stroke:#fff;stroke-width:1.8}
+html[data-v="2"] .tag__loop path{stroke:rgba(255,255,255,.75)}
+html[data-v="2"] .tag__loop .tag__back{stroke:rgba(255,255,255,.45)}
+/* дырочка бирок — тёмно-синяя точка, как во фрейме */
+html[data-v="2"] .v7:is(.h-fix,.h-old) .tag__hole{background:#0b3aa8;border:0;width:10px;height:10px;left:110px;top:12px}
+/* длинная верёвка во всю страницу: лежит под кейсами и карточками, над небом */
+.longrope{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
+.longrope__p{fill:none;stroke:url(#longGlass);stroke-width:1.5;stroke-linecap:round}
+html[data-v="2"] .cases,html[data-v="2"] .about,html[data-v="2"] .cx{position:relative;z-index:1}
+html[data-v="2"] .stage{position:relative;z-index:2}
+/* карточка, на которой висит верёвка: дырочка сверху по центру, не таскается */
+.card__hole{position:absolute;left:50%;top:12px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#0b3aa8}
+html[data-v="2"] .card--hung{padding-top:34px;cursor:default}
+/* контакты: текст и кнопки на 40 ниже (её комментарий) */
+html[data-v="2"] .cx__core{top:calc(50% + 30px / 2 + 40px)}

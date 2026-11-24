@@ -531,3 +531,6 @@ html:not([data-cases]) .file__pv img,html:not([data-cases]) .file__pv b{position
 .cx__m .cx__mh{position:absolute;left:50%;top:0;translate:-50% 0;opacity:0}
 .cx__m:hover .cx__mh,.cx__m:focus-visible .cx__mh{opacity:1}
 .cx__m:hover img:not(.cx__mh),.cx__m:focus-visible img:not(.cx__mh){opacity:0}
+
+/* Верёвки при наведении на папку: без размытия — blur вместе с маской давал «гирлянду» (мигание), 24.11 */
+.v7:is(.h-fix,.h-old) .stage.focus .lines path:not(.on){filter:none;opacity:.45}
