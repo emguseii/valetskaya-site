@@ -432,7 +432,7 @@ html{overscroll-behavior-y:none} /* без «пружины» в конце ст
 .h-fix .folder.on .ic{opacity:0;transform:scale(1.6);transition:opacity .18s var(--ease),transform .5s cubic-bezier(.22,1,.36,1)}
 .h-fix .big{transition:transform .5s cubic-bezier(.22,1,.36,1),opacity .22s var(--ease);will-change:transform,opacity}
 .h-fix .big::before{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),inset 0 0 24px rgba(255,255,255,.12)}
-.h-fix .big__shape path{stroke:none}
+.h-fix .big__shape path{stroke:rgba(255,255,255,.55);stroke-width:1.5;vector-effect:non-scaling-stroke} /* тонкий белый контур по форме папки — верёвка «цепляется» за него (24.11) */
 .h-fix .big__h{color:#fff}
 .h-fix .big__h em{color:var(--lime)}
 .h-fix .folder__t,.h-fix .folder__m{transition:opacity .2s var(--ease)}
@@ -486,10 +486,10 @@ html:not([data-cases]) .file__pv img,html:not([data-cases]) .file__pv b{position
 .foot__up{margin-left:calc(var(--s-8) - 40px)}
 
 /* «Обо мне» как в тесте: раскладка по Figma 165:2635 (web.js), крупнее ×1,2, больше воздуха сверху и до контактов */
-:root{--about-k:1.2}
+:root{--about-k:1} /* 24.11 15:00: «Обо мне» мельче — без ×1,2 */
 .about{zoom:calc(var(--sb,1) * var(--about-k,1));overflow-x:clip}
 .v7 .pile{max-width:none;margin-left:calc(50% - 720px)}
-.v7 .about{padding-top:calc(var(--gap-screen) * 1.5)}
+.v7 .about{padding-top:var(--s-24)} /* 24.11 15:00: ближе к кейсам */
 .cx{margin-top:var(--s-120)}
 /* заголовок «Обо мне» — почти прозрачное стекло поверх карточек: форма букв — маска по её вектору, кромка — фильтр #glassRim */
 .v7 .pile__word{display:none}
@@ -504,3 +504,6 @@ html:not([data-cases]) .file__pv img,html:not([data-cases]) .file__pv b{position
 .pile__tidy svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s var(--ease)}
 .pile__tidy:hover svg{transform:rotate(-60deg)}
 .pile__tidy:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+
+/* Первый экран: узлы раздвигаются не дальше ×1,1, как на тесте (большие сдвиги заворачивали верёвки в петли) */
+:root{--spread-max:1.1}
