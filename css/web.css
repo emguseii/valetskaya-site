@@ -534,3 +534,10 @@ html:not([data-cases]) .file__pv img,html:not([data-cases]) .file__pv b{position
 
 /* Футер: лаймовую «CV ↗» скрыли (её решение 24.11 вечером) — резюме есть в контактах и в меню */
 .foot__cv{display:none}
+
+/* Контакты: на ховере иконка сменяется её стеклянной версией (её картинки 24.11, Web/Button/Contact/Preview) — плавно, вместе с подъёмом и белой подписью */
+.cx__m{position:relative}
+.cx__m img{transition:opacity .25s var(--ease)}
+.cx__m .cx__mh{position:absolute;left:50%;top:0;translate:-50% 0;opacity:0}
+.cx__m:hover .cx__mh,.cx__m:focus-visible .cx__mh{opacity:1}
+.cx__m:hover img:not(.cx__mh),.cx__m:focus-visible img:not(.cx__mh){opacity:0}

@@ -95,10 +95,10 @@
   document.querySelector('[data-copy-proxy]').addEventListener('click', () => mailBtn && mailBtn.click());
   // Кнопки контактов по её компоненту Figma 234:8018 «Button / Contacts» (24.11 вечером): иконка 60 (её PNG, белый 30 %) + подпись моно-капсом
   document.querySelector('.cx__icons').insertAdjacentHTML('afterend', `<div class="cx__mono">
-    <a class="cx__m" href="${href('Telegram')}" target="_blank" rel="noopener"><img src="assets/contacts/Telegram.png" alt="" width="60" height="60"><span>Telegram</span></a>
-    <a class="cx__m" href="${href('LinkedIn')}" target="_blank" rel="noopener"><img src="assets/contacts/Linkedin.png" alt="" width="60" height="60"><span>LinkedIn</span></a>
-    <button class="cx__m" type="button" data-copy-proxy2 title="Скопировать почту"><img src="assets/contacts/Email.svg" alt="" width="60" height="60"><span>Почта</span></button>
-    <a class="cx__m" href="${href('Резюме')}" target="_blank" rel="noopener"><img src="assets/contacts/CV.png" alt="" width="60" height="60"><span>Резюме</span></a></div>`);
+    <a class="cx__m" href="${href('Telegram')}" target="_blank" rel="noopener"><img src="assets/contacts/Telegram.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Telegram.png" alt="" width="60" height="60"><span>Telegram</span></a>
+    <a class="cx__m" href="${href('LinkedIn')}" target="_blank" rel="noopener"><img src="assets/contacts/Linkedin.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Linkedin.png" alt="" width="60" height="60"><span>LinkedIn</span></a>
+    <button class="cx__m" type="button" data-copy-proxy2 title="Скопировать почту"><img src="assets/contacts/Email.svg" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Email.png" alt="" width="60" height="60"><span>Почта</span></button>
+    <a class="cx__m" href="${href('Резюме')}" target="_blank" rel="noopener"><img src="assets/contacts/CV.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/CV.png" alt="" width="60" height="60"><span>Резюме</span></a></div>`);
   document.querySelector('[data-copy-proxy2]').addEventListener('click', () => mailBtn && mailBtn.click());
 
   // Плавность папок: размытая копия картинки внутри передней стенки (вместо живого backdrop-filter)
@@ -156,7 +156,7 @@
     ${big('nc__big--3', '#case-path', '5x4', 'onboarding', '<em>+16</em> оформленных<br>сообществ авторами', 'апрель — июль 2025 · WEB · Mobile')}
     <span class="nc__more">(+3) ещё в работе</span>
     <div class="nc__small">
-      ${small('subs', 'SPA · 2025 · в процессе', 'UX/UI Улучшения<br>раздела<br>подписчиков')}
+      ${small('subs', 'SPA · 2025 · в процессе', 'UX/UI<br>Улучшения<br>раздела<br>подписчиков')}
       ${small('ad', 'DS · 2026', 'маркетинговый<br>компонент<br>для быстрого<br>запуска кампаний')}
       ${small('mediawall', 'NDA · 2026', 'Медиастена<br>профиля')}
     </div></div>`);
