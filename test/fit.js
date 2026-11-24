@@ -22,7 +22,7 @@
     root.style.setProperty('--s', s.toFixed(4));
     root.style.setProperty('--st', (BAR + PAD + p.air - BOX.y * s).toFixed(1) + 'px');
     root.style.setProperty('--hh', hh.toFixed(0) + 'px');
-    if (mode !== 'now') root.style.setProperty('--sb', (Math.min(W / 1440, H / 900, 1.25) * p.kb).toFixed(4)); };
+    if (mode !== 'now') root.style.setProperty('--sb', (Math.min(W / 1440, H / 900, 1.25) * p.kb * (+root.dataset.kz || 1)).toFixed(4)); };
   addEventListener('resize', over); over();
 
   const pick = document.createElement('nav'); pick.className = 'fitpick'; pick.setAttribute('aria-label', 'Варианты масштаба (тест)');
@@ -44,13 +44,17 @@
       b.addEventListener('click', () => { const u = new URL(location); u.searchParams.set(key, v);
         if (reload) { location.href = u; return; } cur = v; root.dataset[key] = v; history.replaceState(null, '', u); mark(); });
       r.appendChild(b); mark(); }); };
+  // 0 · Общий масштаб блоков ниже первого экрана (её вопрос «сайт стал мельче»): множитель к масштабу A
+  row('Весь сайт · масштаб', 'kz', [['1', '100 %'], ['1.1', '110 %'], ['1.2', '120 %']], '1');
+  new MutationObserver(() => dispatchEvent(new Event('resize'))).observe(root, { attributes: true, attributeFilter: ['data-kz'] }); over();
   // 1 · Первый экран. Облака web.js читает при загрузке — кнопка перезагружает страницу (значение — в html[data-sky-top], ставит скрипт в <head>)
   row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало'], ['0', 'чистое небо']], root.dataset.skyTop, true);
   // 2 · Кейсы
-  row('Кейсы · сетка', 'cases', [['s2', 'Ш2 (выбрана)'], ['d1', 'Д1 · плитка'], ['d2', 'Д2 · три с подписями'], ['d3', 'Д3 · большой + два стопкой']], 's2');
+  row('Кейсы · сетка', 'cases', [['s2', 'Ш2 (выбрана)'], ['d1', 'Д1 · плитка'], ['d2', 'Д2 · три с подписями'], ['d3', 'Д3 · по одному, длиннее']], 's2');
   row('Кейсы · фон карточек', 'caseb', [['white', 'белый'], ['glass', 'стекло']], 'white');
   // 3 · Обо мне
-  row('Обо мне · заголовок', 'abouth', [['over', 'стекло поверх карточек'], ['glass', 'стекло под карточками'], ['now', 'белый'], ['contacts', 'как в контактах']], 'over');
+  row('Обо мне · вид', 'about', [['figma', 'как в Figma, крупнее'], ['deck', 'колода']], 'deck');
+  root.dataset.abouth = 'over'; // 24.11: заголовок «Обо мне» — стекло поверх карточек
   row('Обо мне · подложка', 'aboutbg', [['none', 'без'], ['glass', 'стеклянная']], 'none');
   // 4 · Контакты
   row('Контакты · кнопки', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло']], 'icons');
@@ -118,3 +122,29 @@
   const upd = () => { const r = cx.getBoundingClientRect(), e = (innerHeight - r.top) / innerHeight;
     root.style.setProperty('--cxv', st(Math.max(0, Math.min(1, (e - .45) / .4))).toFixed(3)); };
   addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); })();
+
+/* «Обо мне» · колода: копии карточек в веере; верхняя (data-i=0) целиком, остальные выглядывают сдвигом и поворотом */
+(() => { const pile = document.getElementById('pile'); if (!pile) return;
+  const src = [...pile.querySelectorAll('.card')]; if (!src.length) return;
+  // порядок колоды: от главного к личному
+  const order = ['card--white', 'card--lime', 'card--ink', 'card--paper', 'card--sky'];
+  const pickC = [...order.map(c => src.find(x => x.classList.contains(c) && !x.textContent.includes('образование'))), src.find(x => x.textContent.includes('образование'))].filter(Boolean);
+  const deck = document.createElement('div'); deck.className = 'deck'; deck.setAttribute('role', 'group'); deck.setAttribute('aria-label', 'Обо мне — карточки, листаются по клику');
+  const cards = pickC.map(c => { const d = c.cloneNode(true); d.className = c.className.replace(/\bcard\b/, 'card dk'); d.removeAttribute('style'); deck.appendChild(d); return d; });
+  pile.appendChild(deck);
+  const N = cards.length;
+  const ui = document.createElement('div'); ui.className = 'deck-ui';
+  ui.innerHTML = '<span class="deck-ui__n"><b>01</b> / ' + String(N).padStart(2, '0') + '</span><button type="button" aria-label="Следующая карточка"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><span class="deck-ui__hint">листай — кликом<br>или свайпом</span>';
+  pile.appendChild(ui);
+  const num = ui.querySelector('b'); let top = 0, busy = false;
+  const lay = () => cards.forEach((c, k) => { const i = (k - top + N) % N; c.dataset.i = i; c.style.zIndex = 100 - i;
+    c.style.transform = `translate(${i * 18}px, ${-i * 12}px) rotate(${i * 3.2}deg) scale(${1 - i * .035})`; c.style.opacity = i > 3 ? 0 : 1;
+    c.setAttribute('aria-hidden', String(i !== 0)); });
+  const next = () => { if (busy) return; busy = true; const c = cards[top]; c.classList.add('out');
+    setTimeout(() => { c.classList.remove('out'); top = (top + 1) % N; num.textContent = String(top + 1).padStart(2, '0'); lay(); busy = false; }, 420); };
+  ui.querySelector('button').addEventListener('click', next);
+  let sx = null;
+  deck.addEventListener('pointerdown', e => { sx = e.clientX; });
+  deck.addEventListener('pointerup', e => { if (sx === null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 40 || Math.abs(dx) < 6) next(); });
+  lay();
+})();
