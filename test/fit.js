@@ -165,14 +165,14 @@
   addEventListener('load', draw); addEventListener('resize', later); new ResizeObserver(later).observe(document.body);
   document.querySelectorAll('img').forEach(i => i.addEventListener('load', later, { once: true }));
   setTimeout(draw, 600); setTimeout(draw, 2000);
-  // «Обо мне» проявляется постепенно, когда открыто ≥60 % надписи (карточки её закрывают; растащили — видно)
+  // «Обо мне»: надпись всегда видна слабо, размытие зависит от того, сколько её открыто (Figma 252:10056)
   const pile = document.getElementById('pile'), word = pile && pile.querySelector('.pile__glass');
   if (pile && word) { const cards = [...pile.querySelectorAll('.card, .toy')]; let q = 0;
     const reveal = () => { q = 0; const w = word.getBoundingClientRect(); if (!w.width) return;
       const rs = cards.map(c => c.getBoundingClientRect()); let free = 0, all = 0;
       for (let i = 0; i < 28; i++) for (let j = 0; j < 8; j++) { const x = w.left + (i + .5) * w.width / 28, y = w.top + (j + .5) * w.height / 8; all++;
         if (!rs.some(r => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom)) free++; }
-      const f = free / all; word.style.opacity = Math.max(0, Math.min(1, (f - .6) / .3)).toFixed(3); };
+      const f = free / all; word.style.setProperty('--tb', (16 * Math.max(0, Math.min(1, (.85 - f) / .6))).toFixed(1) + 'px'); }; // закрыта — размытие 16, открыта на 85 % и больше — резкая (Figma 252:10056)
     const tick = () => { if (!q) q = requestAnimationFrame(reveal); };
     pile.addEventListener('pointermove', tick); pile.addEventListener('pointerup', () => setTimeout(reveal, 950));
     document.querySelector('.pile__tidy')?.addEventListener('click', () => setTimeout(reveal, 950));

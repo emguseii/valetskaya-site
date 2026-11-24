@@ -261,8 +261,15 @@ html[data-v="2"] #pile :is(.card,.toy):nth-child(2n){animation-duration:5.4s;ani
 html[data-v="2"] #pile :is(.card,.toy):nth-child(3n){animation-duration:3.9s;animation-delay:-2.1s}
 html[data-v="2"] #pile .card--hung{animation:hungSway 3.6s ease-in-out infinite alternate}
 html[data-v="2"] #pile :is(.card,.toy).grab{animation:none}
-html[data-v="2"] .pile__glass{transition:opacity .5s ease}
+/* надпись «Обо мне» (Figma 252:10056): всегда слабо видна, размыта, пока закрыта карточками; резче по мере растаскивания (--tb из fit.js) */
+html[data-v="2"] .pile__glass{--tb:16px}
+html[data-v="2"] .pile__glass .bd{filter:blur(var(--tb));transition:filter .45s ease}
+html[data-v="2"] .pile__glass .rim{filter:url(#glassRim) blur(var(--tb));transition:filter .45s ease}
+html[data-v="2"] #pile .card--hung{width:319px!important}
 @media (prefers-reduced-motion:reduce){html[data-v="2"] #pile :is(.card,.toy){animation:none}}
 
 /* Большие кейсы по обновлённым компонентам Case / Big (Figma 238:8737 и соседние, 24.11 23:26): сначала заголовок и мета, под ними (через 32) обложка */
 html[data-v="2"] .nc__d{order:-1}
+
+/* в её макете 252:10056 надпись лежит ПОД карточками (группа 20 %), не поверх */
+html[data-v="2"] .v7 .pile__glass{z-index:1}

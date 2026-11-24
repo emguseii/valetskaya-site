@@ -13,10 +13,11 @@
 <script>/* настройки, которые web.js читает при загрузке; v — вариант для сравнения (1 — зафиксирован, 2 — Figma 238:8845 + комментарии) */ { const q = new URLSearchParams(location.search), d = document.documentElement, v = q.get('sky1'); d.dataset.style = 'old'; d.dataset.skyTop = v === null ? '.35' : v; d.dataset.v = q.get('v') === '2' ? '2' : '1'; }
 /* «Обо мне» как в Figma 165:2635: положение [left, top] и наклон каждой карточки (порядок как в разметке) */
 window.PILE_LAYOUT = [[188, 130, -6], [540, 72, 2], [881, 210, 7], [965, 142, -6], [561, 388, -6], [903, 395, 6], [242, 366, 4]];
-/* Вариант №2 (её комментарий 24.11, 22:24): карточки закрывают надпись «Обо мне» — она проявляется, только когда видно ≥60 % её площади.
+/* Вариант №2 — «Обо мне» по её логике Figma 252:10056 (24.11, 23:30): плотная стопка закрывает надпись; надпись всегда видна слабо, но размыта,
+   и становится резче по мере того, как карточки растаскивают. Раскладка — её состояние 1 (249:9943) в масштабе 0,885 (ширины карточек совпадают).
    Порядок: ВКонтакте, что делала (висит на верёвке по центру), игрушка, после работы, курсы, сильная сторона, образование */
-if (document.documentElement.dataset.v === '2') window.PILE_LAYOUT = [[120, 110, -5], [540, 40, -3], [960, 150, -8], [1070, 100, 5], [590, 250, 3], [890, 232, -5], [330, 238, 4]];</script>
-<link rel="stylesheet" href="test/fit.css?v=41">
+if (document.documentElement.dataset.v === '2') window.PILE_LAYOUT = [[256, 151, -6], [561, 73, 4], [870, 160, 7], [931, 199, -9.2], [548, 348, -8.2], [872, 292, 13.1], [316, 297, 6.3]];</script>
+<link rel="stylesheet" href="test/fit.css?v=43">
 </head>
 <body class="v7">
 <div class="sky" aria-hidden="true"></div>
@@ -171,6 +172,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => { a.href = location.pathn
 <script src="js/eyes.js?v=11230410"></script>
 <script src="js/cases.js?v=11230410"></script>
 <script src="js/web.js?v=11242345"></script>
-<script src="test/fit.js?v=36"></script>
+<script src="test/fit.js?v=37"></script>
 </body>
 </html>
