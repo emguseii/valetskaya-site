@@ -125,16 +125,11 @@ html[data-aboutair=fade] .cx__fx{opacity:var(--cxv,1)}
 .foot__up{margin-left:calc(var(--s-8) - 40px)}
 
 /* ── «Обо мне»: стеклянная подложка — заливка как была у стеклянных карточек кейсов (синий 20 % + размытие + свечение) ── */
-html[data-aboutbg=glass] .v7 .pile::before{content:"";position:absolute;inset:40px 40px -20px;z-index:-1;border-radius:48px;
   background:rgba(3,56,158,.2);backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);
   box-shadow:inset 0 0 72px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.3)}
 
 /* ── Кейсы Ш3–Ш5 (24.11, «меньше букв и шума, вертикальнее»): заголовок в карточке скрыт — снаружи номер, короткое название, год ── */
 .case-cap{display:none;cursor:pointer}
-html[data-cases=s3] .case-cap,html[data-cases=s4] .case-cap,html[data-cases=s5] .case-cap,html[data-cases=d2] .case-cap{display:grid;color:#fff}
-html[data-cases=s3] .v7 .case__h,html[data-cases=s4] .v7 .case__h,html[data-cases=s5] .v7 .case__h,html[data-cases=d2] .v7 .case__h{display:none}
-html[data-cases=s3] .v7 .case__img,html[data-cases=s4] .v7 .case__img,html[data-cases=s5] .v7 .case__img,html[data-cases=d2] .v7 .case__img{top:7%;height:93%}
-html[data-cases=s3] .v7 .case--car .case__spin,html[data-cases=s4] .v7 .case--car .case__spin,html[data-cases=s5] .v7 .case--car .case__spin,html[data-cases=d2] .v7 .case--car .case__spin{top:22%;left:8%;width:84%}
 .case-cap__n{font:500 18px/1 var(--mono);color:rgba(255,255,255,.6)}
 .case-cap__t{font:400 40px/.9 var(--display);letter-spacing:-.03em;text-transform:uppercase}
 .case-cap__y{font:400 20px/1.3 var(--text);color:var(--lime)}
@@ -234,25 +229,6 @@ html[data-cases=d1] .file{border-radius:0}
 html[data-cases=d1] .file:first-child{border-bottom-left-radius:28px}
 html[data-cases=d1] .file:last-child{border-bottom-right-radius:28px}
 html[data-cases=d1] .file__pv{border-radius:0}
-/* Д2 · три с подписями (раздел Imagery): картинка кейса крупно на всю карточку, чип-ярлык на ней, под карточкой — номер, название, год */
-html[data-cases=d2] .case:nth-of-type(1),html[data-cases=d2] .case-cap--1{grid-column:1/5}
-html[data-cases=d2] .case:nth-of-type(2),html[data-cases=d2] .case-cap--2{grid-column:5/9}
-html[data-cases=d2] .case:nth-of-type(3),html[data-cases=d2] .case-cap--3{grid-column:9/13}
-html[data-cases=d2] .case{grid-row:2} html[data-cases=d2] .case-cap{grid-row:3;margin-top:calc(var(--s-16) - var(--s-40));grid-template-columns:auto 1fr auto;align-items:baseline;gap:var(--s-12)}
-html[data-cases=d2] .case-cap__t{font-size:28px}
-/* Д3 · по одному, длиннее (её задача 24.11: управлять вниманием): кейсы идут сверху вниз от главного к дополнительным,
-   каждый — отдельным «кадром» по сетке со сдвигом, рядом подпись; карточка помещается в экран. Последний блок — мелкие кейсы. */
-html[data-cases=d3] .cases__grid{row-gap:var(--s-120)}
-html[data-cases=d3] .case-cap{display:grid;color:#fff;align-self:end;align-content:end;gap:var(--s-12);padding-bottom:var(--s-8)}
-html[data-cases=d3] .v7 .case__h{display:none}
-html[data-cases=d3] .v7 .case__img{top:7%;height:93%}
-html[data-cases=d3] .v7 .case--car .case__spin{top:22%;left:8%;width:84%}
-html[data-cases=d3] .case-cap__t{font-size:56px}
-html[data-cases=d3] .case:nth-of-type(1){grid-column:2/8;grid-row:2}  html[data-cases=d3] .case-cap--1{grid-column:8/12;grid-row:2}
-html[data-cases=d3] .case:nth-of-type(2){grid-column:7/12;grid-row:3}  html[data-cases=d3] .case-cap--2{grid-column:2/6;grid-row:3;text-align:right;justify-items:end}
-html[data-cases=d3] .case:nth-of-type(3){grid-column:3/8;grid-row:4}  html[data-cases=d3] .case-cap--3{grid-column:8/12;grid-row:4}
-html[data-cases=d3] .files{margin-top:var(--s-120)}
-html[data-cases=d3] .files::before{content:"Ещё кейсы";grid-column:1/13;font:400 56px/.9 var(--display);letter-spacing:-.03em;text-transform:uppercase;color:#fff}
 
 /* ── Первый экран (24.11): папки пустые — без картинки кейса, только стекло; у окна с глазами нет кнопок TG и CV ── */
 .h-fix .ic__in,.ic__blur{display:none}
@@ -308,7 +284,6 @@ html:is([data-cases=e1],[data-cases=e1o]) .file__m{order:3;margin-top:2px;font:5
 html:is([data-cases=e1],[data-cases=e1o]) .files::before{content:"(+3) ещё в работе";grid-column:1/4;grid-row:1;align-self:start;font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.75)}
 
 /* ══ НОВЫЙ СТИЛЬ (24.11, html[data-style=new]): один акцент на экран, служебная типографика, без «наклеек» ══ */
-.facts{display:none}
 /* первый экран: окно с глазами — единственный акцент; верёвки тонкие белые и не движутся, бирки ровные, подписи моно */
 html[data-style=new] .v7 .lines path{stroke:rgba(255,255,255,.55)!important;stroke-width:1.2!important;stroke-dasharray:none}
 html[data-style=new] .v7 .lines path.on{stroke:#fff!important;stroke-width:1.6!important}
@@ -325,18 +300,8 @@ html[data-style=new] .folder__t{font:500 13px/1.3 var(--mono);text-transform:upp
 html[data-style=new] .folder__m{font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.6)}
 html[data-style=new] .win__top span{font:500 12px/1 var(--mono);letter-spacing:.04em}
 /* «Обо мне»: стеклянный заголовок крупно слева, под ним шесть фактов в сетке 3×2 с тонкими линиями; без игрушки и цветных карточек */
-html:is([data-style=new],[data-about=facts]) .v7 .pile > .card,html:is([data-style=new],[data-about=facts]) .v7 .pile .toy{display:none}
-html:is([data-style=new],[data-about=facts]) .v7 .pile{height:auto;padding-bottom:var(--s-40)}
-html:is([data-style=new],[data-about=facts]) .v7 .pile__glass{position:relative;left:120px;top:0;width:973px;height:244px;z-index:1}
-html:is([data-style=new],[data-about=facts]) .facts{display:grid;grid-template-columns:repeat(3,1fr);margin:var(--s-64) 120px 0;border-top:1px solid rgba(255,255,255,.3);color:#fff}
-html:is([data-style=new],[data-about=facts]) .fact{padding:var(--s-24) var(--s-24) var(--s-40) 0;border-bottom:1px solid rgba(255,255,255,.3)}
-html:is([data-style=new],[data-about=facts]) .fact:not(:nth-child(3n+1)){padding-left:var(--s-24);border-left:1px solid rgba(255,255,255,.3)}
-html:is([data-style=new],[data-about=facts]) .fact__n{display:block;font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.6)}
-html:is([data-style=new],[data-about=facts]) .fact__h{display:block;margin-top:var(--s-16);font:400 40px/.9 var(--display);text-transform:uppercase;letter-spacing:-.02em}
-html:is([data-style=new],[data-about=facts]) .fact__p{margin-top:var(--s-16);font:400 17px/1.45 var(--text);color:rgba(255,255,255,.85);max-width:340px}
 /* контакты: подписи футера — тем же моно */
 html[data-style=new] .foot__meta{font:500 11px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em}
-html:is([data-style=new],[data-about=facts]){--about-k:1}
 
 
 /* ══ 24.11 днём: её правки ══ */

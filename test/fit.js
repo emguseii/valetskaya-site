@@ -53,13 +53,12 @@
   row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало'], ['0', 'чистое небо']], root.dataset.skyTop, true);
   // 2 · Кейсы
   row('Углы', 'corners', [['sharp', 'острые (Figma 222:3330)'], ['round', 'скруглённые (217:2820)']], 'sharp');
-  row('Папки · раскрытие', 'bigf', [['plain', 'без обводки (Figma 41:205)'], ['lime', 'лаймовая обводка']], 'plain');
-  row('Кейсы · сетка', 'cases', [['e2', 'Т2 · по Figma 222:3330'], ['e1', 'С · стиль, моно'], ['e1o', 'С · стиль, RT Obligat'], ['s2', 'Ш2'], ['d1', 'Д1 · плитка'], ['d2', 'Д2 · три с подписями'], ['d3', 'Д3 · по одному, длиннее']], 'e2');
-  row('Кейсы · фон карточек', 'caseb', [['glass', 'стекло'], ['white', 'белый']], 'glass');
+  root.dataset.bigf = 'plain'; // раскрытая папка без лаймовой обводки (Figma 41:205)
+  row('Кейсы · сетка', 'cases', [['e2', 'Т2 · по Figma 222:3330'], ['e1', 'С · стиль, моно'], ['e1o', 'С · стиль, RT Obligat'], ['s2', 'Ш2'], ['d1', 'Д1 · плитка']], 'e2');
+  root.dataset.caseb = 'glass'; // 24.11: фон карточек кейсов — стекло
   // 3 · Обо мне
-  row('Обо мне · вид', 'about', [['figma', 'карточки (Figma)'], ['facts', 'сетка фактов']], 'figma');
   root.dataset.abouth = 'over'; // 24.11: заголовок «Обо мне» — стекло поверх карточек
-  row('Обо мне · подложка', 'aboutbg', [['none', 'без'], ['glass', 'стеклянная']], 'none');
+  root.dataset.aboutbg = 'none'; // подложки у «Обо мне» нет
   // 4 · Контакты
   row('Контакты · кнопки', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло']], 'icons');
   document.body.appendChild(pick); set(mode);
@@ -127,16 +126,7 @@
     root.style.setProperty('--cxv', st(Math.max(0, Math.min(1, (e - .45) / .4))).toFixed(3)); };
   addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); })();
 
-/* «Обо мне» в новом стиле: вместо цветных карточек — сетка фактов с тонкими линиями (как ячейки в её референсе Services) */
-(() => { const pile = document.getElementById('pile'); if (!pile) return;
-  const src = [...pile.querySelectorAll(':scope > .card')];
-  const facts = document.createElement('div'); facts.className = 'facts';
-  const order = ['card--white', 'card--lime', 'card--ink', 'card--paper', 'card--sky'];
-  const list = [...order.map(c => src.find(x => x.classList.contains(c) && !x.textContent.includes('образование'))), src.find(x => x.textContent.includes('образование'))].filter(Boolean);
-  list.forEach((c, i) => { const l = c.querySelector('.card__l')?.textContent || '', h = c.querySelector('.card__h')?.textContent || '';
-    const body = c.querySelector('ul') ? [...c.querySelectorAll('li')].map(li => li.textContent).join('<br>') : (c.querySelector('p')?.innerHTML || '');
-    facts.insertAdjacentHTML('beforeend', `<div class="fact"><span class="fact__n">(${String(i + 1).padStart(2, '0')}) ${l}</span>${h ? `<b class="fact__h">${h}</b>` : ''}<p class="fact__p">${body}</p></div>`); });
-  pile.appendChild(facts); })();
+
 
 /* Т2 (Figma 222:3330): крупные подписи кейсов отдельными блоками в сетке; у мелких — её названия */
 (() => { const cs = [...document.querySelectorAll('.cases__grid .case')];
