@@ -29,7 +29,7 @@ html[data-footnav=off] .foot__nav{display:none}
 
 /* Масштаб по блокам: у кейсов и «Обо мне» — свой zoom (fit.js), у контактов — множитель к --ck */
 .cases{zoom:var(--sbc,var(--sb,1))}
-.about{zoom:var(--sba,var(--sb,1))}
+.about{zoom:calc(var(--sba,var(--sb,1)) * var(--about-k,1))}
 
 /* «Обо мне»: размер заголовка */
 html[data-abouth=contacts] .v7 .pile__word{font-size:104px;top:280px}
@@ -214,9 +214,9 @@ html[data-cases=s2] .file__pv .chip,html[data-cases^=d] .file__pv .chip{left:24p
 html[data-cases=s2] .file:hover,html[data-cases^=d] .file:hover{transform:translateY(-8px)}
 html[data-cases=s2] .file:hover .file__pv,html[data-cases^=d] .file:hover .file__pv{transform:none;box-shadow:none}
 html[data-cases=s2] .plate,html[data-cases^=d] .plate{left:24px;translate:0 0;text-align:left}
-html[data-cases=s2][data-caseb=glass] .file{background:rgba(3,56,158,.2);backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);box-shadow:inset 0 0 72px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.3)}
-html[data-cases=s2][data-caseb=glass] .file__t{color:#fff}
-html[data-cases=s2][data-caseb=glass] .file__m{color:var(--lime)}
+html[data-caseb=glass] .file{background:rgba(3,56,158,.2);backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);box-shadow:inset 0 0 72px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.3)}
+html[data-caseb=glass] .file__t{color:#fff}
+html[data-caseb=glass] .file__m{color:var(--lime)}
 
 /* ── Кейсы по мотивам brand.dropbox.com (24.11). Общее: сетка 12 колонок, «КЕЙСЫ» — строкой сверху, картинки крупные ── */
 html[data-cases^=d] .cases__grid{grid-template-columns:repeat(12,minmax(0,1fr));max-width:1328px;margin:0 auto;gap:var(--s-40);align-items:start;justify-content:stretch}
@@ -240,8 +240,53 @@ html[data-cases=d2] .case:nth-of-type(2),html[data-cases=d2] .case-cap--2{grid-c
 html[data-cases=d2] .case:nth-of-type(3),html[data-cases=d2] .case-cap--3{grid-column:9/13}
 html[data-cases=d2] .case{grid-row:2} html[data-cases=d2] .case-cap{grid-row:3;margin-top:calc(var(--s-16) - var(--s-40));grid-template-columns:auto 1fr auto;align-items:baseline;gap:var(--s-12)}
 html[data-cases=d2] .case-cap__t{font-size:28px}
-/* Д3 · большой + два стопкой (иллюстрации в Imagery): главный кейс на 8 колонок, два других справа друг под другом — высоты совпадают */
-html[data-cases=d3] .case:nth-of-type(1){grid-column:1/9;grid-row:2/4}
-html[data-cases=d3] .case:nth-of-type(2){grid-column:9/13;grid-row:2}
-html[data-cases=d3] .case:nth-of-type(3){grid-column:9/13;grid-row:3}
-html[data-cases=d3] .case:nth-of-type(1) .case__h{font-size:56px;max-width:720px}
+/* Д3 · по одному, длиннее (её задача 24.11: управлять вниманием): кейсы идут сверху вниз от главного к дополнительным,
+   каждый — отдельным «кадром» по сетке со сдвигом, рядом подпись; карточка помещается в экран. Последний блок — мелкие кейсы. */
+html[data-cases=d3] .cases__grid{row-gap:var(--s-120)}
+html[data-cases=d3] .case-cap{display:grid;color:#fff;align-self:end;align-content:end;gap:var(--s-12);padding-bottom:var(--s-8)}
+html[data-cases=d3] .v7 .case__h{display:none}
+html[data-cases=d3] .v7 .case__img{top:7%;height:93%}
+html[data-cases=d3] .v7 .case--car .case__spin{top:22%;left:8%;width:84%}
+html[data-cases=d3] .case-cap__t{font-size:56px}
+html[data-cases=d3] .case:nth-of-type(1){grid-column:2/8;grid-row:2}  html[data-cases=d3] .case-cap--1{grid-column:8/12;grid-row:2}
+html[data-cases=d3] .case:nth-of-type(2){grid-column:7/12;grid-row:3}  html[data-cases=d3] .case-cap--2{grid-column:2/6;grid-row:3;text-align:right;justify-items:end}
+html[data-cases=d3] .case:nth-of-type(3){grid-column:3/8;grid-row:4}  html[data-cases=d3] .case-cap--3{grid-column:8/12;grid-row:4}
+html[data-cases=d3] .files{margin-top:var(--s-120)}
+html[data-cases=d3] .files::before{content:"Ещё кейсы";grid-column:1/13;font:400 56px/.9 var(--display);letter-spacing:-.03em;text-transform:uppercase;color:#fff}
+
+/* ── Первый экран (24.11): папки пустые — без картинки кейса, только стекло; у окна с глазами нет кнопок TG и CV ── */
+.h-fix .ic__in,.ic__blur{display:none}
+.h-fix .ic__back path{fill:rgba(255,255,255,.16);stroke:rgba(255,255,255,.6)}
+.h-fix .ic__front{background:linear-gradient(160deg,rgba(255,255,255,.42),rgba(255,255,255,.14) 45%,rgba(255,255,255,.22));box-shadow:inset 0 1px 0 rgba(255,255,255,.75),inset 0 0 0 1px rgba(255,255,255,.45),0 10px 24px rgba(10,30,90,.18)}
+.win__bot .pill{display:none}
+
+/* ── «Обо мне» крупнее (24.11): блок ×1,2; сцена 1440 всегда по центру, края не обрезают композицию ── */
+:root{--about-k:1.2}
+.v7 .pile{max-width:none;margin-left:calc(50% - 720px)}
+.about{overflow-x:clip}
+
+/* ── «Обо мне» · колода (24.11): слева стеклянный заголовок, справа веер карточек — верхняя видна целиком и крупно.
+   Клик / свайп / кнопка → верхняя улетает влево и уходит в конец колоды. Заголовок-стекло лежит поверх левого края колоды. ── */
+.deck,.deck-ui{display:none}
+html[data-about=deck] .v7 .pile > .card,html[data-about=deck] .pile__tidy{display:none!important}
+html[data-about=deck] .v7 .pile{height:640px}
+html[data-about=deck] .v7 .pile__glass{left:170px;top:250px}
+html[data-about=deck] .v7 .pile .toy{left:150px!important;top:120px!important;width:110px!important;--r:-10deg!important}
+html[data-about=deck] .deck{display:block;position:absolute;left:790px;top:70px;width:480px;height:520px;z-index:20;cursor:pointer;touch-action:pan-y}
+html[data-about=deck] .deck-ui{display:flex;position:absolute;left:180px;top:470px;z-index:30;align-items:center;gap:var(--s-16);color:#fff}
+.deck .dk{position:absolute;left:0;top:0;width:460px;padding:28px 30px 32px;border-radius:28px;color:var(--ink);box-shadow:0 30px 60px -28px rgba(0,10,50,.6);
+  transform-origin:50% 100%;transition:transform .55s var(--spring,cubic-bezier(.2,1.2,.3,1)),opacity .35s,box-shadow .3s;will-change:transform}
+.deck .dk .card__l{font-size:15px;margin-bottom:12px}
+.deck .dk .card__h{font-size:52px;margin-bottom:12px}
+.deck .dk p,.deck .dk li{font-size:19px;line-height:1.4}
+.deck .dk.out{transform:translate(-115%,60px) rotate(-14deg)!important;opacity:0;transition:transform .5s var(--ease),opacity .45s}
+.deck:hover .dk[data-i="0"]{box-shadow:0 40px 70px -28px rgba(0,10,50,.7)}
+.deck-ui__n{font:500 18px/1 var(--mono);letter-spacing:.02em}
+.deck-ui__n b{font-weight:500;color:var(--lime)}
+.deck-ui button{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgba(255,255,255,.14);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:background .2s,transform .2s var(--ease)}
+.deck-ui button:hover{background:rgba(255,255,255,.24);transform:translateX(3px)}
+.deck-ui button:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+.deck-ui button svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.deck-ui__hint{font:400 15px/1.3 var(--text);color:rgba(255,255,255,.7)}
+@media (prefers-reduced-motion:reduce){.deck .dk{transition:none}}
