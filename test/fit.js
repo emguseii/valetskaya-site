@@ -54,13 +54,13 @@
   // 2 · Кейсы
   row('Углы', 'corners', [['sharp', 'острые (Figma 222:3330)'], ['round', 'скруглённые (217:2820)']], 'sharp');
   root.dataset.bigf = 'plain'; // раскрытая папка без лаймовой обводки (Figma 41:205)
-  row('Кейсы · сетка', 'cases', [['e2', 'Т2 · по Figma 222:3330'], ['e1', 'С · стиль, моно'], ['e1o', 'С · стиль, RT Obligat'], ['s2', 'Ш2'], ['d1', 'Д1 · плитка']], 'e2');
+  row('Кейсы · сетка', 'cases', [['n1', 'NEW · Figma 238:8845'], ['e2', 'Т2 · по Figma 222:3330'], ['e1', 'С · стиль, моно'], ['e1o', 'С · стиль, RT Obligat'], ['s2', 'Ш2'], ['d1', 'Д1 · плитка']], 'n1');
   root.dataset.caseb = 'glass'; // 24.11: фон карточек кейсов — стекло
   // 3 · Обо мне
   root.dataset.abouth = 'over'; // 24.11: заголовок «Обо мне» — стекло поверх карточек
   root.dataset.aboutbg = 'none'; // подложки у «Обо мне» нет
   // 4 · Контакты
-  row('Контакты · кнопки', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло'], ['mono', 'иконки с подписью (Figma 234:8018)']], 'icons');
+  row('Контакты · кнопки', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло'], ['mono', 'иконки с подписью (Figma 234:8018)']], 'mono');
   document.body.appendChild(pick); set(mode);
 
   // Кейсы, швейцарская сетка: подпись блока (черновик текста — отредактируем, если раскладка понравится)
@@ -71,14 +71,14 @@
   document.body.insertAdjacentHTML('beforeend', '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="glassRim" x="-5%" y="-5%" width="110%" height="110%"><feMorphology in="SourceAlpha" operator="erode" radius="1.6" result="e"/><feComposite in="SourceGraphic" in2="e" operator="out"/></filter></svg>');
   // «Навести порядок» — круглая кнопка с иконкой «вернуть» (её просьба 24.11); подпись остаётся для экранных читалок и во всплывающей подсказке
   { const t = document.querySelector('.pile__tidy'); if (t) { t.setAttribute('aria-label', 'Навести порядок'); t.title = 'Навести порядок';
-    t.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4 4.5v4h4"/></svg>'; } }
+    t.innerHTML = '<svg class="replay" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3C4.55217 3.00007 4.99992 3.44783 5 4V6.3457C5.89841 5.23377 7.05365 4.34399 8.37793 3.76172C10.2496 2.93879 12.3458 2.77755 14.3213 3.30469C16.2966 3.8319 18.0343 5.01616 19.2471 6.66211C20.4597 8.30812 21.0759 10.3185 20.9941 12.3613C20.9122 14.4043 20.1365 16.3586 18.7959 17.9023C17.4553 19.446 15.6294 20.488 13.6182 20.8555C11.6069 21.2229 9.53026 20.8938 7.73047 19.9238C5.93071 18.9537 4.51372 17.3996 3.71484 15.5176C3.49947 15.0093 3.73694 14.4218 4.24512 14.2061C4.75333 13.9905 5.34076 14.2283 5.55664 14.7363C6.17797 16.2 7.27912 17.4086 8.67871 18.1631C10.0786 18.9176 11.6944 19.1735 13.2588 18.8877C14.8231 18.6018 16.2435 17.7915 17.2861 16.5908C18.3287 15.3901 18.9314 13.8702 18.9951 12.2812C19.0587 10.6924 18.5798 9.12885 17.6367 7.84863C16.6934 6.56844 15.3421 5.64638 13.8057 5.23633C12.2692 4.82635 10.6384 4.95175 9.18262 5.5918C7.87668 6.166 6.78247 7.12531 6.03906 8.33398H9.33398C9.88606 8.33418 10.3339 8.78189 10.334 9.33398C10.3339 9.88609 9.88606 10.3338 9.33398 10.334H4C3.44776 10.334 3.00007 9.88621 3 9.33398V4C3.00008 3.44778 3.44776 3 4 3Z"/></svg>'; } } // Web / Round Button / Replay (Figma 238:8138)
   // Подписи кейсов для Ш3–Ш5: номер, короткое название, год — вместо длинного заголовка в карточке (меньше букв)
   [['01', 'Новая статистика', '2024'], ['02', 'Путь нового автора', '2025'], ['03', 'Карусель авторов', '2025–2026']].forEach(([n, t, y], i) => {
     const c = document.querySelectorAll('.cases__grid .case')[i]; if (!c) return;
     c.insertAdjacentHTML('afterend', `<div class="case-cap case-cap--${i + 1}" aria-hidden="true"><span class="case-cap__n">${n}</span><b class="case-cap__t">${t}</b><span class="case-cap__y">${y}</span></div>`);
     c.nextElementSibling.addEventListener('click', () => c.click()); });
   // Роль — в заголовке окна (её выбор 24.11)
-  document.querySelector('.win__top span').textContent = 'Валя.app — Product Designer';
+  document.querySelector('.win__top span').textContent = 'Продуктовый дизайнер.app'; // её комментарий в Figma 24.11
 
   // Кнопки контактов иконками из стекла (вариант 24.11): Telegram, LinkedIn, почта (копирует), CV
   const ico = {
@@ -97,7 +97,7 @@
   document.querySelector('.cx__icons').insertAdjacentHTML('afterend', `<div class="cx__mono">
     <a class="cx__m" href="${href('Telegram')}" target="_blank" rel="noopener"><img src="assets/contacts/Telegram.png" alt="" width="60" height="60"><span>Telegram</span></a>
     <a class="cx__m" href="${href('LinkedIn')}" target="_blank" rel="noopener"><img src="assets/contacts/Linkedin.png" alt="" width="60" height="60"><span>LinkedIn</span></a>
-    <button class="cx__m" type="button" data-copy-proxy2 title="Скопировать почту"><img src="assets/contacts/Email.png" alt="" width="60" height="60"><span>Почта</span></button>
+    <button class="cx__m" type="button" data-copy-proxy2 title="Скопировать почту"><img src="assets/contacts/Email.svg" alt="" width="60" height="60"><span>Почта</span></button>
     <a class="cx__m" href="${href('Резюме')}" target="_blank" rel="noopener"><img src="assets/contacts/CV.png" alt="" width="60" height="60"><span>Резюме</span></a></div>`);
   document.querySelector('[data-copy-proxy2]').addEventListener('click', () => mailBtn && mailBtn.click());
 
@@ -142,4 +142,22 @@
     d.addEventListener('click', () => c.click()); d.style.cursor = 'pointer'; c.parentNode.appendChild(d); });
   const T = ['Управление подписчиками', '<em>Компонент</em> → рекламный баннер', '<em>Кое-что</em> для профиля'];
   document.querySelectorAll('.files .file').forEach((f, i) => { if (!T[i]) return; f.insertAdjacentHTML('afterbegin', `<b class="file-ob" aria-hidden="true">${T[i]}</b>`); });
+})();
+
+
+/* Кейсы NEW (Figma 238:8845, её компоненты Case / Big и Case / Small, 24.11 вечером). Всё выровнено по центральной оси:
+   большие кейсы слева кончаются у центра, справа — начинаются от центра; мелкие — колонкой справа от центра */
+(() => { const cs = document.querySelector('.cases'); if (!cs) return;
+  const big = (cls, href, ratio, img, h, m) => `<a class="nc__big ${cls}" href="${href}"><span class="nc__cv nc__cv--${ratio}"><img src="assets/cases/${img}.webp" alt="" loading="lazy"></span><span class="nc__d"><b class="nc__h">${h}</b><span class="nc__m">${m}</span></span></a>`;
+  const small = (img, meta, h) => `<div class="nc__sm"><span class="nc__scv"><img src="assets/cases/${img}.webp" alt="" loading="lazy"><b class="nc__g">${meta}</b></span><b class="nc__sh">${h}</b></div>`;
+  cs.insertAdjacentHTML('beforeend', `<div class="nc">
+    ${big('nc__big--1', '#case-stat', '1x1', 'stat', '<em>new</em> статистика на web<br>и с нуля на mobile', 'июль — декабрь 2024 · WEB · Mobile')}
+    ${big('nc__big--2', '#case-car', '3x2', 'carousel', '<em>4 A/B‑теста:</em> почему iOS<br>и Android реагировали<br>по‑разному', 'февраль 2025 · февраль 2026 · WEB · Mobile')}
+    ${big('nc__big--3', '#case-path', '5x4', 'onboarding', '<em>+16</em> оформленных<br>сообществ авторами', 'апрель — июль 2025 · WEB · Mobile')}
+    <span class="nc__more">(+3) ещё в работе</span>
+    <div class="nc__small">
+      ${small('subs', 'SPA · 2025 · в процессе', 'UX/UI Улучшения<br>раздела<br>подписчиков')}
+      ${small('ad', 'DS · 2026', 'маркетинговый<br>компонент<br>для быстрого<br>запуска кампаний')}
+      ${small('mediawall', 'NDA · 2026', 'Медиастена<br>профиля')}
+    </div></div>`);
 })();

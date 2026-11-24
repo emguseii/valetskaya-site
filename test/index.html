@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ТЕСТ · Валентина Валецкая · Web</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&family=Geist:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/tokens.css?v=11230410">
-<link rel="stylesheet" href="css/web.css?v=11241940">
+<link rel="stylesheet" href="css/web.css?v=11242050">
 <link rel="stylesheet" href="css/modal.css?v=11230410">
 <!-- ТЕСТОВАЯ КОПИЯ (test/): варианты масштаба блоков, 23.11. Пути — от корня сайта через <base>. -->
 <script>/* настройки, которые web.js читает при загрузке */ { const v = new URLSearchParams(location.search).get('sky1'); const st = new URLSearchParams(location.search).get('style') || 'old'; document.documentElement.dataset.style = st; document.documentElement.dataset.skyTop = v === null ? (st === 'new' ? '.15' : '.35') : v; }
 /* «Обо мне» как в Figma 165:2635: положение [left, top] и наклон каждой карточки (порядок как в разметке) */
 window.PILE_LAYOUT = [[188, 130, -6], [540, 72, 2], [881, 210, 7], [965, 142, -6], [561, 388, -6], [903, 395, 6], [242, 366, 4]];</script>
-<link rel="stylesheet" href="test/fit.css?v=35">
+<link rel="stylesheet" href="test/fit.css?v=37">
 </head>
 <body class="v7">
 <div class="sky" aria-hidden="true"></div>
@@ -149,10 +149,8 @@ window.PILE_LAYOUT = [[188, 130, -6], [540, 72, 2], [881, 210, 7], [965, 142, -6
 <!-- 5 · ФУТЕР — вместе с контактами один экран (Figma 172:2945) -->
 <footer class="foot">
   <img class="foot__name" src="assets/hero-name-v7.webp" alt="Валентина Валецкая" width="1438" height="393">
-  <nav class="foot__nav" aria-label="Разделы внизу"><a href="#cases">Кейсы</a><a href="#about">Обо мне</a><a href="#contacts">Контакты</a></nav>
-  <span class="foot__sp"></span>
-  <a class="foot__cv" href="cv.pdf" target="_blank" rel="noopener">CV <span aria-hidden="true">↗</span></a><a class="foot__up" href="#top" aria-label="Наверх">↑</a>
-  <p class="foot__meta">© 2026 Валентина Валецкая · Нидерланды · Шрифт заголовков <a href="https://www.rieslingtype.com/" target="_blank" rel="noopener">RT&nbsp;Obligat — Riesling Type</a></p>
+  <div class="foot__act"><a class="foot__cv" href="cv.pdf" target="_blank" rel="noopener">CV <span aria-hidden="true">↗</span></a><a class="foot__up" href="#top" aria-label="Наверх">↑</a></div>
+  <p class="foot__meta">© 2026 Валентина Валецкая · Нидерланды · Шрифт <a href="https://www.rieslingtype.com/" target="_blank" rel="noopener">RT&nbsp;Obligat — Riesling Type</a></p>
 </footer>
 
 <!-- Кейс — на весь экран, со своим адресом (#case-…), «назад» закрывает -->
@@ -170,6 +168,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => { a.href = location.pathn
 <script src="js/eyes.js?v=11230410"></script>
 <script src="js/cases.js?v=11230410"></script>
 <script src="js/web.js?v=11241505"></script>
-<script src="test/fit.js?v=30"></script>
+<script src="test/fit.js?v=32"></script>
 </body>
 </html>

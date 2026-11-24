@@ -531,3 +531,6 @@ html:not([data-cases]) .file__pv img,html:not([data-cases]) .file__pv b{position
 .cx__m:hover{transform:translateY(-4px);color:#fff}
 .cx__m:focus-visible{outline:3px solid var(--lime);outline-offset:6px;border-radius:8px}
 @media (prefers-reduced-motion:reduce){.cx__m{transition:none}}
+
+/* Футер: лаймовую «CV ↗» скрыли (её решение 24.11 вечером) — резюме есть в контактах и в меню */
+.foot__cv{display:none}
