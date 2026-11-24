@@ -52,9 +52,12 @@
   // 1 · Первый экран. Облака web.js читает при загрузке — кнопка перезагружает страницу (значение — в html[data-sky-top], ставит скрипт в <head>)
   row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало'], ['0', 'чистое небо']], root.dataset.skyTop, true);
   // 2 · Кейсы
-  row('Кейсы · сетка', 'cases', [['e1', 'С · стиль (как PROJECTS)'], ['s2', 'Ш2'], ['d1', 'Д1 · плитка'], ['d2', 'Д2 · три с подписями'], ['d3', 'Д3 · по одному, длиннее']], 'e1');
-  row('Кейсы · фон карточек', 'caseb', [['white', 'белый'], ['glass', 'стекло']], 'white');
+  row('Углы', 'corners', [['sharp', 'острые (Figma 222:3330)'], ['round', 'скруглённые (217:2820)']], 'sharp');
+  row('Папки · раскрытие', 'bigf', [['plain', 'без обводки (Figma 41:205)'], ['lime', 'лаймовая обводка']], 'plain');
+  row('Кейсы · сетка', 'cases', [['e2', 'Т2 · по Figma 222:3330'], ['e1', 'С · стиль, моно'], ['e1o', 'С · стиль, RT Obligat'], ['s2', 'Ш2'], ['d1', 'Д1 · плитка'], ['d2', 'Д2 · три с подписями'], ['d3', 'Д3 · по одному, длиннее']], 'e2');
+  row('Кейсы · фон карточек', 'caseb', [['glass', 'стекло'], ['white', 'белый']], 'glass');
   // 3 · Обо мне
+  row('Обо мне · вид', 'about', [['figma', 'карточки (Figma)'], ['facts', 'сетка фактов']], 'figma');
   root.dataset.abouth = 'over'; // 24.11: заголовок «Обо мне» — стекло поверх карточек
   row('Обо мне · подложка', 'aboutbg', [['none', 'без'], ['glass', 'стеклянная']], 'none');
   // 4 · Контакты
@@ -134,3 +137,12 @@
     const body = c.querySelector('ul') ? [...c.querySelectorAll('li')].map(li => li.textContent).join('<br>') : (c.querySelector('p')?.innerHTML || '');
     facts.insertAdjacentHTML('beforeend', `<div class="fact"><span class="fact__n">(${String(i + 1).padStart(2, '0')}) ${l}</span>${h ? `<b class="fact__h">${h}</b>` : ''}<p class="fact__p">${body}</p></div>`); });
   pile.appendChild(facts); })();
+
+/* Т2 (Figma 222:3330): крупные подписи кейсов отдельными блоками в сетке; у мелких — её названия */
+(() => { const cs = [...document.querySelectorAll('.cases__grid .case')];
+  cs.forEach((c, i) => { const h = c.querySelector('.case__h'); if (!h) return;
+    const d = document.createElement('div'); d.className = 'case-ob case-ob--' + (i + 1); d.setAttribute('aria-hidden', 'true'); d.innerHTML = h.innerHTML;
+    d.addEventListener('click', () => c.click()); d.style.cursor = 'pointer'; c.parentNode.appendChild(d); });
+  const T = ['Управление подписчиками', '<em>Компонент</em> → рекламный баннер', '<em>Кое-что</em> для профиля'];
+  document.querySelectorAll('.files .file').forEach((f, i) => { if (!T[i]) return; f.insertAdjacentHTML('afterbegin', `<b class="file-ob" aria-hidden="true">${T[i]}</b>`); });
+})();
