@@ -231,3 +231,35 @@ html[data-v="2"] .stage{position:relative;z-index:2}
 html[data-v="2"] .card--hung{padding-top:34px;cursor:default}
 /* контакты: текст и кнопки на 40 ниже (её комментарий) */
 html[data-v="2"] .cx__core{top:calc(50% + 30px / 2 + 40px)}
+
+/* ══ Вариант №2 · правки по комментариям 24.11, 22:20–22:37 ══ */
+/* статистика: кейс 490 (обложка 1×1 490), кейс сдвинут ниже; карусель — через 52 под ней */
+html[data-v="2"] .nc__big--1{width:490px;margin-top:84px}
+html[data-v="2"] .nc__big--1 .nc__cv--1x1{width:490px;height:490px}
+html[data-v="2"] .nc__big--2{margin-top:52px}
+/* мелкие кейсы: подпись «кейсы поменьше» над колонкой (−40), лаймовые метки слева от оси (отступ 12), без меток на обложках */
+html[data-v="2"] .nc__more{grid-column:2;grid-row:3;justify-self:start;margin:658px 0 0;padding:0;text-box:trim-both cap alphabetic}
+html[data-v="2"] .nc__small{grid-column:2;grid-row:3;margin-top:707px}
+html[data-v="2"] .nc__sm{position:relative}
+.nc__g2{position:absolute;right:calc(100% + 12px);top:0;font:400 28px/.86 var(--display);letter-spacing:-.04em;text-transform:uppercase;color:var(--lime);white-space:nowrap}
+html[data-v="2"] .nc__sh{padding-top:0}
+/* ховер мелких кейсов (оба варианта): обложка приподнимается, картинка чуть крупнее — как у больших */
+.nc__scv{transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.nc__scv img{transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.nc__sm:hover .nc__scv{transform:translateY(-6px)}
+.nc__sm:hover .nc__scv img{transform:scale(1.03)}
+@media (prefers-reduced-motion:reduce){.nc__scv,.nc__scv img{transition:none}}
+/* «Обо мне»: карточка на верёвке — бирка (Figma 243:8893): прямые углы, лайм, подпись по центру, тень; качается на дырочке */
+html[data-v="2"] #pile .card--hung{width:360px!important;padding:32px 14px 16px;text-align:center;box-shadow:0 29px 50px -18px rgba(0,20,69,.55);transform-origin:50% 17px}
+html[data-v="2"] .card--hung .card__l{font:500 12px/1 var(--mono);color:#4a4a45}
+html[data-v="2"] .card--hung ul{margin-top:6px;text-align:left;font:400 16.95px/1.4 var(--text)}
+/* «пошатай»: карточки чуть покачиваются, каждая в своём ритме; при перетаскивании — стоят */
+@keyframes cardSway{from{rotate:-.7deg;translate:0 -2px}to{rotate:.7deg;translate:0 2px}}
+@keyframes hungSway{from{rotate:-1.8deg}to{rotate:1.8deg}}
+html[data-v="2"] #pile :is(.card,.toy){animation:cardSway 4.6s ease-in-out infinite alternate}
+html[data-v="2"] #pile :is(.card,.toy):nth-child(2n){animation-duration:5.4s;animation-delay:-1.3s}
+html[data-v="2"] #pile :is(.card,.toy):nth-child(3n){animation-duration:3.9s;animation-delay:-2.1s}
+html[data-v="2"] #pile .card--hung{animation:hungSway 3.6s ease-in-out infinite alternate}
+html[data-v="2"] #pile :is(.card,.toy).grab{animation:none}
+html[data-v="2"] .pile__glass{transition:opacity .5s ease}
+@media (prefers-reduced-motion:reduce){html[data-v="2"] #pile :is(.card,.toy){animation:none}}

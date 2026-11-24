@@ -86,7 +86,7 @@
   defs.appendChild(mask); svg.prepend(defs);
   svg.querySelectorAll('path').forEach(p => p.setAttribute('mask', 'url(#ropeHide)'));
   const tick = () => { const sb = svg.getBoundingClientRect(), k = sb.width / 1440 || 1;
-    targets.forEach(t => { const b = t.el.getBoundingClientRect(), on = !t.el.closest('.folder.on') && getComputedStyle(t.el).opacity > .05; // раскрытая папка — дыру убираем сразу, без промежуточных кадров (иначе верёвки мигали)
+    targets.forEach(t => { const b = t.el.getBoundingClientRect(), on = !t.el.closest('.folder.on') && getComputedStyle(t.el).opacity > .98; // раскрытая папка — дыру убираем сразу, без промежуточных кадров (иначе верёвки мигали)
       t.r.setAttribute('x', ((b.left - sb.left) / k + 1).toFixed(1)); t.r.setAttribute('y', ((b.top - sb.top) / k + 1).toFixed(1));
       t.r.setAttribute('width', on ? Math.max(0, b.width / k - 2).toFixed(1) : 0); t.r.setAttribute('height', Math.max(0, b.height / k - 2).toFixed(1));
       t.r.setAttribute('rx', t.rad); });
@@ -113,7 +113,7 @@
   cs.insertAdjacentHTML('beforeend', `<div class="nc">
     ${big('nc__big--1', '#case-stat', '1x1', 'stat', '<em>new</em> статистика на web<br>и с нуля на mobile', 'июль — декабрь 2024 · WEB · Mobile')}
     ${big('nc__big--2', '#case-car', '3x2', 'carousel', '<em>4 A/B‑теста:</em> почему iOS<br>и Android реагировали<br>по‑разному', 'февраль 2025 · февраль 2026 · WEB · Mobile')}
-    ${big('nc__big--3', '#case-path', '5x4', 'onboarding', '<em>+16</em> оформленных<br>сообществ авторами', 'апрель — июль 2025 · WEB · Mobile')}
+    ${big('nc__big--3', '#case-path', '5x4', 'onboarding', '<em>+16%</em> оформленных<br>сообществ авторами', 'апрель — июль 2025 · WEB · Mobile')}
     <span class="nc__more">(+3) ещё в работе</span>
     <div class="nc__small">
       ${small('subs', 'SPA · 2025 · в процессе', 'UX/UI<br>Улучшения<br>раздела<br>подписчиков')}
@@ -136,6 +136,11 @@
     d.insertAdjacentHTML('beforeend', '<linearGradient id="ropeGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".18" stop-color="#fff" stop-opacity=".35"/><stop offset=".42" stop-color="#e9f2ff" stop-opacity=".55"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/><stop offset=".6" stop-color="#cfe0ff" stop-opacity=".35"/><stop offset=".85" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity=".3"/></linearGradient>'); }
   // 3) обложка онбординга
   const ob = document.querySelector('.nc__big--3 img'); if (ob) ob.src = 'assets/cases/onboarding-v2.webp';
+  // обложка статистики (кейс стал 490) и мелкие кейсы по её новой вёрстке (Figma 230:4446, 24.11 22:37): метки слева от оси, порядок NDA → DS → WIP
+  const st = document.querySelector('.nc__big--1 img'); if (st) st.src = 'assets/cases/stat-v2.webp';
+  const sm = (img, meta, h) => `<div class="nc__sm"><b class="nc__g2">${meta}</b><span class="nc__scv"><img src="assets/cases/${img}.webp" alt="" loading="lazy"></span><b class="nc__sh">${h}</b></div>`;
+  const more = document.querySelector('.nc__more'); if (more) more.textContent = 'кейсы поменьше';
+  const small = document.querySelector('.nc__small'); if (small) small.innerHTML = sm('mediawall-v2', '2026 · NDA', 'Медиастена<br>профиля') + sm('ad-v2', '2026 · DS', 'маркетинговый<br>компонент<br>для быстрого<br>запуска кампаний') + sm('subs-v2', '2025 · WIP', 'UX/UI<br>Улучшения<br>раздела<br>подписчиков');
   // 2) карточка, на которой висит верёвка: дырочка сверху, не таскается
   const card = document.querySelector('#pile .card--lime'); if (!card) return;
   card.insertAdjacentHTML('afterbegin', '<i class="card__hole" aria-hidden="true"></i>'); card.classList.add('card--hung');
@@ -160,4 +165,16 @@
   addEventListener('load', draw); addEventListener('resize', later); new ResizeObserver(later).observe(document.body);
   document.querySelectorAll('img').forEach(i => i.addEventListener('load', later, { once: true }));
   setTimeout(draw, 600); setTimeout(draw, 2000);
+  // «Обо мне» проявляется постепенно, когда открыто ≥60 % надписи (карточки её закрывают; растащили — видно)
+  const pile = document.getElementById('pile'), word = pile && pile.querySelector('.pile__glass');
+  if (pile && word) { const cards = [...pile.querySelectorAll('.card, .toy')]; let q = 0;
+    const reveal = () => { q = 0; const w = word.getBoundingClientRect(); if (!w.width) return;
+      const rs = cards.map(c => c.getBoundingClientRect()); let free = 0, all = 0;
+      for (let i = 0; i < 28; i++) for (let j = 0; j < 8; j++) { const x = w.left + (i + .5) * w.width / 28, y = w.top + (j + .5) * w.height / 8; all++;
+        if (!rs.some(r => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom)) free++; }
+      const f = free / all; word.style.opacity = Math.max(0, Math.min(1, (f - .6) / .3)).toFixed(3); };
+    const tick = () => { if (!q) q = requestAnimationFrame(reveal); };
+    pile.addEventListener('pointermove', tick); pile.addEventListener('pointerup', () => setTimeout(reveal, 950));
+    document.querySelector('.pile__tidy')?.addEventListener('click', () => setTimeout(reveal, 950));
+    addEventListener('resize', tick); addEventListener('load', reveal); setTimeout(reveal, 300); }
 })();
