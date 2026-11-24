@@ -411,13 +411,10 @@ html{overscroll-behavior-y:none} /* без «пружины» в конце ст
 .cx__btn:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
 .foot{position:relative;z-index:2;height:var(--foot-h);display:flex;align-items:center;gap:40px;padding:0 48px 10px;
   background:linear-gradient(180deg,rgba(7,31,114,0),rgba(7,31,114,.55));font:500 14px/1.5 var(--text)}
-.foot__name{width:190px;height:auto}
 .foot__nav{display:flex;gap:22px;color:rgba(255,255,255,.85)}
 .foot__nav a:hover,.foot__meta a:hover{color:var(--lime)}
 .foot__sp{flex:1}
-.foot__cv{height:40px;display:inline-flex;align-items:center;gap:6px;padding:0 18px;border-radius:20px;background:var(--lime);color:var(--ink);font-weight:600}
 .foot__up{width:40px;height:40px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-weight:600}
-.foot__cv:hover,.foot__up:hover{filter:brightness(.95)}
 .foot__meta{position:absolute;left:48px;bottom:8px;font-size:11px;color:rgba(255,255,255,.55)}
 .foot__meta a{text-decoration:underline;text-underline-offset:2px}
 @media (prefers-reduced-motion:reduce){.cx__btn{transition:none}}
@@ -508,19 +505,14 @@ html:not([data-cases]) .file__pv img,html:not([data-cases]) .file__pv b{position
 /* Первый экран: узлы раздвигаются не дальше ×1,1, как на тесте (большие сдвиги заворачивали верёвки в петли) */
 :root{--spread-max:1.1}
 
-/* ══ Футер по Figma 206:2814 «Web/Footer · v2» (её переделка 24.11, 19:30) ══
-   Поля по бокам 24 (grid-gutter), имя и кнопки прижаты к низу (отступ 10), строка © — по центру.
-   Снизу вверх лёгкая синяя тень 0 → 55 %. «CV ↗» — лаймовая таблетка 40 с белой кромкой: CV — RT Obligat 18,75, стрелка — Onest Bold 17,5;
-   «↑» — круг 40, стекло 10 %, ховер — лайм. Между кнопками 7,5 */
-.foot{justify-content:space-between;align-items:flex-end;padding:0 var(--s-24) 10px;background:linear-gradient(to bottom,rgba(7,31,114,0),rgba(7,31,114,.55))}
-.foot__meta{left:50%;top:69px;bottom:auto;translate:-50% 0;margin:0;white-space:nowrap}
-.foot__act{display:flex;align-items:center;gap:7.5px}
-.foot__cv{height:40px;gap:2.5px;padding:10px 10px 11.25px;border:.625px solid #fff;border-radius:999px;background:var(--lime);color:var(--ink);font:400 18.75px/1 var(--display);text-box:trim-both cap alphabetic}
-.foot__cv span{font:700 17.5px/1 var(--text)}
+/* ══ Футер по Figma 243:8877 «Web / Footer» (её обновление 24.11, 21:35) ══
+   Без имени и без CV: слева строка © в две строки (Onest 11, белый 55 %), справа «↑» — круг 40, стекло 10 %, ховер — лайм.
+   Поля по бокам 24, содержимое прижато к низу (отступ 10), снизу вверх лёгкая синяя тень 0 → 55 % */
+.foot{justify-content:space-between;align-items:flex-end;gap:var(--s-24);padding:0 var(--s-24) 10px;background:linear-gradient(to bottom,rgba(7,31,114,0),rgba(7,31,114,.55))}
+.foot__meta{position:static;left:auto;top:auto;bottom:auto;translate:none;margin:0 0 6px;font:400 11px/normal var(--text);color:rgba(255,255,255,.55);white-space:nowrap}
 .foot__up{width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,.1);color:#fff;font:700 17.5px/1 var(--text);transition:background .2s var(--ease),color .2s var(--ease)}
 .foot__up:hover{background:var(--lime);color:var(--ink);filter:none}
-.foot__cv:focus-visible,.foot__up:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
-.foot__up:focus-visible{outline-color:#fff}
+.foot__up:focus-visible{outline:3px solid #fff;outline-offset:3px}
 
 /* ══ Контакты · кнопки по Figma 234:8018 «Button / Contacts» (её выбор 24.11 вечером) ══
    4 колонки через 28: иконка 60 (её PNG, белый 30 %), под ней через 16 подпись IBM Plex Mono 13 капсом, 75 %.
@@ -532,8 +524,6 @@ html:not([data-cases]) .file__pv img,html:not([data-cases]) .file__pv b{position
 .cx__m:focus-visible{outline:3px solid var(--lime);outline-offset:6px;border-radius:8px}
 @media (prefers-reduced-motion:reduce){.cx__m{transition:none}}
 
-/* Футер: лаймовую «CV ↗» скрыли (её решение 24.11 вечером) — резюме есть в контактах и в меню */
-.foot__cv{display:none}
 
 /* Контакты: на ховере иконка сменяется её стеклянной версией (её картинки 24.11, Web/Button/Contact/Preview) — плавно, вместе с подъёмом и белой подписью */
 .cx__m{position:relative}
