@@ -421,3 +421,86 @@ html{overscroll-behavior-y:none} /* без «пружины» в конце ст
 .foot__meta{position:absolute;left:48px;bottom:8px;font-size:11px;color:rgba(255,255,255,.55)}
 .foot__meta a{text-decoration:underline;text-underline-offset:2px}
 @media (prefers-reduced-motion:reduce){.cx__btn{transition:none}}
+
+/* ══ 24.11 · перенесено из теста (её выбор) ══ */
+/* Папки в герое: пустые (без картинки кейса), без обводки; раскрытая папка — без лаймовой обводки (Figma 41:205).
+   Ховер — одним плавным движением: маленькая папка растёт и тает, большая проявляется. Верёвки под папками скрыты маской (web.js) */
+.h-fix .ic__in{display:none}
+.h-fix .ic__back path{fill:rgba(255,255,255,.16);stroke:none}
+.h-fix .ic__front{background:linear-gradient(160deg,rgba(255,255,255,.42),rgba(255,255,255,.14) 45%,rgba(255,255,255,.22));box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 10px 24px rgba(10,30,90,.18)}
+.h-fix .ic{transition:opacity .22s var(--ease),transform .5s cubic-bezier(.22,1,.36,1);will-change:transform,opacity}
+.h-fix .folder.on .ic{opacity:0;transform:scale(1.6);transition:opacity .18s var(--ease),transform .5s cubic-bezier(.22,1,.36,1)}
+.h-fix .big{transition:transform .5s cubic-bezier(.22,1,.36,1),opacity .22s var(--ease);will-change:transform,opacity}
+.h-fix .big::before{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),inset 0 0 24px rgba(255,255,255,.12)}
+.h-fix .big__shape path{stroke:none}
+.h-fix .big__h{color:#fff}
+.h-fix .big__h em{color:var(--lime)}
+.h-fix .folder__t,.h-fix .folder__m{transition:opacity .2s var(--ease)}
+@media (prefers-reduced-motion:reduce){.h-fix .ic,.h-fix .big{transition:opacity .15s}}
+
+/* Кейсы — сетка Т2 по Figma 222:3330: 12 колонок, зигзаг, подписи отдельными блоками под карточками.
+   Подписи всех трёх кейсов одним размером 44 (её правка 24.11: в Figma было 56/44). Скругления остаются, у мелких кейсов тоже.
+   html:not([data-cases]) — только основной сайт: в тесте (test/) сетку переключает панель */
+.cases-index,.case-ob,.file-ob{display:none}
+html:not([data-cases]) .cases__grid{grid-template-columns:repeat(12,minmax(0,1fr));max-width:1328px;margin:0 auto;gap:0 var(--s-40);align-items:start;justify-content:stretch}
+html:not([data-cases]) .v7 .case__h,html:not([data-cases]) .v7 .case .chips{display:none}
+html:not([data-cases]) .v7 .case{aspect-ratio:1.06/1;background:rgba(255,255,255,.2);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+html:not([data-cases]) .v7 .case::before{display:none}
+html:not([data-cases]) .v7 .case,html:not([data-cases]) .v7 .case.in-view{border:0;backdrop-filter:none;-webkit-backdrop-filter:none} /* как в тесте: ровное стекло 20 %, без преломления glass.css */
+html:not([data-cases]) .v7 .case:hover,html:not([data-cases]) .v7 .case:focus-visible{transform:translateY(-6px);box-shadow:0 24px 40px -28px rgba(4,12,50,.6)}
+html:not([data-cases]) .v7 .case__img{top:6%;height:94%}
+html:not([data-cases]) .v7 .case--car .case__spin{top:18%;left:6%;width:88%}
+html:not([data-cases]) .case-ob{display:block;margin-top:var(--s-24);color:#fff;font:400 44px/.9 var(--display);text-transform:uppercase;letter-spacing:-.02em;cursor:pointer}
+html:not([data-cases]) .case-ob em{font-style:normal;color:var(--lime)}
+html:not([data-cases]) .cases-index{display:flex;grid-column:7/13;grid-row:1;align-self:start;align-items:flex-end;gap:var(--s-24);color:#fff}
+html:not([data-cases]) .cases-index__h{display:block;margin:0;font:400 133px/.86 var(--display);letter-spacing:-.03em;text-transform:uppercase}
+html:not([data-cases]) .cases-index__m{display:block;padding-bottom:14px;font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.75)}
+html:not([data-cases]) .case:nth-of-type(1){grid-column:1/7;grid-row:1}
+html:not([data-cases]) .case-ob--1{grid-column:1/7;grid-row:2}
+html:not([data-cases]) .case:nth-of-type(3){grid-column:7/10;grid-row:2;margin-top:var(--s-40)}
+html:not([data-cases]) .case-ob--3{grid-column:7/12;grid-row:3}
+html:not([data-cases]) .case:nth-of-type(2){grid-column:3/7;grid-row:4;margin-top:var(--s-120)}
+html:not([data-cases]) .case-ob--2{grid-column:3/8;grid-row:5}
+/* мелкие кейсы — строками справа: название и мета слева, обложка справа (скругление 24, как было) */
+html:not([data-cases]) .files{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--s-40);max-width:1328px;margin:var(--s-120) auto 0;padding:0}
+html:not([data-cases]) .files::before{content:"(+3) ещё в работе";grid-column:4/7;grid-row:1;justify-self:end;font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.75)}
+html:not([data-cases]) .file{grid-column:7/13;display:grid;grid-template-columns:1fr 1fr;column-gap:var(--s-40);align-items:start;width:auto;text-align:left;padding:0;background:none;box-shadow:none}
+html:not([data-cases]) .file:nth-child(1){grid-row:1}
+html:not([data-cases]) .file:nth-child(2){grid-row:2}
+html:not([data-cases]) .file:nth-child(3){grid-row:3}
+html:not([data-cases]) .file__t,html:not([data-cases]) .file__pv .chip,html:not([data-cases]) .plate{display:none}
+html:not([data-cases]) .file-ob{display:block;grid-column:1;grid-row:1;color:#fff;font:400 36px/.9 var(--display);text-transform:uppercase;letter-spacing:-.02em}
+html:not([data-cases]) .file-ob em{font-style:normal;color:var(--lime)}
+html:not([data-cases]) .file__m{grid-column:1;grid-row:2;margin-top:var(--s-12);font:500 13px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.6);text-shadow:none}
+html:not([data-cases]) .file__pv{position:relative;grid-column:2;grid-row:1/4;width:auto;height:auto;aspect-ratio:4/3;margin:0;padding:0;border-radius:24px;overflow:hidden;background:rgba(255,255,255,.2);box-shadow:none}
+html:not([data-cases]) .file__pv img,html:not([data-cases]) .file__pv b{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:0}
+
+/* ══ 24.11 днём · ещё из теста ══ */
+/* Окно с глазами: без лаймовых уголков, без кнопок TG/CV и нижней полосы — остаётся только заголовок, в нём роль.
+   Нижний край окна на прежнем месте (471): окно ниже на 64 px, чтобы верёвки выходили из него как раньше. Без белой обводки */
+.win{top:296px;height:175px}
+.v7 .win{box-shadow:inset 0 0 72px rgba(255,255,255,.12),0 18px 34px rgba(0,0,0,.22)}
+.win__top span{font:600 13px/1 var(--text)}
+
+/* Футер без меню (меню наверху и так всегда на экране); CV и «наверх» рядом — промежуток 8 */
+.foot__up{margin-left:calc(var(--s-8) - 40px)}
+
+/* «Обо мне» как в тесте: раскладка по Figma 165:2635 (web.js), крупнее ×1,2, больше воздуха сверху и до контактов */
+:root{--about-k:1.2}
+.about{zoom:calc(var(--sb,1) * var(--about-k,1));overflow-x:clip}
+.v7 .pile{max-width:none;margin-left:calc(50% - 720px)}
+.v7 .about{padding-top:calc(var(--gap-screen) * 1.5)}
+.cx{margin-top:var(--s-120)}
+/* заголовок «Обо мне» — почти прозрачное стекло поверх карточек: форма букв — маска по её вектору, кромка — фильтр #glassRim */
+.v7 .pile__word{display:none}
+.pile__glass{position:absolute;left:373px;top:235px;width:695px;height:174px;z-index:9999;pointer-events:none}
+.pile__glass i{position:absolute;inset:0;-webkit-mask:url(../assets/about-title.webp) center/100% 100% no-repeat;mask:url(../assets/about-title.webp) center/100% 100% no-repeat}
+.pile__glass .bd{background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.04) 30%,rgba(255,255,255,.03) 68%,rgba(150,195,255,.12));
+  backdrop-filter:blur(4px) brightness(1.04);-webkit-backdrop-filter:blur(4px) brightness(1.04)}
+.pile__glass .rim{background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(255,255,255,.35) 45%,rgba(190,220,255,.8));filter:url(#glassRim);opacity:.4}
+/* «Навести порядок» — круглая стеклянная кнопка с иконкой «вернуть», появляется, когда карточки растащили */
+.pile__tidy{width:48px;height:48px;padding:0;border-radius:50%;display:grid;place-items:center}
+.pile__tidy[hidden]{display:none}
+.pile__tidy svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s var(--ease)}
+.pile__tidy:hover svg{transform:rotate(-60deg)}
+.pile__tidy:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
