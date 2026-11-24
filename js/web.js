@@ -346,7 +346,7 @@ if (!document.querySelector('link[href*="fit.css"]')) {
     const defs = el('defs', {}); defs.appendChild(mask); svg.prepend(defs);
     svg.querySelectorAll('path').forEach(p => p.setAttribute('mask', 'url(#ropeHide)'));
     const tick = () => { const sb = svg.getBoundingClientRect(), k = sb.width / 1440 || 1;
-      holes.forEach(({ ic, r }) => { const b = ic.getBoundingClientRect(), on = !ic.closest('.folder.on') && getComputedStyle(ic).opacity > .05; // раскрытая папка — дыру убираем сразу (иначе верёвки мигали)
+      holes.forEach(({ ic, r }) => { const b = ic.getBoundingClientRect(), on = !ic.closest('.folder.on') && getComputedStyle(ic).opacity > .98; // раскрытая папка — дыру убираем сразу (иначе верёвки мигали)
         r.setAttribute('x', ((b.left - sb.left) / k + 1).toFixed(1)); r.setAttribute('y', ((b.top - sb.top) / k + 1).toFixed(1));
         r.setAttribute('width', on ? Math.max(0, b.width / k - 2).toFixed(1) : 0); r.setAttribute('height', Math.max(0, b.height / k - 2).toFixed(1)); });
       requestAnimationFrame(tick); };
