@@ -149,14 +149,12 @@
     svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     const w = win.getBoundingClientRect(), h = hole.getBoundingClientRect();
     const a = { x: w.left + w.width / 2 + sx, y: w.bottom + sy - 2 }, b = { x: h.left + h.width / 2 + sx, y: h.top + h.height / 2 + sy };
-    // путь: мягкая волна вокруг центральной оси (±26 px), шаг ~520 px; у конца — плавный подход к дырочке
-    const n = Math.max(3, Math.round((b.y - a.y) / 520)), pts = [a];
-    for (let i = 1; i < n; i++) { const t = i / n; pts.push({ x: a.x + (b.x - a.x) * t + (i % 2 ? 26 : -26), y: a.y + (b.y - a.y) * t }); }
-    pts.push(b);
-    let d = `M${a.x.toFixed(1)} ${a.y.toFixed(1)}`;
-    for (let i = 0; i < pts.length - 1; i++) { const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
-      const c1 = { x: p1.x + (p2.x - p0.x) / 6, y: p1.y + (p2.y - p0.y) / 6 }, c2 = { x: p2.x - (p3.x - p1.x) / 6, y: p2.y - (p3.y - p1.y) / 6 };
-      d += ` C${c1.x.toFixed(1)} ${c1.y.toFixed(1)} ${c2.x.toFixed(1)} ${c2.y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`; }
+    // путь (её правка 22:10): в блоке кейсов верёвка идёт строго по центральной оси — это якорь, по ней выровнены кейсы;
+    // выше — плавный спуск от окна к оси, ниже — плавный подход к дырочке карточки
+    const nc = document.querySelector('.nc'), r = nc ? nc.getBoundingClientRect() : null;
+    const cx = r ? r.left + r.width / 2 + sx : a.x, top = r ? r.top + sy : a.y + 200, bot = r ? r.bottom + sy : b.y - 200;
+    const k1 = Math.min(160, (top - a.y) / 2), k2 = Math.min(220, (b.y - bot) / 2), f = n => n.toFixed(1);
+    const d = `M${f(a.x)} ${f(a.y)} C${f(a.x)} ${f(a.y + k1)} ${f(cx)} ${f(top - k1)} ${f(cx)} ${f(top)} L${f(cx)} ${f(bot)} C${f(cx)} ${f(bot + k2)} ${f(b.x)} ${f(b.y - k2)} ${f(b.x)} ${f(b.y)}`;
     path.setAttribute('d', d); grad.setAttribute('y1', a.y); grad.setAttribute('y2', b.y); };
   let t; const later = () => { clearTimeout(t); t = setTimeout(draw, 80); };
   addEventListener('load', draw); addEventListener('resize', later); new ResizeObserver(later).observe(document.body);
