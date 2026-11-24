@@ -44,27 +44,15 @@
       b.addEventListener('click', () => { const u = new URL(location); u.searchParams.set(key, v);
         if (reload) { location.href = u; return; } cur = v; root.dataset[key] = v; history.replaceState(null, '', u); mark(); });
       r.appendChild(b); mark(); }); };
-  // 0 · Общий масштаб блоков ниже первого экрана (её вопрос «сайт стал мельче»): множитель к масштабу A
-  row('Весь сайт · масштаб', 'kz', [['1', '100 %'], ['1.1', '110 %'], ['1.2', '120 %']], '1');
-  new MutationObserver(() => dispatchEvent(new Event('resize'))).observe(root, { attributes: true, attributeFilter: ['data-kz'] }); over();
-  // Весь сайт: новый стиль «один акцент на экран» (24.11) / как было. Читается при загрузке — кнопка перезагружает страницу
-  row('Весь сайт · стиль', 'style', [['new', 'новый · стильно, один акцент'], ['old', 'как было']], root.dataset.style, true);
-  // 1 · Первый экран. Облака web.js читает при загрузке — кнопка перезагружает страницу (значение — в html[data-sky-top], ставит скрипт в <head>)
-  row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало'], ['0', 'чистое небо']], root.dataset.skyTop, true);
-  // 2 · Кейсы
-  row('Углы', 'corners', [['sharp', 'острые (Figma 222:3330)'], ['round', 'скруглённые (217:2820)']], 'sharp');
-  root.dataset.bigf = 'plain'; // раскрытая папка без лаймовой обводки (Figma 41:205)
-  row('Кейсы · сетка', 'cases', [['n1', 'NEW · Figma 238:8845'], ['e2', 'Т2 · по Figma 222:3330'], ['e1', 'С · стиль, моно'], ['e1o', 'С · стиль, RT Obligat'], ['s2', 'Ш2'], ['d1', 'Д1 · плитка']], 'n1');
-  root.dataset.caseb = 'glass'; // 24.11: фон карточек кейсов — стекло
-  // 3 · Обо мне
-  root.dataset.abouth = 'over'; // 24.11: заголовок «Обо мне» — стекло поверх карточек
-  root.dataset.aboutbg = 'none'; // подложки у «Обо мне» нет
-  // 4 · Контакты
-  row('Контакты · кнопки', 'cxb', [['rect', 'прямоугольники'], ['icons', 'иконки-стекло'], ['mono', 'иконки с подписью (Figma 234:8018)']], 'mono');
+  // 24.11 вечером: вариант №1 зафиксирован, развилки убраны (её зачёркивания на скрине 21:57). Закреплено: масштаб 100 %, стиль «как было»,
+  // острые углы, кейсы NEW (Figma 238:8845), кнопки контактов с подписью (234:8018)
+  Object.assign(root.dataset, { corners: 'sharp', cases: 'n1', cxb: 'mono', bigf: 'plain', caseb: 'glass', abouth: 'over', aboutbg: 'none' });
+  // Сравнение: вариант №1 (зафиксирован) / №2 (Figma 238:8845 + её комментарии 24.11 вечером). Читается при загрузке — кнопка перезагружает страницу
+  row('Вариант', 'v', [['1', '№1'], ['2', '№2']], root.dataset.v || '1', true);
+  // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
+  row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало']], root.dataset.skyTop, true);
   document.body.appendChild(pick); set(mode);
 
-  // Кейсы, швейцарская сетка: подпись блока (черновик текста — отредактируем, если раскладка понравится)
-  document.querySelector('.cases__grid').insertAdjacentHTML('afterbegin', '<div class="cases-index"><b class="cases-index__h">Кейсы</b><span class="cases-index__m">(03) избранное<br>ВКонтакте<br>2024 — 2026</span></div>');
   // «Обо мне» стеклом (Figma 165:2635): форма букв — её вектор about-title.webp как маска, внутри — размытый и подсвеченный фон
   document.getElementById('pile').insertAdjacentHTML('afterbegin', '<div class="pile__glass" aria-hidden="true"><i class="bd"></i><i class="rim"></i></div>');
   // кромка букв: SVG-фильтр «форма минус сжатая форма» = светлый контур (filter нельзя вешать на родителя стекла — он отключает backdrop-filter)
@@ -72,39 +60,19 @@
   // «Навести порядок» — круглая кнопка с иконкой «вернуть» (её просьба 24.11); подпись остаётся для экранных читалок и во всплывающей подсказке
   { const t = document.querySelector('.pile__tidy'); if (t) { t.setAttribute('aria-label', 'Навести порядок'); t.title = 'Навести порядок';
     t.innerHTML = '<svg class="replay" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3C4.55217 3.00007 4.99992 3.44783 5 4V6.3457C5.89841 5.23377 7.05365 4.34399 8.37793 3.76172C10.2496 2.93879 12.3458 2.77755 14.3213 3.30469C16.2966 3.8319 18.0343 5.01616 19.2471 6.66211C20.4597 8.30812 21.0759 10.3185 20.9941 12.3613C20.9122 14.4043 20.1365 16.3586 18.7959 17.9023C17.4553 19.446 15.6294 20.488 13.6182 20.8555C11.6069 21.2229 9.53026 20.8938 7.73047 19.9238C5.93071 18.9537 4.51372 17.3996 3.71484 15.5176C3.49947 15.0093 3.73694 14.4218 4.24512 14.2061C4.75333 13.9905 5.34076 14.2283 5.55664 14.7363C6.17797 16.2 7.27912 17.4086 8.67871 18.1631C10.0786 18.9176 11.6944 19.1735 13.2588 18.8877C14.8231 18.6018 16.2435 17.7915 17.2861 16.5908C18.3287 15.3901 18.9314 13.8702 18.9951 12.2812C19.0587 10.6924 18.5798 9.12885 17.6367 7.84863C16.6934 6.56844 15.3421 5.64638 13.8057 5.23633C12.2692 4.82635 10.6384 4.95175 9.18262 5.5918C7.87668 6.166 6.78247 7.12531 6.03906 8.33398H9.33398C9.88606 8.33418 10.3339 8.78189 10.334 9.33398C10.3339 9.88609 9.88606 10.3338 9.33398 10.334H4C3.44776 10.334 3.00007 9.88621 3 9.33398V4C3.00008 3.44778 3.44776 3 4 3Z"/></svg>'; } } // Web / Round Button / Replay (Figma 238:8138)
-  // Подписи кейсов для Ш3–Ш5: номер, короткое название, год — вместо длинного заголовка в карточке (меньше букв)
-  [['01', 'Новая статистика', '2024'], ['02', 'Путь нового автора', '2025'], ['03', 'Карусель авторов', '2025–2026']].forEach(([n, t, y], i) => {
-    const c = document.querySelectorAll('.cases__grid .case')[i]; if (!c) return;
-    c.insertAdjacentHTML('afterend', `<div class="case-cap case-cap--${i + 1}" aria-hidden="true"><span class="case-cap__n">${n}</span><b class="case-cap__t">${t}</b><span class="case-cap__y">${y}</span></div>`);
-    c.nextElementSibling.addEventListener('click', () => c.click()); });
   // Роль — в заголовке окна (её выбор 24.11)
   document.querySelector('.win__top span').textContent = 'Продуктовый дизайнер.app'; // её комментарий в Figma 24.11
 
-  // Кнопки контактов иконками из стекла (вариант 24.11): Telegram, LinkedIn, почта (копирует), CV
-  const ico = {
-    tg: '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="f" d="M20.6 4.2 2.9 11c-1 .4-1 1.2-.1 1.5l4.5 1.4 1.7 5.3c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.2-2.1 4.6 3.4c.8.5 1.4.2 1.6-.8l3-14.1c.3-1.2-.5-1.8-1.6-1.3ZM8.3 13.6l9.6-6c.5-.3.9-.1.5.2l-8.2 7.4-.3 3.4-1.6-5Z"/></svg>',
-    li: '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="f" d="M4.5 9h3.2v10.5H4.5zM6.1 3.8a1.85 1.85 0 1 1 0 3.7 1.85 1.85 0 0 1 0-3.7ZM9.8 9h3.1v1.5c.5-.9 1.6-1.8 3.3-1.8 3.4 0 4 2.2 4 5.1v5.7h-3.2v-5c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7v5.1H9.8z"/></svg>',
-    mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect class="s" x="3" y="5.5" width="18" height="13" rx="3"/><path class="s" d="m4 7.5 8 5.5 8-5.5"/></svg>' };
   const src = [...document.querySelectorAll('.cx__btn')], mailBtn = src.find(b => b.dataset.copyBtn);
   const href = t => (src.find(b => b.textContent.includes(t)) || {}).href || '#';
-  document.querySelector('.cx__btns').insertAdjacentHTML('afterend', `<div class="cx__icons">
-    <a class="cx__ic" href="${href('Telegram')}" target="_blank" rel="noopener" aria-label="Telegram" title="Telegram">${ico.tg}</a>
-    <a class="cx__ic" href="${href('LinkedIn')}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">${ico.li}</a>
-    <button class="cx__ic" type="button" data-copy-proxy aria-label="Скопировать почту" title="Скопировать почту">${ico.mail}</button>
-    <a class="cx__ic cx__ic--cv" href="${href('Резюме')}" target="_blank" rel="noopener" aria-label="Резюме (CV)" title="Резюме">CV</a></div>`);
-  document.querySelector('[data-copy-proxy]').addEventListener('click', () => mailBtn && mailBtn.click());
   // Кнопки контактов по её компоненту Figma 234:8018 «Button / Contacts» (24.11 вечером): иконка 60 (её PNG, белый 30 %) + подпись моно-капсом
-  document.querySelector('.cx__icons').insertAdjacentHTML('afterend', `<div class="cx__mono">
+  document.querySelector('.cx__btns').insertAdjacentHTML('afterend', `<div class="cx__mono">
     <a class="cx__m" href="${href('Telegram')}" target="_blank" rel="noopener"><img src="assets/contacts/Telegram.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Telegram.png" alt="" width="60" height="60"><span>Telegram</span></a>
     <a class="cx__m" href="${href('LinkedIn')}" target="_blank" rel="noopener"><img src="assets/contacts/Linkedin.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Linkedin.png" alt="" width="60" height="60"><span>LinkedIn</span></a>
     <button class="cx__m" type="button" data-copy-proxy2 title="Скопировать почту"><img src="assets/contacts/Email.svg" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Email.png" alt="" width="60" height="60"><span>Почта</span></button>
     <a class="cx__m" href="${href('Резюме')}" target="_blank" rel="noopener"><img src="assets/contacts/CV.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/CV.png" alt="" width="60" height="60"><span>Резюме</span></a></div>`);
   document.querySelector('[data-copy-proxy2]').addEventListener('click', () => mailBtn && mailBtn.click());
 
-  // Плавность папок: размытая копия картинки внутри передней стенки (вместо живого backdrop-filter)
-  document.querySelectorAll('.h-fix .ic').forEach(ic => { const src = ic.querySelector('.ic__in'), front = ic.querySelector('.ic__front'); if (!src || !front) return;
-    const c = src.cloneNode(); c.className = 'ic__blur'; c.removeAttribute('style');
-    Object.assign(c.style, { left: src.style.left, top: `calc(${src.style.top} - 50px)`, width: src.style.width }); front.appendChild(c); });
 })();
 
 /* Верёвки не просвечивают сквозь стекло окна и папок: SVG-маска с «дырами» по их рамкам, дыры двигаются вместе с папками */
@@ -118,7 +86,7 @@
   defs.appendChild(mask); svg.prepend(defs);
   svg.querySelectorAll('path').forEach(p => p.setAttribute('mask', 'url(#ropeHide)'));
   const tick = () => { const sb = svg.getBoundingClientRect(), k = sb.width / 1440 || 1;
-    targets.forEach(t => { const b = t.el.getBoundingClientRect(), on = getComputedStyle(t.el).opacity > .05;
+    targets.forEach(t => { const b = t.el.getBoundingClientRect(), on = !t.el.closest('.folder.on') && getComputedStyle(t.el).opacity > .05; // раскрытая папка — дыру убираем сразу, без промежуточных кадров (иначе верёвки мигали)
       t.r.setAttribute('x', ((b.left - sb.left) / k + 1).toFixed(1)); t.r.setAttribute('y', ((b.top - sb.top) / k + 1).toFixed(1));
       t.r.setAttribute('width', on ? Math.max(0, b.width / k - 2).toFixed(1) : 0); t.r.setAttribute('height', Math.max(0, b.height / k - 2).toFixed(1));
       t.r.setAttribute('rx', t.rad); });
@@ -135,14 +103,6 @@
 
 
 
-/* Т2 (Figma 222:3330): крупные подписи кейсов отдельными блоками в сетке; у мелких — её названия */
-(() => { const cs = [...document.querySelectorAll('.cases__grid .case')];
-  cs.forEach((c, i) => { const h = c.querySelector('.case__h'); if (!h) return;
-    const d = document.createElement('div'); d.className = 'case-ob case-ob--' + (i + 1); d.setAttribute('aria-hidden', 'true'); d.innerHTML = h.innerHTML;
-    d.addEventListener('click', () => c.click()); d.style.cursor = 'pointer'; c.parentNode.appendChild(d); });
-  const T = ['Управление подписчиками', '<em>Компонент</em> → рекламный баннер', '<em>Кое-что</em> для профиля'];
-  document.querySelectorAll('.files .file').forEach((f, i) => { if (!T[i]) return; f.insertAdjacentHTML('afterbegin', `<b class="file-ob" aria-hidden="true">${T[i]}</b>`); });
-})();
 
 
 /* Кейсы NEW (Figma 238:8845, её компоненты Case / Big и Case / Small, 24.11 вечером). Всё выровнено по центральной оси:
@@ -160,4 +120,46 @@
       ${small('ad', 'DS · 2026', 'маркетинговый<br>компонент<br>для быстрого<br>запуска кампаний')}
       ${small('mediawall', 'NDA · 2026', 'Медиастена<br>профиля')}
     </div></div>`);
+})();
+
+
+/* ══ Вариант №2 (Figma 238:8845 + её комментарии 24.11 вечером) ══
+   1) верёвки — белое стекло (градиент с бликами солнца вместо лайма);
+   2) длинная верёвка: от окна с глазами вниз по центральной оси, мимо кейсов, до лаймовой карточки «что делала» в «Обо мне» —
+      карточка на ней висит (её не таскают), остальные карточки таскаются;
+   3) новая обложка онбординга; 4) текст и кнопки контактов ниже на 40 */
+(() => { const root = document.documentElement; if (root.dataset.v !== '2') return;
+  const NS = 'http://www.w3.org/2000/svg';
+  // 1) градиент «стекло» для верёвок: полупрозрачный белый с двумя бликами (свет сверху слева, −45°, как в её эффекте Glass)
+  const lines = document.querySelector('.lines');
+  if (lines) { const d = lines.querySelector('defs') || lines.insertBefore(document.createElementNS(NS, 'defs'), lines.firstChild);
+    d.insertAdjacentHTML('beforeend', '<linearGradient id="ropeGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".18" stop-color="#fff" stop-opacity=".35"/><stop offset=".42" stop-color="#e9f2ff" stop-opacity=".55"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/><stop offset=".6" stop-color="#cfe0ff" stop-opacity=".35"/><stop offset=".85" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity=".3"/></linearGradient>'); }
+  // 3) обложка онбординга
+  const ob = document.querySelector('.nc__big--3 img'); if (ob) ob.src = 'assets/cases/onboarding-v2.webp';
+  // 2) карточка, на которой висит верёвка: дырочка сверху, не таскается
+  const card = document.querySelector('#pile .card--lime'); if (!card) return;
+  card.insertAdjacentHTML('afterbegin', '<i class="card__hole" aria-hidden="true"></i>'); card.classList.add('card--hung');
+  card.addEventListener('pointerdown', e => e.stopImmediatePropagation(), { capture: true });
+  const svg = document.createElementNS(NS, 'svg'); svg.classList.add('longrope'); svg.setAttribute('aria-hidden', 'true');
+  svg.innerHTML = '<defs><linearGradient id="longGlass" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".25" stop-color="#fff" stop-opacity=".3"/><stop offset=".5" stop-color="#fff" stop-opacity=".8"/><stop offset=".75" stop-color="#fff" stop-opacity=".3"/><stop offset="1" stop-color="#fff" stop-opacity=".75"/></linearGradient></defs><path class="longrope__p"/>';
+  document.body.prepend(svg);
+  const path = svg.querySelector('path'), grad = svg.querySelector('#longGlass');
+  const draw = () => { const win = document.querySelector('.win'), hole = card.querySelector('.card__hole'); if (!win || !hole) return;
+    const W = document.documentElement.scrollWidth, H = document.documentElement.scrollHeight, sy = scrollY, sx = scrollX;
+    svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const w = win.getBoundingClientRect(), h = hole.getBoundingClientRect();
+    const a = { x: w.left + w.width / 2 + sx, y: w.bottom + sy - 2 }, b = { x: h.left + h.width / 2 + sx, y: h.top + h.height / 2 + sy };
+    // путь: мягкая волна вокруг центральной оси (±26 px), шаг ~520 px; у конца — плавный подход к дырочке
+    const n = Math.max(3, Math.round((b.y - a.y) / 520)), pts = [a];
+    for (let i = 1; i < n; i++) { const t = i / n; pts.push({ x: a.x + (b.x - a.x) * t + (i % 2 ? 26 : -26), y: a.y + (b.y - a.y) * t }); }
+    pts.push(b);
+    let d = `M${a.x.toFixed(1)} ${a.y.toFixed(1)}`;
+    for (let i = 0; i < pts.length - 1; i++) { const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+      const c1 = { x: p1.x + (p2.x - p0.x) / 6, y: p1.y + (p2.y - p0.y) / 6 }, c2 = { x: p2.x - (p3.x - p1.x) / 6, y: p2.y - (p3.y - p1.y) / 6 };
+      d += ` C${c1.x.toFixed(1)} ${c1.y.toFixed(1)} ${c2.x.toFixed(1)} ${c2.y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`; }
+    path.setAttribute('d', d); grad.setAttribute('y1', a.y); grad.setAttribute('y2', b.y); };
+  let t; const later = () => { clearTimeout(t); t = setTimeout(draw, 80); };
+  addEventListener('load', draw); addEventListener('resize', later); new ResizeObserver(later).observe(document.body);
+  document.querySelectorAll('img').forEach(i => i.addEventListener('load', later, { once: true }));
+  setTimeout(draw, 600); setTimeout(draw, 2000);
 })();
