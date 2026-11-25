@@ -340,7 +340,7 @@ html[data-v="2"] .nc2s--ad .nc2s__cv{width:198px;height:124px}
 html[data-v="2"] :is(.pile__tidy,.foot__up){background:rgba(255,255,255,.1);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
 html[data-v="2"] :is(.pile__tidy,.foot__up):hover{background:rgba(255,255,255,.1);color:#fff;
   box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.6),inset -1px -1px 1px rgba(255,255,255,.2),inset 2.5px 0 3px -1px rgba(255,90,150,.5),inset -2.5px 0 3px -1px rgba(80,170,255,.55),inset 0 -2.5px 3px -1px rgba(255,210,90,.45),inset 0 2.5px 3px -1px rgba(120,255,220,.4)}
-html[data-v="2"] .foot__up{width:48px;height:48px;display:grid;place-items:center;border-radius:50%;filter:none}
+html[data-v="2"] .foot__up{width:40px;height:40px;display:grid;place-items:center;border-radius:50%;filter:none}
 html[data-v="2"] .foot__up svg{width:24px;height:24px;fill:#fff}
 /* карточку на верёвке можно тащить: схватили — не качается, длинной верёвки нет; ↺ возвращает */
 html[data-v="2"] #pile .card--hung{cursor:grab}
@@ -350,3 +350,25 @@ html[data-v="2"] #pile .card--hung.free .card__hole{opacity:.35}
 .longrope.off{opacity:0}
 /* баг ↺ (её запись 03:40): кнопка стоит на −34 и уходила ПОД слой #pile — при перетаскивании её перекрывало. Теперь всегда поверх */
 html[data-v="2"] .pile__tidy{position:relative;z-index:60}
+
+/* ══ Правки 25.11, 05:30 ══ */
+/* ховер папок без «растворения» остальных (её компоненты 290:6225): раньше остальные узлы размывались filter: blur поверх стекла
+   с backdrop-filter — браузер пересчитывал это каждый кадр, отсюда лаги и мигание */
+html[data-v="2"] .stage.focus .node:not(.on),html[data-v="2"] .v7 .stage.focus .node:not(.on){opacity:1;filter:none}
+html[data-v="2"] .stage.focus .lines path:not(.on),html[data-v="2"] .v7:is(.h-fix,.h-old) .stage.focus .lines path:not(.on){filter:none;opacity:1}
+/* лого ниже: до окна 40, как во фрейме 290:6454 */
+html[data-v="2"] .name{top:126px}
+/* футер по Figma 243:8877: высота 120, снизу 24, кнопка ↑ 40 */
+html[data-v="2"]{--foot-h:120px}
+html[data-v="2"] .foot{height:120px;padding:0 24px 24px;align-items:flex-end}
+/* раскрытая папка: картинка 328×175 у нижнего края (Figma 290:6321 — Header 54 + Image 175, контент с y 37) */
+html[data-v="2"] .h-fix .big__pv{left:0;top:91px;width:328px;height:175px;border-radius:0 0 25px 25px}
+html[data-v="2"] .big__full{display:block;width:100%;height:100%;object-fit:cover}
+
+/* ══ Правки 25.11, 07:00 ══ */
+/* ховер папки (её идея): размыт весь фон одним слоем под раскрытой папкой; узлы 4 < слой 6 < раскрытая папка 8 */
+html[data-v="2"] .veil{position:absolute;inset:-300px;z-index:6;pointer-events:none;visibility:hidden;opacity:0;
+  background:rgba(8,32,120,.06);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:opacity .25s ease,visibility 0s .25s}
+html[data-v="2"][data-hb=blur] .stage.focus .veil{visibility:visible;opacity:1;transition:opacity .25s ease}
+/* стикер на ховере — как её Web / Sticker / Hover (290:6781): обычная тень + белый ореол 4px, без пышного свечения */
+html[data-v="2"] .ropes-float .tag:is(:hover,:focus-visible){filter:drop-shadow(0 0 4px #fff)}
