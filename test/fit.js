@@ -278,8 +278,10 @@
     const k1 = Math.min(160, (top - a.y) / 2), k2 = Math.min(220, (b.y - bot) / 2), f = n => n.toFixed(1);
     // начало чуть извилистое, как было нарисовано (её правка 10:06): лёгкая S-волна ±18 px под окном, дальше — строго по оси
     // начало чуть извилистое — S-волна ±18 px под окном, дальше строго по оси (её выбор 25.11, 10:32: «как было»)
-    const HH = top - a.y, s1 = Math.min(150, HH / 3), s2 = Math.min(300, HH * .66);
-    const d = `M${f(a.x)} ${f(a.y)} C${f(a.x)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1)} C${f(a.x + 18)} ${f(a.y + s1 * 1.6)} ${f(cx - 16)} ${f(a.y + s2 * .8)} ${f(cx - 16)} ${f(a.y + s2)} C${f(cx - 16)} ${f(a.y + s2 + (HH - s2) * .5)} ${f(cx)} ${f(top - (HH - s2) * .4)} ${f(cx)} ${f(top)} L${f(cx)} ${f(bot)} C${f(cx)} ${f(bot + k2)} ${f(b.x)} ${f(b.y - k2)} ${f(b.x)} ${f(b.y)}`;
+    // 25.11 12:16 (её правка): волна только под окном — к нижнему стикеру первого экрана верёвка уже на оси, дальше строго прямая
+    const nodesB = Math.max(...[...document.querySelectorAll('.stage .node')].map(n => n.getBoundingClientRect().bottom + sy).filter(Number.isFinite), a.y + 300);
+    const HH = top - a.y, s1 = Math.min(150, HH / 3), e = Math.min(top, Math.max(a.y + s1 + 80, nodesB)), m = (e - a.y - s1) * .5;
+    const d = `M${f(a.x)} ${f(a.y)} C${f(a.x)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1)} C${f(a.x + 18)} ${f(a.y + s1 + m)} ${f(cx)} ${f(e - m)} ${f(cx)} ${f(e)} L${f(cx)} ${f(bot)} C${f(cx)} ${f(bot + k2)} ${f(b.x)} ${f(b.y - k2)} ${f(b.x)} ${f(b.y)}`;
     path.setAttribute('d', d); grad.setAttribute('y1', a.y); grad.setAttribute('y2', a.y + 420);
     path.style.strokeWidth = (1.5 * (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--s')) || 1)).toFixed(2); }; // толщина как у верёвок сцены (1,5 × масштаб)
   // 25.11: длинная верёвка тоже вырастает из глаз — вместе с остальными линиями (web.js: линии стартуют через 360 мс после загрузки)
