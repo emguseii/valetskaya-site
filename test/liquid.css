@@ -1,0 +1,19 @@
+/* ТЕСТ · настоящее жидкое стекло (25.11). Какие элементы стеклянные — html[data-lq] из тестовой панели:
+   off — нет, btn — кнопки ↺ ↑ (на ховере, как она решила), folder — раскрытые папки, win — окно с глазами, cover — обложки больших кейсов, all — всё.
+   Стекло без матовости (Frost 0): фон не размыт, а изогнут у краёв; по кромке радужная кайма и блик (свет −45°). */
+:root{--lq-rim:inset -1.5px 1.5px 0 rgba(255,255,255,.8),inset 1px -1px 0 rgba(255,255,255,.2),
+  inset 2px 0 3px -1px rgba(255,90,150,.45),inset -2px 0 3px -1px rgba(80,170,255,.5),inset 0 2px 3px -1px rgba(120,255,220,.35),inset 0 -2px 3px -1px rgba(255,210,90,.35)}
+
+/* кнопки ↺ ↑ — только на ховере (её решение: в покое белый 10 % без радуги) */
+html:is([data-lq=btn],[data-lq=all]) .lq--btn.lq-in:hover{backdrop-filter:var(--lq);-webkit-backdrop-filter:none;box-shadow:var(--lq-rim)}
+
+/* раскрытая папка: стекло на её подложке */
+html:is([data-lq=folder],[data-lq=all]) .h-fix .lq--folder.lq-in::before{backdrop-filter:var(--lq);-webkit-backdrop-filter:none;
+  background:rgba(255,255,255,.06);box-shadow:var(--lq-rim),inset 0 0 28px rgba(255,255,255,.08)}
+
+/* окно с глазами */
+html:is([data-lq=win],[data-lq=all]) .v7 .lq--win.lq-in{backdrop-filter:var(--lq);-webkit-backdrop-filter:none;background:rgba(255,255,255,.06);box-shadow:var(--lq-rim),0 11.45px 34.35px rgba(0,0,0,.3)}
+
+/* обложки больших кейсов: белые 20 % уже внутри картинки, поэтому стекло видно сквозь неё */
+html:is([data-lq=cover],[data-lq=all]) .lq--cover.lq-in{backdrop-filter:var(--lq);-webkit-backdrop-filter:none}
+html:is([data-lq=cover],[data-lq=all]) .lq--cover::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;box-shadow:var(--lq-rim)}
