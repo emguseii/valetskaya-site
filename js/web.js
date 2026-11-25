@@ -53,10 +53,11 @@ document.documentElement.classList.add('js');
   const intro = () => {
     if (reduce) { $$('.name,.tip,.win,.node').forEach(n => n.classList.add('shown')); eyes.sleep(false); return; }
     show($('.name'), T.name); show($('.win'), T.win); show($('.tip'), T.tip);
+    const V2 = root.dataset.v === '2'; // 25.11 (её порядок): лого → закрытые глаза → все линии разом из глаз → папки и бирки разом
     ['t2', 'f2', 'f1', 't3', 'f3', 't1'].forEach((id, i) => {
-      const p = lineFor(id), delay = T.lines + i * T.step, dur = T.line + Math.min(220, p.getTotalLength() * .25);
+      const p = lineFor(id), delay = T.lines + (V2 ? 0 : i * T.step), dur = V2 ? 900 : T.line + Math.min(220, p.getTotalLength() * .25);
       p.animate([{ strokeDashoffset: p.classList.contains('rev') ? -1 : 1 }, { strokeDashoffset: 0 }], { duration: dur, delay, easing: 'cubic-bezier(.32,.72,0,1)', fill: 'forwards' });
-      show($('#' + id), delay + dur * .7);
+      show($('#' + id), V2 ? T.lines + 900 : delay + dur * .7);
     });
     setTimeout(() => paths.forEach(p => { p.getAnimations().forEach(a => { a.commitStyles?.(); a.cancel(); }); p.style.strokeDasharray = 'none'; }), T.lines + 6 * T.step + T.line + 400);
     // fix/old: пока линии не вышли — глаза закрыты (её аннотация к кадру «Загрузка ≈360 мс»)
@@ -105,7 +106,7 @@ document.documentElement.classList.add('js');
   const closeF = (now) => { clearTimeout(intentT); const go = () => { cur && cur.classList.remove('on'); paths.forEach(p => p.classList.remove('on')); cur = null; stage.classList.remove('focus'); eyes.free(); };
     if (now) go(); else offT = setTimeout(() => { if (!(cur && cur.matches(':hover'))) go(); }, 160); }; // 24.11: гистерезис — папка «плывёт» под курсором, без него наведение мигало
   $$('.folder').forEach(n => {
-    n.addEventListener('pointerenter', e => { if (e.pointerType !== 'mouse') return; clearTimeout(intentT); intentT = setTimeout(() => open(n), 90); });
+    n.addEventListener('pointerenter', e => { if (e.pointerType !== 'mouse') return; clearTimeout(intentT); intentT = setTimeout(() => open(n), 200); /* 25.11: 200 мс — не раскрывается сразу и не мигает */ });
     n.addEventListener('pointerleave', () => closeF());
     n.addEventListener('focus', () => open(n)); n.addEventListener('blur', () => closeF());
   });

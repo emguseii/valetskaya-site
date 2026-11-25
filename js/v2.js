@@ -50,10 +50,8 @@
   // Сравнение: вариант №1 (зафиксирован) / №2 (Figma 238:8845 + её комментарии 24.11 вечером). Читается при загрузке — кнопка перезагружает страницу
   row('Вариант', 'v', [['1', '№1'], ['2', '№2']], root.dataset.v || '1', true);
   // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
-  // №2: при наведении на папку — фон размыт одним слоем (её идея 25.11) или как есть
-  row('Ховер папки · фон', 'hb', [['blur', 'размыть'], ['none', 'как есть']], 'blur');
   row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало']], root.dataset.skyTop, true);
-    if (!window.PROD) document.body.appendChild(pick); set(mode);
+    if (!window.PROD) { pick.classList.add('min'); x.setAttribute('aria-label', 'Развернуть панель'); document.body.appendChild(pick); } set(mode); // 25.11: панель свёрнута — не мешает проверять
 
   // «Обо мне» стеклом (Figma 165:2635): форма букв — её вектор about-title.webp как маска, внутри — размытый и подсвеченный фон
   document.getElementById('pile').insertAdjacentHTML('afterbegin', '<div class="pile__glass" aria-hidden="true"><i class="bd"></i><i class="rim"></i></div>');
@@ -157,7 +155,6 @@
   // лого — её компонент Web/Logo/Имя (Figma 41:91) векторами: рукописная фамилия с обводкой 1px цветом фона
   { const nm = document.querySelector('.name'); if (nm) nm.src = 'assets/hero-name-v8.svg'; }
   // ховер папки: один размытый слой между узлами и раскрытой папкой — дешевле, чем размывать каждый узел отдельно
-  document.getElementById('stage')?.insertAdjacentHTML('beforeend', '<i class="veil" aria-hidden="true"></i>');
   // раскрытая папка не вылезает за край окна (её правка 25.11): считаем, где она окажется, и сдвигаем внутрь с полями 16 (сверху — под меню)
   document.querySelectorAll('.folder').forEach(f => { const big = f.querySelector('.big'); if (!big) return;
     new MutationObserver(() => { if (!f.classList.contains('on')) { big.style.translate = ''; return; }
@@ -168,7 +165,9 @@
       big.style.translate = (dx / k).toFixed(1) + 'px ' + (dy / k).toFixed(1) + 'px'; }).observe(f, { attributes: true, attributeFilter: ['class'] }); });
   // верёвка не просвечивает сквозь раскрытую папку: дыра в маске верёвок по её рамке
   { const mask = document.getElementById('ropeHide'), svgL = document.querySelector('.lines'); if (mask && svgL) {
-    const bigs = [...document.querySelectorAll('.folder .big')].map(b => { const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('fill', '#000'); r.setAttribute('rx', 24); mask.appendChild(r); return { b, r }; });
+    const bigs = [...document.querySelectorAll('.folder .big')].map(b => { const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('fill', '#000'); r.setAttribute('rx', 24); r.setAttribute('filter', 'url(#holeSoft)'); mask.appendChild(r); return { b, r }; });
+    // 25.11: край выреза мягкий — верёвка плавно растворяется у раскрытой папки, а не обрубается
+    mask.insertAdjacentHTML('beforebegin', '<filter id="holeSoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter>');
     const tk = () => { const sb = svgL.getBoundingClientRect(), k = sb.width / 1440 || 1;
       bigs.forEach(({ b, r }) => { const on = b.closest('.folder.on'); if (!on) { r.setAttribute('width', 0); return; } const q = b.getBoundingClientRect();
         r.setAttribute('x', ((q.left - sb.left) / k).toFixed(1)); r.setAttribute('y', ((q.top - sb.top) / k + 8).toFixed(1));
@@ -192,7 +191,22 @@
       f2: ['matrix(.9382 -.3461 .3461 .9382 755.6328 450.6348)', 'M.39 0C91.848 149.379-95.727 194.15 74.773 314.15'],
       t3: ['translate(802.5 454)', 'M0 0C21 47.167 70.5 132.469 163 126 322 114.881 340-94 455.5 71.5'] };
     for (const [id, [tr, d]] of Object.entries(R)) { const p = document.querySelector('.lines path[data-to="' + id + '"]'); if (!p) continue;
-      p.setAttribute('transform', 'translate(-40 14) ' + tr); p.setAttribute('d', d); } }
+      p.setAttribute('transform', 'translate(-40 14) ' + tr); p.setAttribute('d', d); }
+    // 25.11: верёвка растёт из глаз (направление анимации по тому, какой конец у окна), а у папок доходит до самой папки без зазора:
+    // конец продлеваем к центру иконки — внутри папки его прячет маска, снаружи верёвка касается края
+    const svgL = document.querySelector('.lines'), win = document.querySelector('.win');
+    if (svgL && win) { const sr = svgL.getBoundingClientRect(), k = sr.width / 1440 || 1, wr = win.getBoundingClientRect();
+      const W = { x: (wr.left + wr.width / 2 - sr.left) / k, y: (wr.bottom - sr.top) / k };
+      svgL.querySelectorAll('path[data-to]').forEach(p => { const m = p.transform.baseVal.consolidate()?.matrix || svgL.createSVGMatrix(), L = p.getTotalLength();
+        const toSvg = q => new DOMPoint(q.x, q.y).matrixTransform(m), a0 = toSvg(p.getPointAtLength(0)), a1 = toSvg(p.getPointAtLength(L));
+        const startAtWin = Math.hypot(a0.x - W.x, a0.y - W.y) < Math.hypot(a1.x - W.x, a1.y - W.y);
+        p.classList.toggle('rev', !startAtWin);
+        const node = document.getElementById(p.dataset.to), ic = node && node.querySelector('.ic'); if (!ic) return;
+        const r = ic.getBoundingClientRect(), c = new DOMPoint((r.left + r.width / 2 - sr.left) / k, (r.top + r.height / 2 - sr.top) / k).matrixTransform(m.inverse());
+        const d0 = p.getAttribute('d'), f = v => v.toFixed(1);
+        p.setAttribute('d', startAtWin ? d0 + ` L${f(c.x)} ${f(c.y)}` : `M${f(c.x)} ${f(c.y)} L` + d0.replace(/^M\s*/, '')); }); } }
+  // 25.11: петля бирки входит в дырочку — часть верёвки поверх белой карточки видна (раньше белая на белом, казалось — зазор)
+  document.querySelectorAll('.tag__loop').forEach(l => l.insertAdjacentHTML('beforeend', '<path class="tag__in" d="M112.4 0C112.2 4 113.6 9.6 115 15.5"/>'));
   // ↑ в футере — иконка arrow_up_outline_24 (Figma 270:5797) вместо символа
   const up = document.querySelector('.foot__up'); if (up) up.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.9999 3C12.2651 3.00006 12.5195 3.10549 12.707 3.29298L20.707 11.2932C21.0973 11.6837 21.0973 12.3168 20.707 12.7073C20.3165 13.0978 19.6834 13.0977 19.2929 12.7073L12.9999 6.41416V20.0005C12.9999 20.5527 12.5521 21.0004 11.9999 21.0005C11.4476 21.0005 10.9999 20.5528 10.9999 20.0005V6.41416L4.70696 12.7073C4.31647 13.0978 3.68343 13.0977 3.29289 12.7073C2.90237 12.3168 2.90237 11.6837 3.29289 11.2932L11.2929 3.29298L11.3661 3.22657C11.5441 3.0808 11.7679 3 11.9999 3Z"/></svg>';
   // 2) карточка, на которой висит верёвка: дырочка сверху, не таскается
@@ -207,7 +221,7 @@
   card.addEventListener('pointerdown', e => { if (e.button > 0) return; free(true); });
   document.querySelector('.pile__tidy')?.addEventListener('click', () => free(false));
   const svg = document.createElementNS(NS, 'svg'); svg.classList.add('longrope'); svg.setAttribute('aria-hidden', 'true');
-  svg.innerHTML = '<defs><linearGradient id="longGlass" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".25" stop-color="#fff" stop-opacity=".3"/><stop offset=".5" stop-color="#fff" stop-opacity=".8"/><stop offset=".75" stop-color="#fff" stop-opacity=".3"/><stop offset="1" stop-color="#fff" stop-opacity=".75"/></linearGradient></defs><path class="longrope__p"/>';
+  svg.innerHTML = '<defs><linearGradient id="longGlass" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".25" stop-color="#fff" stop-opacity=".3"/><stop offset=".5" stop-color="#fff" stop-opacity=".8"/><stop offset=".75" stop-color="#fff" stop-opacity=".3"/><stop offset="1" stop-color="#fff" stop-opacity=".75"/></linearGradient></defs><path class="longrope__p" pathLength="1" style="stroke-dasharray:1 1;stroke-dashoffset:1"/>';
   document.body.prepend(svg);
   const path = svg.querySelector('path'), grad = svg.querySelector('#longGlass');
   const draw = () => { const win = document.querySelector('.win'), hole = card.querySelector('.card__hole'); if (!win || !hole) return;
@@ -223,6 +237,10 @@
     const k1 = Math.min(160, (top - a.y) / 2), k2 = Math.min(220, (b.y - bot) / 2), f = n => n.toFixed(1);
     const d = `M${f(a.x)} ${f(a.y)} C${f(a.x)} ${f(a.y + k1)} ${f(cx)} ${f(top - k1)} ${f(cx)} ${f(top)} L${f(cx)} ${f(bot)} C${f(cx)} ${f(bot + k2)} ${f(b.x)} ${f(b.y - k2)} ${f(b.x)} ${f(b.y)}`;
     path.setAttribute('d', d); grad.setAttribute('y1', a.y); grad.setAttribute('y2', b.y); };
+  // 25.11: длинная верёвка тоже вырастает из глаз — вместе с остальными линиями (web.js: линии стартуют через 360 мс после загрузки)
+  const grow = () => { const p = svg.querySelector('path'); if (matchMedia('(prefers-reduced-motion: reduce)').matches) { p.style.strokeDashoffset = 0; return; }
+    p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 1400, delay: 360, easing: 'cubic-bezier(.32,.72,0,1)', fill: 'forwards' }); };
+  if (document.readyState === 'complete') grow(); else addEventListener('load', grow);
   let t; const later = () => { clearTimeout(t); t = setTimeout(draw, 80); };
   addEventListener('load', draw); addEventListener('resize', later); new ResizeObserver(later).observe(document.body);
   document.querySelectorAll('img').forEach(i => i.addEventListener('load', later, { once: true }));
@@ -238,17 +256,20 @@
     const mask = new Image(); mask.src = 'assets/about-title.webp';
     mask.onload = () => { const c = document.createElement('canvas'), W = 112, H = 28; c.width = W; c.height = H; const g = c.getContext('2d'); g.drawImage(mask, 0, 0, W, H);
       const a = g.getImageData(0, 0, W, H).data; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (a[(y * W + x) * 4 + 3] > 120) pts.push([(x + .5) / W, (y + .5) / H]);
-      if (pts.length > 220) { const k = pts.length / 220; pts = pts.filter((_, i) => i % Math.ceil(k) === 0); } setTimeout(reveal, 400); };
+      if (pts.length > 220) { const k = pts.length / 220; pts = pts.filter((_, i) => i % Math.ceil(k) === 0); } }; // 25.11: до первого касания буквы всегда максимально размыты
     const vis = () => { const r = word.getBoundingClientRect(); if (!r.width || r.bottom < 0 || r.top > innerHeight || !pts.length) return null; let free = 0, n = 0;
       for (const [u, v] of pts) { const x = r.left + u * r.width, y = r.top + v * r.height; if (y < 0 || y > innerHeight) continue; n++;
         const el = document.elementFromPoint(x, y); if (!el || !el.closest('#pile .card, #pile .toy')) free++; } return n ? free / n : null; };
-    const reveal = () => { q = 0; const f = vis(); if (f === null) return; if (f0 === null) f0 = Math.min(f, .3);
+    let touched = false;
+    const reveal = () => { q = 0; if (!touched) return; const f = vis(); if (f === null) return; if (f0 === null) f0 = Math.min(f, .3);
       const t = Math.max(0, Math.min(1, (f - f0) / Math.max(.05, N - f0))), step = Math.round(t * STEPS);
       word.style.setProperty('--tb', (MAX * (1 - step / STEPS)).toFixed(0) + 'px'); word.classList.toggle('sharp', step === STEPS); word.dataset.step = step; };
     const tick = () => { if (!q) q = requestAnimationFrame(reveal); };
     // кнопка ↺: касание карточки = начало перемещения, кнопка появляется сразу и больше не прячется до нажатия на неё
-    pile.addEventListener('pointerdown', e => { if (e.target.closest('.card, .toy') && tidy) tidy.hidden = false; }, true);
+    pile.addEventListener('pointerdown', e => { if (!e.target.closest('.card, .toy')) return; if (tidy) tidy.hidden = false; if (!touched) { touched = true; const f = vis(); if (f !== null) f0 = Math.min(f, .3); } }, true);
     pile.addEventListener('pointermove', e => { if (e.buttons) { if (tidy) tidy.hidden = false; tick(); } }); pile.addEventListener('pointerup', () => setTimeout(reveal, 300));
     tidy?.addEventListener('click', () => setTimeout(() => { reveal(); tidy.hidden = true; }, 950));
-    addEventListener('scroll', () => { if (f0 === null) tick(); }, { passive: true }); addEventListener('resize', tick); }
+    word.style.setProperty('--tb', MAX + 'px'); word.dataset.step = 0; addEventListener('resize', tick); }
 })();
+// первый экран собран — показываем (до этого скрыт классом v2-boot из <head>, чтобы не мелькала старая разметка)
+document.documentElement.classList.remove('v2-boot');

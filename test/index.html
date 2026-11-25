@@ -10,14 +10,14 @@
 <link rel="stylesheet" href="css/web.css?v=11242345">
 <link rel="stylesheet" href="css/modal.css?v=11230410">
 <!-- ТЕСТОВАЯ КОПИЯ (test/): варианты масштаба блоков, 23.11. Пути — от корня сайта через <base>. -->
-<script>/* настройки, которые web.js читает при загрузке; v — вариант для сравнения (1 — зафиксирован, 2 — Figma 238:8845 + комментарии) */ { const q = new URLSearchParams(location.search), d = document.documentElement, v = q.get('sky1'); d.dataset.style = 'old'; d.dataset.skyTop = v === null ? '.35' : v; d.dataset.v = q.get('v') === '2' ? '2' : '1'; }
+<script>/* настройки, которые web.js читает при загрузке; v — вариант для сравнения (1 — зафиксирован, 2 — Figma 238:8845 + комментарии) */ { const q = new URLSearchParams(location.search), d = document.documentElement, v = q.get('sky1'); d.dataset.style = 'old'; d.dataset.skyTop = v === null ? '.35' : v; d.dataset.v = q.get('v') === '2' ? '2' : '1'; d.classList.add('v2-boot');
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; if (!location.hash) addEventListener('load', () => scrollTo(0, 0)); }
 /* «Обо мне» как в Figma 165:2635: положение [left, top] и наклон каждой карточки (порядок как в разметке) */
 window.PILE_LAYOUT = [[188, 130, -6], [540, 72, 2], [881, 210, 7], [965, 142, -6], [561, 388, -6], [903, 395, 6], [242, 366, 4]];
 /* Вариант №2 (её комментарий 24.11, 22:24): карточки закрывают надпись «Обо мне» — она проявляется, только когда видно ≥60 % её площади.
    Порядок: ВКонтакте, что делала (висит на верёвке по центру), игрушка, после работы, курсы, сильная сторона, образование */
 if (document.documentElement.dataset.v === '2') window.PILE_LAYOUT = [[279, 135, -6], [560, 84, 4], [858, 150, 7], [953, 178, -9.2], [570, 324, -8.2], [865, 323, 13.1], [324, 313, 6.3]]; /* её исходная композиция 249:9943 (25.11), центр бирки — на оси */</script>
-<link rel="stylesheet" href="test/fit.css?v=54">
-<link rel="stylesheet" href="test/liquid.css?v=1">
+<link rel="stylesheet" href="test/fit.css?v=55">
 </head>
 <body class="v7">
 <div class="sky" aria-hidden="true"></div>
@@ -171,8 +171,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => { a.href = location.pathn
 <script src="js/sky.js?v=11230410"></script>
 <script src="js/eyes.js?v=11230410"></script>
 <script src="js/cases.js?v=11230410"></script>
-<script src="js/web.js?v=11242345"></script>
-<script src="test/fit.js?v=47"></script>
-<script src="test/liquid.js?v=1"></script>
+<script src="js/web.js?v=11250810"></script>
+<script src="test/fit.js?v=48"></script>
 </body>
 </html>
