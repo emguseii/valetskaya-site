@@ -185,8 +185,13 @@
         let lo = 0, hi = L; for (let u = 0; u <= L; u += 12) if (inside(u)) { hi = u; lo = Math.max(0, u - 12); break; }
         if (hi < L) for (let i = 0; i < 6; i++) { const mid = (lo + hi) / 2; if (inside(mid)) hi = mid; else lo = mid; }
         const k = Math.hypot(m.a, m.b) || 1, a = p.getPointAtLength(Math.max(0, hi - FADE / k + 4 / k)), e = p.getPointAtLength(Math.min(L, hi + 4 / k));
-        g.setAttribute('x1', a.x.toFixed(1)); g.setAttribute('y1', a.y.toFixed(1)); g.setAttribute('x2', e.x.toFixed(1)); g.setAttribute('y2', e.y.toFixed(1)); }
-      requestAnimationFrame(tf); }; requestAnimationFrame(tf); } }
+        const key = [a.x, a.y, e.x, e.y].map(v => v.toFixed(1)).join();
+        if (key !== tfKey) { tfKey = key; tfSame = 0; g.setAttribute('x1', a.x.toFixed(1)); g.setAttribute('y1', a.y.toFixed(1)); g.setAttribute('x2', e.x.toFixed(1)); g.setAttribute('y2', e.y.toFixed(1)); } else tfSame++; }
+      // lite: когда папка раскрылась и всё замерло (10 кадров без изменений) — больше не пересчитываем
+      if (LITE_F && tfSame > 10) { tfRaf = 0; tfSame = 0; return; }
+      if (LITE_F && !document.querySelector('.folder.on')) { tfRaf = 0; return; } tfRaf = requestAnimationFrame(tf); };
+    const LITE_F = (document.documentElement.dataset.sm || 'now') !== 'now'; let tfKey = '', tfSame = 0, tfRaf = requestAnimationFrame(tf);
+    if (LITE_F) document.querySelectorAll('.folder').forEach(f => new MutationObserver(() => { if (f.classList.contains('on') && !tfRaf) tfRaf = requestAnimationFrame(tf); }).observe(f, { attributes: true, attributeFilter: ['class'] })); } }
   { const F = (x, y) => [x - 40, y + 14];
     const pos = { f1: [142, 630, -4], f3: [1160, 256, -5], f2: [838, 702, 7], t1: [45, 267, -4], t3: [1097, 517, 4], t2: [518, 663, -6] };
     for (const [id, [l, t, r]] of Object.entries(pos)) { const n = document.getElementById(id); if (!n) continue;
@@ -240,7 +245,7 @@
   // 25.11 (крит, её запись): у нижнего края экрана раскрытая папка сдвигается вверх и «убегала» из-под курсора → закрылась → открылась → дёрганье.
   // Теперь «зона» папки = маленькая папка с подписью ∪ раскрытая папка (+10 px). Пока курсор в этой зоне — папка открыта, вышел — закрывается
   { let px = -1, py = -1; const inR = (r, m) => px >= r.left - m && px <= r.right + m && py >= r.top - m && py <= r.bottom + m;
-    window.folderHover = f => inR(f.getBoundingClientRect(), 6) || (f.classList.contains('on') && inR(f.querySelector('.big').getBoundingClientRect(), 10));
+    window.folderHover = f => inR((f.querySelector('.ic') || f).getBoundingClientRect(), 0) || (f.classList.contains('on') && inR(f.querySelector('.big').getBoundingClientRect(), 0)); // 25.11 11:10: без полей — зона = маленькая папка ∪ раскрытая
     addEventListener('pointermove', e => { px = e.clientX; py = e.clientY; const f = document.querySelector('.folder.on');
       if (f && e.pointerType === 'mouse' && !window.folderHover(f)) window.closeFolder?.(); }, { passive: true }); }
   // ↑ в футере — иконка arrow_up_outline_24 (Figma 270:5797) вместо символа

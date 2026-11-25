@@ -109,18 +109,27 @@ document.documentElement.classList.add('js');
   /* ── Наведение: только папки раскрываются и растворяют остальное. Бирки — без растворения.
      Небольшая задержка намерения (90 мс), чтобы не мигало при проходе курсора. */
   let cur = null, offT, intentT, dragging = false;
-  const open = n => { clearTimeout(offT); if (dragging || cur === n) return;
+  /* 25.11 11:10 (тест): тайминги по правилам интерфейсной анимации — вход 240 мс с замедлением, выход 180 мс (≈75 % входа),
+     держится в CSS (--m-in / --m-out, test/fit.css). Пока папка открыта и пока закрывается, остальные узлы не реагируют —
+     следующее действие начинается только после окончания предыдущего (её правка: иначе бирки менялись под размытием) */
+  const SEQ = !window.PROD, OUT = 180; let closingT, px0 = -1, py0 = -1;
+  if (SEQ) addEventListener('pointermove', e => { px0 = e.clientX; py0 = e.clientY; }, { passive: true });
+  const busy = () => SEQ && stage.matches('.focus,.closing');
+  const open = n => { clearTimeout(offT); if (dragging || cur === n) return; if (SEQ && stage.classList.contains('closing')) return;
     cur && cur.classList.remove('on'); paths.forEach(p => p.classList.remove('on'));
     cur = n; n.classList.add('on'); lineFor(n.id)?.classList.add('on'); stage.classList.add('focus'); eyes.lookAt(n); };
-  const closeF = (now, keepIntent) => { if (!keepIntent) clearTimeout(intentT); const go = () => { cur && cur.classList.remove('on'); paths.forEach(p => p.classList.remove('on')); cur = null; stage.classList.remove('focus'); eyes.free(); };
-    if (now) go(); else offT = setTimeout(() => { if (!(cur && (window.folderHover ? window.folderHover(cur) : cur.matches(':hover')))) go(); }, 160); };
+  const closeF = (now, keepIntent) => { if (!keepIntent) clearTimeout(intentT); const go = () => { const was = !!cur; cur && cur.classList.remove('on'); paths.forEach(p => p.classList.remove('on')); cur = null; stage.classList.remove('focus'); eyes.free();
+      if (SEQ && was) { stage.classList.add('closing'); clearTimeout(closingT); closingT = setTimeout(() => { stage.classList.remove('closing');
+        // курсор уже стоит на другой папке — начинаем её открывать только теперь, с обычной задержкой намерения
+        const f = px0 >= 0 && document.elementFromPoint(px0, py0)?.closest('.folder'); if (f) { clearTimeout(intentT); intentT = setTimeout(() => open(f), 200); } }, OUT); } };
+    if (now) go(); else offT = setTimeout(() => { if (!(cur && (window.folderHover ? window.folderHover(cur) : cur.matches(':hover')))) go(); }, SEQ ? 0 : 160); };
   window.closeFolder = () => { clearTimeout(offT); closeF(false, true); }; /* 25.11: не сбрасывает «намерение» открыть соседнюю папку */ // 25.11: v2.js закрывает папку сам, когда курсор вышел из «зоны» папки (см. folderHover) // 24.11: гистерезис — папка «плывёт» под курсором, без него наведение мигало
   $$('.folder').forEach(n => {
-    n.addEventListener('pointerenter', e => { if (e.pointerType !== 'mouse') return; clearTimeout(intentT); intentT = setTimeout(() => open(n), 200); /* 25.11: 200 мс — не раскрывается сразу и не мигает */ });
+    n.addEventListener('pointerenter', e => { if (e.pointerType !== 'mouse' || (busy() && cur !== n)) return; clearTimeout(intentT); intentT = setTimeout(() => open(n), 200); /* 25.11: 200 мс — не раскрывается сразу и не мигает */ });
     n.addEventListener('pointerleave', () => closeF());
     n.addEventListener('focus', () => open(n)); n.addEventListener('blur', () => closeF());
   });
-  $$('.tag').forEach(n => { n.addEventListener('pointerenter', () => !dragging && eyes.lookAt(n)); n.addEventListener('pointerleave', () => !dragging && eyes.free()); });
+  $$('.tag').forEach(n => { n.addEventListener('pointerenter', () => !dragging && !busy() && eyes.lookAt(n)); n.addEventListener('pointerleave', () => !dragging && !busy() && eyes.free()); });
 
   /* ── Перетаскивание папок и бирок. Нажал и потянул → раскрытая папка сворачивается, тащим маленькую,
      без растворения соседей. Отпустил → пружина на место. Просто клик по папке → кейс. */
@@ -191,14 +200,22 @@ document.documentElement.classList.add('js');
     if (LITE) { addEventListener('resize', () => { pxC = S() * (devicePixelRatio || 1); });
       new IntersectionObserver(es => { heroOn = es[es.length - 1].isIntersecting; if (heroOn && loopFn && !loopRaf) loopRaf = requestAnimationFrame(loopFn); }).observe(stage); }
     const go = () => { if (reduce || root.dataset.style === 'new' || SM === 'still') return; running = true; /* style=new (тест 24.11): первый экран без парения */ const t0 = performance.now();
-      (loopFn = function loop(now) { loopRaf = 0; const t = now / 1000, ramp = smooth(Math.min(1, (now - t0) / 2500));
+      let clock = t0, speed = 1, prev = t0, idle = false;
+      (loopFn = function loop(now) { loopRaf = 0;
+        /* 25.11 11:10 (lite): пока папка открыта и пока закрывается, парение плавно замирает (её запись: верёвки дёргались при ховере) —
+           размытые узлы и верёвки стоят и не перерисовываются; после закрытия так же плавно продолжают с того же места */
+        if (LITE) { const dt = Math.min(64, now - prev), target = stage.matches('.focus,.closing') ? 0 : 1; prev = now;
+          speed += (target - speed) * Math.min(1, dt / 90); if (Math.abs(target - speed) < .002) speed = target; clock += dt * speed;
+          if (speed === 0) { if (idle) { if (!LITE || heroOn) loopRaf = requestAnimationFrame(loop); return; } idle = true; } else idle = false; }
+        const tn = LITE ? clock : now, t = tn / 1000, ramp = smooth(Math.min(1, (now - t0) / 2500));
         const px = LITE ? pxC : S() * (devicePixelRatio || 1), snap = v => Math.round(v * px) / px;
         items.forEach(it => { const w = 2 * Math.PI, dx = Math.sin(t * w / it.px + it.ph) * 3 * ramp, dy = Math.sin(t * w / it.py + it.ph * .7) * 3 * ramp,
             bow = Math.sin(t * w / it.pb + it.ph * 1.3) * 4 * ramp, x = it.ox + dx;
           // 8.3 (23.11): папки сдвигаются только на целые пиксели экрана — иначе размытие передней стенки пересчитывается
           // на дробных сдвигах и граница «фото / стенка» дрожит. Бирки (без размытия) плывут плавно, как раньше.
           const fx = it.glass ? snap(x) : x, fy = it.glass ? snap(dy) : dy;
-          it.n.style.translate = `${fx.toFixed(3)}px ${fy.toFixed(3)}px`; if (it.r) stretch(it.p, it.r, fx, fy, bow); });
+          /* lite: верёвка идёт за узлом без округления до пикселя — раньше её конец прыгал ступеньками (периодическое дёрганье) */
+          it.n.style.translate = `${fx.toFixed(3)}px ${fy.toFixed(3)}px`; if (it.r) stretch(it.p, it.r, LITE ? x : fx, LITE ? dy : fy, bow); });
         if (!LITE || heroOn) loopRaf = requestAnimationFrame(loop); })(t0); };
     setTimeout(go, T.lines + 6 * T.step + T.line + 300);
   }

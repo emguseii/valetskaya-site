@@ -421,3 +421,22 @@ html[data-v="2"] .foot{padding:0 48px 48px}
 /* при ховере папки длинная вертикальная верёвка тоже уходит в прозрачность, как остальные чужие линии */
 .longrope{transition:opacity .3s ease}
 html[data-v="2"]:has(.stage.focus) .longrope{opacity:.3}
+
+/* ══ Правки 25.11, 11:10 · ховер папки: тайминги и «одно за другим» ══
+   Правила интерфейсной анимации (Material, web.dev, SAP Fiori, Atlassian): переходы состояния 200–300 мс, выход быстрее входа (~75 %),
+   кривая с замедлением — движение начинается сразу и мягко садится. Вход 240 мс, выход 180 мс. */
+html[data-v="2"]{--m-in:240ms cubic-bezier(.22,1,.36,1);--m-out:180ms cubic-bezier(.22,1,.36,1)}
+/* выход (возврат в покой) — переходы на обычном состоянии */
+html[data-v="2"][data-hf=blur] .v7 .stage .node{transition:filter var(--m-out),opacity var(--m-out)}
+html[data-v="2"] .v7:is(.h-fix,.h-old) .stage .lines path{transition:opacity var(--m-out)}
+html[data-v="2"] .longrope{transition:opacity var(--m-out)}
+html[data-v="2"] .h-fix .big{transition:transform var(--m-out),translate var(--m-out),opacity var(--m-out)}
+html[data-v="2"] .h-fix .ic{transition:opacity var(--m-out),transform var(--m-out)}
+/* вход — переходы на состоянии «открыто» */
+html[data-v="2"][data-hf=blur] .v7 .stage.focus .node:not(.on){transition:filter var(--m-in),opacity var(--m-in)}
+html[data-v="2"]:not([data-hf=none]) .v7:is(.h-fix,.h-old) .stage.focus .lines path:not(.on){transition:opacity var(--m-in)}
+html[data-v="2"]:has(.stage.focus) .longrope{transition:opacity var(--m-in)}
+html[data-v="2"] .h-fix .folder.on .big{transition:transform var(--m-in),translate var(--m-in),opacity var(--m-in)}
+html[data-v="2"] .h-fix .folder.on .ic{transition:opacity var(--m-in),transform var(--m-in)}
+/* пока папка открыта и пока закрывается — остальные узлы не реагируют на курсор (бирки не меняются под размытием) */
+html[data-v="2"] .stage:is(.focus,.closing) .node:not(.on){pointer-events:none}
