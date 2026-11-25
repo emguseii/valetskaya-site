@@ -53,11 +53,19 @@ document.documentElement.classList.add('js');
   const intro = () => {
     if (reduce) { $$('.name,.tip,.win,.node').forEach(n => n.classList.add('shown')); eyes.sleep(false); return; }
     show($('.name'), T.name); show($('.win'), T.win); show($('.tip'), T.tip);
-    const V2 = root.dataset.v === '2'; // 25.11 (её порядок): лого → закрытые глаза → все линии разом из глаз → папки и бирки разом
+    const V2 = root.dataset.v === '2';
+    if (V2) { // 25.11 (её порядок и схема 326:7309): лого → закрытые глаза → все линии разом из глаз с одной скоростью на экране → папки и бирки разом
+      const v = window.ROPE_V = .8, k = S(); let end = 0; // v — px экрана в мс; длину считаем в px экрана, поэтому длинная и короткая верёвки растут одинаково
+      ['t2', 'f2', 'f1', 't3', 'f3', 't1'].forEach(id => { const p = lineFor(id), dur = p.getTotalLength() * k / v; end = Math.max(end, dur);
+        p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: dur, delay: T.lines, easing: 'linear', fill: 'forwards' }); });
+      ['t2', 'f2', 'f1', 't3', 'f3', 't1'].forEach(id => show($('#' + id), T.lines + end - 80));
+      setTimeout(() => paths.forEach(p => { p.getAnimations().forEach(a => { a.commitStyles?.(); a.cancel(); }); p.style.strokeDasharray = 'none'; }), T.lines + end + 60);
+      if (NEWEYES) setTimeout(() => eyes.sleep(false), T.lines + end);
+      return; }
     ['t2', 'f2', 'f1', 't3', 'f3', 't1'].forEach((id, i) => {
-      const p = lineFor(id), delay = T.lines + (V2 ? 0 : i * T.step), dur = V2 ? 900 : T.line + Math.min(220, p.getTotalLength() * .25);
+      const p = lineFor(id), delay = T.lines + i * T.step, dur = T.line + Math.min(220, p.getTotalLength() * .25);
       p.animate([{ strokeDashoffset: p.classList.contains('rev') ? -1 : 1 }, { strokeDashoffset: 0 }], { duration: dur, delay, easing: 'cubic-bezier(.32,.72,0,1)', fill: 'forwards' });
-      show($('#' + id), V2 ? T.lines + 900 : delay + dur * .7);
+      show($('#' + id), delay + dur * .7);
     });
     setTimeout(() => paths.forEach(p => { p.getAnimations().forEach(a => { a.commitStyles?.(); a.cancel(); }); p.style.strokeDasharray = 'none'; }), T.lines + 6 * T.step + T.line + 400);
     // fix/old: пока линии не вышли — глаза закрыты (её аннотация к кадру «Загрузка ≈360 мс»)
@@ -104,7 +112,8 @@ document.documentElement.classList.add('js');
     cur && cur.classList.remove('on'); paths.forEach(p => p.classList.remove('on'));
     cur = n; n.classList.add('on'); lineFor(n.id)?.classList.add('on'); stage.classList.add('focus'); eyes.lookAt(n); };
   const closeF = (now) => { clearTimeout(intentT); const go = () => { cur && cur.classList.remove('on'); paths.forEach(p => p.classList.remove('on')); cur = null; stage.classList.remove('focus'); eyes.free(); };
-    if (now) go(); else offT = setTimeout(() => { if (!(cur && cur.matches(':hover'))) go(); }, 160); }; // 24.11: гистерезис — папка «плывёт» под курсором, без него наведение мигало
+    if (now) go(); else offT = setTimeout(() => { if (!(cur && (window.folderHover ? window.folderHover(cur) : cur.matches(':hover')))) go(); }, 160); };
+  window.closeFolder = () => closeF(); // 25.11: v2.js закрывает папку сам, когда курсор вышел из «зоны» папки (см. folderHover) // 24.11: гистерезис — папка «плывёт» под курсором, без него наведение мигало
   $$('.folder').forEach(n => {
     n.addEventListener('pointerenter', e => { if (e.pointerType !== 'mouse') return; clearTimeout(intentT); intentT = setTimeout(() => open(n), 200); /* 25.11: 200 мс — не раскрывается сразу и не мигает */ });
     n.addEventListener('pointerleave', () => closeF());
@@ -160,15 +169,6 @@ document.documentElement.classList.add('js');
       // когда узлы сдвигаются к центру, окно с глазами тоже чуть уменьшается (не меньше 86 %, от нижнего края),
       // чтобы верёвки не прилипали к его бокам (её правка 23.11)
       const win = $('.win'); if (win) { const ws = Math.min(1, K.l, K.r); win.style.transformOrigin = '50% 100%'; win.style.scale = ws < .999 ? ws.toFixed(3) : ''; } };
-    // 25.11 (тест, вариант «а»): у раскрытой папки конец верёвки плавно переезжает на ближайшую точку её края и держится за неё
-    const attach = (it, fx, fy) => { const on = root.dataset.rc === 'attach' && it.n.classList.contains('on') && it.n.classList.contains('folder');
-      it.ak = (it.ak || 0) + ((on ? 1 : 0) - (it.ak || 0)) * .18; if (it.ak < .002) { it.ak = 0; return { x: 0, y: 0 }; }
-      if (on) { const big = it.n.querySelector('.big'), sb = svg.getBoundingClientRect(), k = sb.width / 1440 || 1, b = big.getBoundingClientRect(), pts = it.r.pts, z = pts[pts.length - 1];
-        const e = { x: z.x + fx, y: z.y + fy }, L = (b.left - sb.left) / k + 14, R = (b.right - sb.left) / k - 14, T = (b.top - sb.top) / k + 30, B = (b.bottom - sb.top) / k - 14;
-        let tx = Math.min(R, Math.max(L, e.x)), ty = Math.min(B, Math.max(T, e.y));
-        if (tx === e.x && ty === e.y) { const d = [e.x - L, R - e.x, e.y - T, B - e.y], m = Math.min(...d); if (m === d[0]) tx = L; else if (m === d[1]) tx = R; else if (m === d[2]) ty = T; else ty = B; }
-        it.at = { x: tx - e.x, y: ty - e.y }; }
-      return it.at ? { x: it.at.x * it.ak, y: it.at.y * it.ak } : { x: 0, y: 0 }; };
     let running = false;
     const still = () => items.forEach(it => { it.n.style.translate = `${it.ox.toFixed(2)}px 0px`; if (it.r) stretch(it.p, it.r, it.ox, 0); });
     const prep = () => { spread(); items.forEach(it => { it.n.style.translate = `${it.ox.toFixed(2)}px 0px`; });
@@ -191,7 +191,7 @@ document.documentElement.classList.add('js');
           // 8.3 (23.11): папки сдвигаются только на целые пиксели экрана — иначе размытие передней стенки пересчитывается
           // на дробных сдвигах и граница «фото / стенка» дрожит. Бирки (без размытия) плывут плавно, как раньше.
           const fx = it.glass ? snap(x) : x, fy = it.glass ? snap(dy) : dy;
-          it.n.style.translate = `${fx.toFixed(3)}px ${fy.toFixed(3)}px`; if (it.r) { const at = attach(it, fx, fy); stretch(it.p, it.r, fx + at.x, fy + at.y, bow); } });
+          it.n.style.translate = `${fx.toFixed(3)}px ${fy.toFixed(3)}px`; if (it.r) stretch(it.p, it.r, fx, fy, bow); });
         requestAnimationFrame(loop); })(t0); };
     setTimeout(go, T.lines + 6 * T.step + T.line + 300);
   }
@@ -348,7 +348,7 @@ if (!document.querySelector('link[href*="fit.css"]')) {
     document.querySelectorAll('.files .file').forEach((f, i) => { if (T[i]) f.insertAdjacentHTML('afterbegin', `<b class="file-ob" aria-hidden="true">${T[i]}</b>`); });
   }
   /* Верёвки не просвечивают сквозь пустые стеклянные папки: SVG-маска с «дырами» по рамкам папок, дыры едут вместе с папками */
-  const svg = document.querySelector('.lines'), icons = [...document.querySelectorAll('.win, .h-fix .folder .ic')]; /* раскрытую папку не вырезаем: верёвка доходит до неё целиком (её правка 24.11) */
+  const svg = document.querySelector('.lines'), icons = [...document.querySelectorAll(document.documentElement.dataset.v === '2' ? '.win' : '.win, .h-fix .folder .ic')]; /* v2 (25.11): у папок верёвка заканчивается ровно на контуре — дыры не нужны */ /* раскрытую папку не вырезаем: верёвка доходит до неё целиком (её правка 24.11) */
   if (svg && icons.length) { const NS = 'http://www.w3.org/2000/svg', el = (t, a) => { const n = document.createElementNS(NS, t); for (const k in a) n.setAttribute(k, a[k]); return n; };
     const mask = el('mask', { id: 'ropeHide', maskUnits: 'userSpaceOnUse', x: -2000, y: -2000, width: 6000, height: 6000 });
     mask.appendChild(el('rect', { x: -2000, y: -2000, width: 6000, height: 6000, fill: '#fff' }));

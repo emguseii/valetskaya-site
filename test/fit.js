@@ -52,7 +52,7 @@
   row('Вариант', 'v', [['1', '№1'], ['2', '№2']], root.dataset.v || '1', true);
   // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
   // 25.11 (её просьба: решения про плавность — тестом): что делает верёвка у раскрытой папки, что с фоном, ховер контактов
-  row('Верёвка у раскрытой папки', 'rc', [['fade', 'г · тает у папки'], ['attach', 'а · цепляется за край'], ['through', 'б · сквозь стекло'], ['hide', 'в · гаснет'], ['cut', 'вырез']], 'fade');
+  root.dataset.rc = 'fade'; // её выбор 25.11: у раскрытой папки верёвка тает (вариант «г»)
   root.dataset.hf = 'blur'; // её выбор 25.11: при ховере папки остальное размыто
   row('Контакты · ховер', 'cxh', [['png', 'как было'], ['tile', 'подложка как у ↺ ↑']], 'tile');
   row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало']], root.dataset.skyTop, true);
@@ -158,7 +158,7 @@
   // Первый блок по её компонентам (Figma 290:6454 Folders / Default, 25.11): кадр 1520 → наша сцена 1440 (сдвиг −40 по x, +14 по y,
   // чтобы окно встало на своё место). Папки — пустые стеклянные 120×95 с новыми подписями, бирки и верёвки — как во фрейме
   // лого — её компонент Web/Logo/Имя (Figma 41:91) векторами: рукописная фамилия с обводкой 1px цветом фона
-  { const nm = document.querySelector('.name'); if (nm) nm.src = 'assets/hero-name-v8.svg'; }
+  { const nm = document.querySelector('.name'); if (nm) nm.src = 'assets/hero-name-v8.svg?v=2'; }
   // ховер папки: один размытый слой между узлами и раскрытой папкой — дешевле, чем размывать каждый узел отдельно
   // раскрытая папка не вылезает за край окна (её правка 25.11): считаем, где она окажется, и сдвигаем внутрь с полями 16 (сверху — под меню)
   document.querySelectorAll('.folder').forEach(f => { const big = f.querySelector('.big'); if (!big) return;
@@ -171,26 +171,18 @@
   // 25.11 (её идея, вариант «г»): у раскрытой папки верёвка не обрезается, а тает — та же обводка, но с прозрачностью к концу у папки.
   // Без масок и фильтров: градиент вдоль верёвки (от окна к папке), координаты обновляются, пока папка открыта
   { const svgL = document.querySelector('.lines'); if (svgL) {
-    // для каждой папки своё место: ищем вдоль верёвки точку, где она входит под раскрытую папку, и гасим её на 70 px до этой точки
+    // для каждой папки своё место: вдоль верёвки ищем точку, где она входит в форму раскрытой папки (сама форма .big__shape, не прямоугольник),
+    // и гасим её резко — 100 % → 0 % на последних 8 px экрана до этой точки, без длинного градиента
     svgL.insertAdjacentHTML('afterbegin', '<defs><linearGradient id="ropeFade" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>');
-    const g = svgL.querySelector('#ropeFade'), FADE = 70, PAD = 6;
-    const tf = () => { const p = root.dataset.rc === 'fade' && svgL.querySelector('path.on'), big = p && document.querySelector('.folder.on .big');
-      if (p && big) { const L = p.getTotalLength(), rev = p.classList.contains('rev'), m = p.getScreenCTM(), b = big.getBoundingClientRect();
-        const inside = l => { const q = p.getPointAtLength(l), sp = new DOMPoint(q.x, q.y).matrixTransform(m);
-          return sp.x > b.left - PAD && sp.x < b.right + PAD && sp.y > b.top + 30 - PAD && sp.y < b.bottom + PAD; };
-        const at = u => rev ? L - u : u; let hit = L;
-        for (let u = 0; u <= L; u += 6) if (inside(at(u))) { hit = u; break; }
-        const k = m.a ? Math.hypot(m.a, m.b) : 1, a = p.getPointAtLength(at(Math.max(0, hit - FADE / k))), e = p.getPointAtLength(at(hit));
+    const g = svgL.querySelector('#ropeFade'), FADE = 8;
+    const tf = () => { const p = svgL.querySelector('path.on'), shape = p && document.querySelector('.folder.on .big__shape path');
+      if (p && shape) { const L = p.getTotalLength(), m = p.getScreenCTM(), sm = shape.getScreenCTM().inverse(), pt = shape.ownerSVGElement.createSVGPoint();
+        const inside = l => { const q = p.getPointAtLength(l), sp = new DOMPoint(q.x, q.y).matrixTransform(m).matrixTransform(sm); pt.x = sp.x; pt.y = sp.y; return shape.isPointInFill(pt); };
+        let lo = 0, hi = L; for (let u = 0; u <= L; u += 12) if (inside(u)) { hi = u; lo = Math.max(0, u - 12); break; }
+        if (hi < L) for (let i = 0; i < 6; i++) { const mid = (lo + hi) / 2; if (inside(mid)) hi = mid; else lo = mid; }
+        const k = Math.hypot(m.a, m.b) || 1, a = p.getPointAtLength(Math.max(0, hi - FADE / k)), e = p.getPointAtLength(hi);
         g.setAttribute('x1', a.x.toFixed(1)); g.setAttribute('y1', a.y.toFixed(1)); g.setAttribute('x2', e.x.toFixed(1)); g.setAttribute('y2', e.y.toFixed(1)); }
       requestAnimationFrame(tf); }; requestAnimationFrame(tf); } }
-  // верёвка не просвечивает сквозь раскрытую папку: дыра в маске верёвок по её рамке
-  { const mask = document.getElementById('ropeHide'), svgL = document.querySelector('.lines'); if (mask && svgL) {
-    const bigs = [...document.querySelectorAll('.folder .big')].map(b => { const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('fill', '#000'); r.setAttribute('rx', 24); mask.appendChild(r); return { b, r }; });
-    const tk = () => { const sb = svgL.getBoundingClientRect(), k = sb.width / 1440 || 1;
-      bigs.forEach(({ b, r }) => { const on = b.closest('.folder.on') && root.dataset.rc === 'cut'; if (!on) { r.setAttribute('width', 0); return; } const q = b.getBoundingClientRect();
-        r.setAttribute('x', ((q.left - sb.left) / k).toFixed(1)); r.setAttribute('y', ((q.top - sb.top) / k + 8).toFixed(1));
-        r.setAttribute('width', (q.width / k).toFixed(1)); r.setAttribute('height', Math.max(0, q.height / k - 8).toFixed(1)); });
-      requestAnimationFrame(tk); }; requestAnimationFrame(tk); } }
   { const F = (x, y) => [x - 40, y + 14];
     const pos = { f1: [142, 630, -4], f3: [1160, 256, -5], f2: [838, 702, 7], t1: [45, 267, -4], t3: [1097, 517, 4], t2: [518, 663, -6] };
     for (const [id, [l, t, r]] of Object.entries(pos)) { const n = document.getElementById(id); if (!n) continue;
@@ -210,21 +202,37 @@
       t3: ['translate(802.5 454)', 'M0 0C21 47.167 70.5 132.469 163 126 322 114.881 340-94 455.5 71.5'] };
     for (const [id, [tr, d]] of Object.entries(R)) { const p = document.querySelector('.lines path[data-to="' + id + '"]'); if (!p) continue;
       p.setAttribute('transform', 'translate(-40 14) ' + tr); p.setAttribute('d', d); }
-    // 25.11: верёвка растёт из глаз (направление анимации по тому, какой конец у окна), а у папок доходит до самой папки без зазора:
-    // конец продлеваем к центру иконки — внутри папки его прячет маска, снаружи верёвка касается края
+    // 25.11 (её схема 326:7309): каждая верёвка начинается у глаз и растёт к своему узлу. Перестраиваем путь по точкам в координатах сцены
+    // (начало — у окна, конец — у узла), без transform и без класса rev. У папок конец ровно на контуре папки (её форма .ic__back) — без зазора и без хвоста внутри
     const svgL = document.querySelector('.lines'), win = document.querySelector('.win');
-    if (svgL && win) { const sr = svgL.getBoundingClientRect(), k = sr.width / 1440 || 1, wr = win.getBoundingClientRect();
+    if (svgL && win) { const sr = svgL.getBoundingClientRect(), k = sr.width / 1440 || 1, wr = win.getBoundingClientRect(), S = svgL.getScreenCTM();
       const W = { x: (wr.left + wr.width / 2 - sr.left) / k, y: (wr.bottom - sr.top) / k };
-      svgL.querySelectorAll('path[data-to]').forEach(p => { const m = p.transform.baseVal.consolidate()?.matrix || svgL.createSVGMatrix(), L = p.getTotalLength();
-        const toSvg = q => new DOMPoint(q.x, q.y).matrixTransform(m), a0 = toSvg(p.getPointAtLength(0)), a1 = toSvg(p.getPointAtLength(L));
-        const startAtWin = Math.hypot(a0.x - W.x, a0.y - W.y) < Math.hypot(a1.x - W.x, a1.y - W.y);
-        p.classList.toggle('rev', !startAtWin);
-        const node = document.getElementById(p.dataset.to), ic = node && node.querySelector('.ic'); if (!ic) return;
-        const r = ic.getBoundingClientRect(), c = new DOMPoint((r.left + r.width / 2 - sr.left) / k, (r.top + r.height / 2 - sr.top) / k).matrixTransform(m.inverse());
-        const d0 = p.getAttribute('d'), f = v => v.toFixed(1);
-        p.setAttribute('d', startAtWin ? d0 + ` L${f(c.x)} ${f(c.y)}` : `M${f(c.x)} ${f(c.y)} L` + d0.replace(/^M\s*/, '')); }); } }
+      const curve = q => { let d = 'M' + q[0].x.toFixed(2) + ' ' + q[0].y.toFixed(2);
+        for (let i = 0; i < q.length - 1; i++) { const a = q[i - 1] || q[i], b = q[i], c = q[i + 1], e = q[i + 2] || c;
+          d += 'C' + (b.x + (c.x - a.x) / 6).toFixed(2) + ' ' + (b.y + (c.y - a.y) / 6).toFixed(2) + ' ' + (c.x - (e.x - b.x) / 6).toFixed(2) + ' ' + (c.y - (e.y - b.y) / 6).toFixed(2) + ' ' + c.x.toFixed(2) + ' ' + c.y.toFixed(2); }
+        return d; };
+      svgL.querySelectorAll('path[data-to]').forEach(p => { const m = p.transform.baseVal.consolidate()?.matrix || svgL.createSVGMatrix(), L = p.getTotalLength(), N = 72;
+        let pts = []; for (let i = 0; i <= N; i++) { const q = p.getPointAtLength(L * i / N); pts.push(new DOMPoint(q.x, q.y).matrixTransform(m)); }
+        if (Math.hypot(pts[0].x - W.x, pts[0].y - W.y) > Math.hypot(pts[N].x - W.x, pts[N].y - W.y)) pts.reverse();
+        const back = document.querySelector('#' + p.dataset.to + ' .ic__back path');
+        if (back) { const bm = back.getScreenCTM().inverse(), bp = back.ownerSVGElement.createSVGPoint();
+          const inside = q => { const s2 = new DOMPoint(q.x, q.y).matrixTransform(S).matrixTransform(bm); bp.x = s2.x; bp.y = s2.y; return back.isPointInFill(bp); };
+          // продлеваем конец прямо к центру иконки и обрезаем по первой точке, которая попадает в форму папки (бисекция — до 0,1 px)
+          const ic = document.querySelector('#' + p.dataset.to + ' .ic').getBoundingClientRect(), c = { x: (ic.left + ic.width / 2 - sr.left) / k, y: (ic.top + ic.height / 2 - sr.top) / k };
+          const z = pts[pts.length - 1]; for (let i = 1; i <= 12; i++) pts.push(new DOMPoint(z.x + (c.x - z.x) * i / 12, z.y + (c.y - z.y) * i / 12));
+          const hit = pts.findIndex((q, i) => i > 4 && inside(q));
+          if (hit > 0) { let a = pts[hit - 1], b = pts[hit];
+            for (let i = 0; i < 12; i++) { const mid = new DOMPoint((a.x + b.x) / 2, (a.y + b.y) / 2); if (inside(mid)) b = mid; else a = mid; }
+            pts = pts.slice(0, hit); pts.push(b); } }
+        p.removeAttribute('transform'); p.classList.remove('rev'); p.setAttribute('d', curve(pts)); }); } }
   // 25.11: петля бирки входит в дырочку — часть верёвки поверх белой карточки видна (раньше белая на белом, казалось — зазор)
   document.querySelectorAll('.tag__loop').forEach(l => l.insertAdjacentHTML('beforeend', '<path class="tag__in" d="M112.4 0C112.2 4 113.6 9.6 115 15.5"/>'));
+  // 25.11 (крит, её запись): у нижнего края экрана раскрытая папка сдвигается вверх и «убегала» из-под курсора → закрылась → открылась → дёрганье.
+  // Теперь «зона» папки = маленькая папка с подписью ∪ раскрытая папка (+10 px). Пока курсор в этой зоне — папка открыта, вышел — закрывается
+  { let px = -1, py = -1; const inR = (r, m) => px >= r.left - m && px <= r.right + m && py >= r.top - m && py <= r.bottom + m;
+    window.folderHover = f => inR(f.getBoundingClientRect(), 6) || (f.classList.contains('on') && inR(f.querySelector('.big').getBoundingClientRect(), 10));
+    addEventListener('pointermove', e => { px = e.clientX; py = e.clientY; const f = document.querySelector('.folder.on');
+      if (f && e.pointerType === 'mouse' && !window.folderHover(f)) window.closeFolder?.(); }, { passive: true }); }
   // ↑ в футере — иконка arrow_up_outline_24 (Figma 270:5797) вместо символа
   const up = document.querySelector('.foot__up'); if (up) up.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.9999 3C12.2651 3.00006 12.5195 3.10549 12.707 3.29298L20.707 11.2932C21.0973 11.6837 21.0973 12.3168 20.707 12.7073C20.3165 13.0978 19.6834 13.0977 19.2929 12.7073L12.9999 6.41416V20.0005C12.9999 20.5527 12.5521 21.0004 11.9999 21.0005C11.4476 21.0005 10.9999 20.5528 10.9999 20.0005V6.41416L4.70696 12.7073C4.31647 13.0978 3.68343 13.0977 3.29289 12.7073C2.90237 12.3168 2.90237 11.6837 3.29289 11.2932L11.2929 3.29298L11.3661 3.22657C11.5441 3.0808 11.7679 3 11.9999 3Z"/></svg>';
   // 2) карточка, на которой висит верёвка: дырочка сверху, не таскается
@@ -239,7 +247,7 @@
   card.addEventListener('pointerdown', e => { if (e.button > 0) return; free(true); });
   document.querySelector('.pile__tidy')?.addEventListener('click', () => free(false));
   const svg = document.createElementNS(NS, 'svg'); svg.classList.add('longrope'); svg.setAttribute('aria-hidden', 'true');
-  svg.innerHTML = '<defs><linearGradient id="longGlass" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".25" stop-color="#fff" stop-opacity=".3"/><stop offset=".5" stop-color="#fff" stop-opacity=".8"/><stop offset=".75" stop-color="#fff" stop-opacity=".3"/><stop offset="1" stop-color="#fff" stop-opacity=".75"/></linearGradient></defs><path class="longrope__p" pathLength="1" style="stroke-dasharray:1 1;stroke-dashoffset:1"/>';
+  svg.innerHTML = '<defs><linearGradient id="longGlass" gradientUnits="userSpaceOnUse" spreadMethod="reflect" x1="0" y1="0" x2="0" y2="420"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".18" stop-color="#fff" stop-opacity=".35"/><stop offset=".42" stop-color="#e9f2ff" stop-opacity=".55"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/><stop offset=".6" stop-color="#cfe0ff" stop-opacity=".35"/><stop offset=".85" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity=".3"/></linearGradient></defs><path class="longrope__p" pathLength="1" style="stroke-dasharray:1 1;stroke-dashoffset:1"/>';
   document.body.prepend(svg);
   const path = svg.querySelector('path'), grad = svg.querySelector('#longGlass');
   const draw = () => { const win = document.querySelector('.win'), hole = card.querySelector('.card__hole'); if (!win || !hole) return;
@@ -254,10 +262,12 @@
     const cx = r ? r.left + r.width / 2 + sx : a.x, top = r ? r.top + sy : a.y + 200, bot = r ? r.bottom + sy : b.y - 200;
     const k1 = Math.min(160, (top - a.y) / 2), k2 = Math.min(220, (b.y - bot) / 2), f = n => n.toFixed(1);
     const d = `M${f(a.x)} ${f(a.y)} C${f(a.x)} ${f(a.y + k1)} ${f(cx)} ${f(top - k1)} ${f(cx)} ${f(top)} L${f(cx)} ${f(bot)} C${f(cx)} ${f(bot + k2)} ${f(b.x)} ${f(b.y - k2)} ${f(b.x)} ${f(b.y)}`;
-    path.setAttribute('d', d); grad.setAttribute('y1', a.y); grad.setAttribute('y2', b.y); };
+    path.setAttribute('d', d); grad.setAttribute('y1', a.y); grad.setAttribute('y2', a.y + 420);
+    path.style.strokeWidth = (1.5 * (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--s')) || 1)).toFixed(2); }; // толщина как у верёвок сцены (1,5 × масштаб)
   // 25.11: длинная верёвка тоже вырастает из глаз — вместе с остальными линиями (web.js: линии стартуют через 360 мс после загрузки)
   const grow = () => { const p = svg.querySelector('path'); if (matchMedia('(prefers-reduced-motion: reduce)').matches) { p.style.strokeDashoffset = 0; return; }
-    p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 1400, delay: 360, easing: 'cubic-bezier(.32,.72,0,1)', fill: 'forwards' }); };
+    draw(); const dur = p.getTotalLength() / (window.ROPE_V || .8); // та же скорость на экране, что у верёвок первого экрана (web.js)
+    p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: dur, delay: 360, easing: 'linear', fill: 'forwards' }); };
   if (document.readyState === 'complete') grow(); else addEventListener('load', grow);
   let t; const later = () => { clearTimeout(t); t = setTimeout(draw, 80); };
   addEventListener('load', draw); addEventListener('resize', later); new ResizeObserver(later).observe(document.body);

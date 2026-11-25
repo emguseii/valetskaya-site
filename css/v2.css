@@ -388,8 +388,6 @@ html[data-v="2"] .tag__loop .tag__in{fill:none;stroke:rgba(11,58,168,.5);stroke-
 html[data-v="2"] .nc__big:hover .nc__cv,html[data-v="2"] .nc2s:hover .nc2s__cv{transform:none}
 
 /* ══ Правки 25.11, 09:00 ══ */
-/* верёвка у раскрытой папки (тест): «в» — гаснет на время раскрытия */
-html[data-v="2"][data-rc=hide] .v7 .stage.focus .lines path.on{opacity:0;transition:opacity .25s ease}
 /* круглые кнопки — обе 48, иконки 24 (Figma 318:7105: в библиотеке одного размера) */
 html[data-v="2"] .pile__tidy,html[data-v="2"] .foot__up{width:48px;height:48px}
 html[data-v="2"] :is(.pile__tidy,.foot__up) svg{width:24px;height:24px}
@@ -407,6 +405,6 @@ html[data-v="2"][data-cxh=tile] .cx__m::before{content:"";position:absolute;left
   box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.6),inset -1px -1px 1px rgba(255,255,255,.2),inset 2.5px 0 3px -1px rgba(255,90,150,.5),inset -2.5px 0 3px -1px rgba(80,170,255,.55),inset 0 -2.5px 3px -1px rgba(255,210,90,.45),inset 0 2.5px 3px -1px rgba(120,255,220,.4)}
 html[data-v="2"][data-cxh=tile] .cx__m:is(:hover,:focus-visible)::before{opacity:1}
 /* «г · тает у папки»: обводка открытой верёвки — градиент к прозрачности у папки (ropeFade в fit.js) */
-html[data-v="2"][data-rc=fade] .v7 .stage.focus .lines path.on{stroke:url(#ropeFade)}
+html[data-v="2"] .v7 .stage.focus .lines path.on{stroke:url(#ropeFade)}
 /* лого ближе к глазам (её правка 322:7296): до окна ~24 вместо ~40 */
 html[data-v="2"] .name{top:160px}
