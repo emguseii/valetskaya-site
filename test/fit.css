@@ -266,3 +266,61 @@ html[data-v="2"] .pile__glass{transition:opacity .5s ease}
 
 /* Большие кейсы по обновлённым компонентам Case / Big (Figma 238:8737 и соседние, 24.11 23:26): сначала заголовок и мета, под ними (через 32) обложка */
 html[data-v="2"] .nc__d{order:-1}
+
+
+/* ══ Вариант №2 · 25.11 ночью: кейсы по Figma 230:4427, «Обо мне» по 252:10056, кнопки 270:5745/5787 ══ */
+/* Кейсы: всё привязано к центральной оси (центр блока = ось и длинная верёвка). Координаты — как во фрейме, от верха статистики */
+html[data-v="2"] .nc{display:block;position:relative;max-width:none;height:2501px;margin-top:84px}
+html[data-v="2"] .nc > *{position:absolute;margin:0}
+html[data-v="2"] .nc__big--1{left:calc(50% - 490px);top:0;width:490px}
+html[data-v="2"] .nc__big--2{left:50%;top:695px;width:500px}
+html[data-v="2"] .nc__big--3{left:calc(50% - 592px);top:1145px;width:592px}
+html[data-v="2"] .nc__more{left:50%;top:1824px;padding:0;justify-self:auto}
+html[data-v="2"] .nc__small{display:none}
+/* мелкие: три разные композиции (Figma 238:8769, 255:10428, 270:5597); между блоками названий 154 */
+.nc2s{display:none}
+html[data-v="2"] .nc2s{display:flex;align-items:flex-start;cursor:pointer}
+html[data-v="2"] .nc2s--mw{top:1873px;left:calc(50% - 25px);gap:4px}
+html[data-v="2"] .nc2s--ad{top:2099px;left:calc(50% - 394px);gap:8px}
+html[data-v="2"] .nc2s--subs{top:2377px;left:calc(50% - 41px);gap:4px}
+.nc2s__tx{display:flex;align-items:flex-start}
+.nc2s__lime,.nc2s__t{font:400 28px/.92 var(--display);letter-spacing:-1.12px;text-transform:uppercase;text-box:trim-both cap alphabetic;white-space:nowrap}
+.nc2s__lime{color:var(--lime);text-align:right}
+.nc2s__t{color:#fff}
+.nc2s--mw .nc2s__lime{width:25px}.nc2s--mw .nc2s__t{width:178px}
+.nc2s--ad .nc2s__lime{width:31px}.nc2s--ad .nc2s__t{width:91px}
+.nc2s--subs .nc2s__lime{width:41px}.nc2s--subs .nc2s__t{width:111px}
+.nc2s__cv{position:relative;display:block;flex:none;overflow:hidden;transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.nc2s__cv img{display:block;width:100%;height:100%;transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.nc2s--mw .nc2s__cv{width:302px;height:226px}
+.nc2s--ad .nc2s__cv{width:355px;height:124px}
+.nc2s--subs .nc2s__cv{width:221px;height:124px}
+.nc2s:hover .nc2s__cv{transform:translateY(-6px)}
+.nc2s:hover .nc2s__cv img{transform:scale(1.03)}
+@media (prefers-reduced-motion:reduce){.nc2s__cv,.nc2s__cv img{transition:none}}
+
+/* «Обо мне» (Figma 252:10056): буквы ПОД карточками — белые 20 % со «стеклом», размытие --tb (12 → 0 шагами, fit.js); на резкости 0 сверху ещё слой */
+html[data-v="2"] .v7 .pile__glass{z-index:1;--tb:12px}
+html[data-v="2"] .pile__glass .bd{background:linear-gradient(135deg,rgba(255,255,255,.34),rgba(255,255,255,.16) 38%,rgba(255,255,255,.22) 70%,rgba(205,228,255,.32));
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);filter:blur(var(--tb));transition:filter .45s ease}
+html[data-v="2"] .pile__glass .rim{filter:url(#glassRim) blur(var(--tb));opacity:.25;transition:filter .45s ease,opacity .45s ease}
+html[data-v="2"] .pile__glass .hi{background:rgba(255,255,255,.06);opacity:0;transition:opacity .45s ease}
+html[data-v="2"] .pile__glass.sharp .rim{opacity:.55}
+html[data-v="2"] .pile__glass.sharp .hi{opacity:1}
+/* бирка на верёвке: 360 во фрейме = 319 у нас (масштаб блока 0,885), текст 17 → 15 */
+html[data-v="2"] #pile .card--hung{width:319px!important}
+html[data-v="2"] .card--hung ul{font-size:15px}
+
+/* Круглые кнопки ↺ и ↑ (Figma 270:5745, 270:5760): стекло — белый 10 %, блик сверху слева (свет −45°) и радужная кайма; ховер — 20 %.
+   Вариант «только на ховере» (270:5787, 270:5796): в покое просто 10 %, стекло проявляется при наведении */
+html[data-v="2"] :is(.pile__tidy,.foot__up){background:rgba(255,255,255,.1);color:#fff;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.6),inset -1px -1px 1px rgba(255,255,255,.2),inset 2.5px 0 3px -1px rgba(255,90,150,.5),inset -2.5px 0 3px -1px rgba(80,170,255,.55),inset 0 -2.5px 3px -1px rgba(255,210,90,.45),inset 0 2.5px 3px -1px rgba(120,255,220,.4);
+  transition:background .25s ease,box-shadow .3s ease}
+html[data-v="2"] :is(.pile__tidy,.foot__up):hover{background:rgba(255,255,255,.2);color:#fff}
+html[data-v="2"][data-gb=hover] :is(.pile__tidy,.foot__up):not(:hover){box-shadow:inset 0 0 0 0 transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+
+/* фикс 25.11 03:10: размытие не было видно — CSS сначала размывает слой, а потом обрезает его маской букв, и края оставались резкими.
+   Теперь размывается весь контейнер надписи (после маски), поэтому без backdrop-filter внутри (в размытом родителе он не работает) */
+html[data-v="2"] .v7 .pile__glass{filter:blur(var(--tb));transition:filter .45s ease}
+html[data-v="2"] .pile__glass .bd{backdrop-filter:none;-webkit-backdrop-filter:none;filter:none}
+html[data-v="2"] .pile__glass .rim{filter:url(#glassRim)}

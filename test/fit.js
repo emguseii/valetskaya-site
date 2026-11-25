@@ -51,6 +51,8 @@
   row('Вариант', 'v', [['1', '№1'], ['2', '№2']], root.dataset.v || '1', true);
   // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
   row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало']], root.dataset.skyTop, true);
+  // №2: круглые кнопки (↺ в «Обо мне», ↑ в футере) — стекло всегда или только на ховере (её альтернатива, Figma 270:5787 / 270:5796)
+  row('Кнопки ↺ ↑ · стекло', 'gb', [['always', 'всегда'], ['hover', 'только на ховере']], 'always');
   document.body.appendChild(pick); set(mode);
 
   // «Обо мне» стеклом (Figma 165:2635): форма букв — её вектор about-title.webp как маска, внутри — размытый и подсвеченный фон
@@ -138,9 +140,16 @@
   const ob = document.querySelector('.nc__big--3 img'); if (ob) ob.src = 'assets/cases/onboarding-v2.webp';
   // обложка статистики (кейс стал 490) и мелкие кейсы по её новой вёрстке (Figma 230:4446, 24.11 22:37): метки слева от оси, порядок NDA → DS → WIP
   const st = document.querySelector('.nc__big--1 img'); if (st) st.src = 'assets/cases/stat-v2.webp';
-  const sm = (img, meta, h) => `<div class="nc__sm"><b class="nc__g2">${meta}</b><span class="nc__scv"><img src="assets/cases/${img}.webp" alt="" loading="lazy"></span><b class="nc__sh">${h}</b></div>`;
+  // мелкие кейсы по её новой вёрстке (Figma 230:4427, 25.11): у каждого своя композиция, все привязаны к центральной оси;
+  // лаймовые год и тип — слева от оси, название — от оси вправо; между блоками названий 154
+  const sm = (mod, img, lime, h, coverFirst) => { const cv = `<span class="nc2s__cv"><img src="assets/cases/${img}.webp" alt="" loading="lazy"></span>`;
+    const tx = `<b class="nc2s__lime">${lime}</b><b class="nc2s__t">${h}</b>`;
+    return `<div class="nc2s nc2s--${mod}">${coverFirst ? cv + '<span class="nc2s__tx">' + tx + '</span>' : '<span class="nc2s__tx">' + tx + '</span>' + cv}</div>`; };
   const more = document.querySelector('.nc__more'); if (more) more.textContent = 'кейсы поменьше';
-  const small = document.querySelector('.nc__small'); if (small) small.innerHTML = sm('mediawall-v2', '2026 · NDA', 'Медиастена<br>профиля') + sm('ad-v2', '2026 · DS', 'маркетинговый<br>компонент<br>для быстрого<br>запуска кампаний') + sm('subs-v2', '2025 · WIP', 'UX/UI<br>Улучшения<br>раздела<br>подписчиков');
+  const nc = document.querySelector('.nc'); if (nc) nc.insertAdjacentHTML('beforeend',
+    sm('mw', 'mediawall-v3', '20<br>26', 'Медиастена<br>профиля<br>(NDA)') +
+    sm('ad', 'ad-v3', '20<br>26<br><br><br>DS', 'компо-<br>нент<br>для<br>марке-<br>тинга', true) +
+    sm('subs', 'subs-v3', '20<br>25<br><br>WIP', 'дизайн<br>лифтинг<br>раздела<br>подпис-<br>чиков'));
   // 2) карточка, на которой висит верёвка: дырочка сверху, не таскается
   const card = document.querySelector('#pile .card--lime'); if (!card) return;
   card.insertAdjacentHTML('afterbegin', '<i class="card__hole" aria-hidden="true"></i>'); card.classList.add('card--hung');
@@ -165,16 +174,27 @@
   addEventListener('load', draw); addEventListener('resize', later); new ResizeObserver(later).observe(document.body);
   document.querySelectorAll('img').forEach(i => i.addEventListener('load', later, { once: true }));
   setTimeout(draw, 600); setTimeout(draw, 2000);
-  // «Обо мне» проявляется постепенно, когда открыто ≥60 % надписи (карточки её закрывают; растащили — видно)
-  const pile = document.getElementById('pile'), word = pile && pile.querySelector('.pile__glass');
-  if (pile && word) { const cards = [...pile.querySelectorAll('.card, .toy')]; let q = 0;
-    const reveal = () => { q = 0; const w = word.getBoundingClientRect(); if (!w.width) return;
-      const rs = cards.map(c => c.getBoundingClientRect()); let free = 0, all = 0;
-      for (let i = 0; i < 28; i++) for (let j = 0; j < 8; j++) { const x = w.left + (i + .5) * w.width / 28, y = w.top + (j + .5) * w.height / 8; all++;
-        if (!rs.some(r => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom)) free++; }
-      const f = free / all; word.style.opacity = Math.max(0, Math.min(1, (f - .6) / .3)).toFixed(3); };
+  // «Обо мне» по её логике (Figma 252:10056, 25.11): буквы лежат ПОД карточками, слегка видны и сильно размыты (Layer Blur 12).
+  // Первое касание карточки — появляется кнопка ↺. Чем больше букв открыто, тем резче: 6 шагов 12 → 10 → … → 0.
+  // Резкость 0 — когда открыто 57 % площади букв (её розовая область во фрейме 270:5706 = 57 % букв), сверху ложится доп. слой.
+  // Открытость считается по самим буквам (маска about-title.webp), а не по прямоугольнику надписи; проверка — elementFromPoint,
+  // поэтому учитываются наклоны карточек. Считается только при перетаскивании и не чаще кадра.
+  const pile = document.getElementById('pile'), word = pile && pile.querySelector('.pile__glass'), tidy = document.querySelector('.pile__tidy');
+  if (pile && word) { word.insertAdjacentHTML('beforeend', '<i class="hi"></i>');
+    const N = .57, STEPS = 6, MAX = 12; let pts = [], f0 = null, q = 0;
+    const mask = new Image(); mask.src = 'assets/about-title.webp';
+    mask.onload = () => { const c = document.createElement('canvas'), W = 112, H = 28; c.width = W; c.height = H; const g = c.getContext('2d'); g.drawImage(mask, 0, 0, W, H);
+      const a = g.getImageData(0, 0, W, H).data; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (a[(y * W + x) * 4 + 3] > 120) pts.push([(x + .5) / W, (y + .5) / H]);
+      if (pts.length > 220) { const k = pts.length / 220; pts = pts.filter((_, i) => i % Math.ceil(k) === 0); } setTimeout(reveal, 400); };
+    const vis = () => { const r = word.getBoundingClientRect(); if (!r.width || r.bottom < 0 || r.top > innerHeight || !pts.length) return null; let free = 0, n = 0;
+      for (const [u, v] of pts) { const x = r.left + u * r.width, y = r.top + v * r.height; if (y < 0 || y > innerHeight) continue; n++;
+        const el = document.elementFromPoint(x, y); if (!el || !el.closest('#pile .card, #pile .toy')) free++; } return n ? free / n : null; };
+    const reveal = () => { q = 0; const f = vis(); if (f === null) return; if (f0 === null) f0 = Math.min(f, .3);
+      const t = Math.max(0, Math.min(1, (f - f0) / Math.max(.05, N - f0))), step = Math.round(t * STEPS);
+      word.style.setProperty('--tb', (MAX * (1 - step / STEPS)).toFixed(0) + 'px'); word.classList.toggle('sharp', step === STEPS); word.dataset.step = step; };
     const tick = () => { if (!q) q = requestAnimationFrame(reveal); };
-    pile.addEventListener('pointermove', tick); pile.addEventListener('pointerup', () => setTimeout(reveal, 950));
-    document.querySelector('.pile__tidy')?.addEventListener('click', () => setTimeout(reveal, 950));
-    addEventListener('resize', tick); addEventListener('load', reveal); setTimeout(reveal, 300); }
+    pile.addEventListener('pointerdown', e => { if (e.target.closest('.card, .toy') && tidy) tidy.hidden = false; }); // первое касание — кнопка ↺
+    pile.addEventListener('pointermove', e => { if (e.buttons) tick(); }); pile.addEventListener('pointerup', () => setTimeout(reveal, 300));
+    tidy?.addEventListener('click', () => setTimeout(() => { reveal(); tidy.hidden = true; }, 950));
+    addEventListener('scroll', () => { if (f0 === null) tick(); }, { passive: true }); addEventListener('resize', tick); }
 })();
