@@ -158,6 +158,14 @@
   { const nm = document.querySelector('.name'); if (nm) nm.src = 'assets/hero-name-v8.svg'; }
   // ховер папки: один размытый слой между узлами и раскрытой папкой — дешевле, чем размывать каждый узел отдельно
   document.getElementById('stage')?.insertAdjacentHTML('beforeend', '<i class="veil" aria-hidden="true"></i>');
+  // раскрытая папка не вылезает за край окна (её правка 25.11): считаем, где она окажется, и сдвигаем внутрь с полями 16 (сверху — под меню)
+  document.querySelectorAll('.folder').forEach(f => { const big = f.querySelector('.big'); if (!big) return;
+    new MutationObserver(() => { if (!f.classList.contains('on')) { big.style.translate = ''; return; }
+      const r = f.getBoundingClientRect(), k = r.width / f.offsetWidth || 1, L = big.classList.contains('big--left') ? -78 : -18, M = 28, TOP = 60;
+      const l = r.left + L * k, t = r.top - 43 * k, w = 328 * k, h = 266 * k;
+      let dx = 0, dy = 0; if (l < M) dx = M - l; else if (l + w > innerWidth - M) dx = innerWidth - M - (l + w);
+      if (t < TOP) dy = TOP - t; else if (t + h > innerHeight - M) dy = innerHeight - M - (t + h);
+      big.style.translate = (dx / k).toFixed(1) + 'px ' + (dy / k).toFixed(1) + 'px'; }).observe(f, { attributes: true, attributeFilter: ['class'] }); });
   // верёвка не просвечивает сквозь раскрытую папку: дыра в маске верёвок по её рамке
   { const mask = document.getElementById('ropeHide'), svgL = document.querySelector('.lines'); if (mask && svgL) {
     const bigs = [...document.querySelectorAll('.folder .big')].map(b => { const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('fill', '#000'); r.setAttribute('rx', 24); mask.appendChild(r); return { b, r }; });
@@ -193,7 +201,7 @@
   // её идея 25.11: карточку на верёвке тоже можно тащить — схватили, она перестаёт качаться и верёвка исчезает; ↺ возвращает всё
   // слои «Обо мне» (её правка 25.11): «курсы» (кремовая) над «образованием» (белая), игрушка над голубой «после работы»
   const pileItems = [...document.querySelectorAll('#pile .card, #pile .toy')];
-  const zfix = () => { const z = [10, 11, 14, 13, 17, 15, 16]; pileItems.forEach((el, i) => { if (z[i] != null) el.style.zIndex = z[i]; }); };
+  const zfix = () => { const z = [10, 11, 14, 13, 17, 18, 16]; /* курсы над образованием, но под «сильной стороной» */ pileItems.forEach((el, i) => { if (z[i] != null) el.style.zIndex = z[i]; }); };
   zfix(); document.querySelector('.pile__tidy')?.addEventListener('click', () => setTimeout(zfix, 50));
   const free = on => { card.classList.toggle('free', on); svg.classList.toggle('off', on); if (!on) setTimeout(draw, 950); };
   card.addEventListener('pointerdown', e => { if (e.button > 0) return; free(true); });

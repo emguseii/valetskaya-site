@@ -367,8 +367,13 @@ html[data-v="2"] .big__full{display:block;width:100%;height:100%;object-fit:cove
 
 /* ══ Правки 25.11, 07:00 ══ */
 /* ховер папки (её идея): размыт весь фон одним слоем под раскрытой папкой; узлы 4 < слой 6 < раскрытая папка 8 */
-html[data-v="2"] .veil{position:absolute;inset:-300px;z-index:6;pointer-events:none;visibility:hidden;opacity:0;
+html[data-v="2"] .veil{position:absolute;left:-2000px;right:-2000px;top:-400px;bottom:-60px;-webkit-mask:linear-gradient(#000 calc(100% - 220px),transparent);mask:linear-gradient(#000 calc(100% - 220px),transparent);z-index:6;pointer-events:none;visibility:hidden;opacity:0;
   background:rgba(8,32,120,.06);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:opacity .25s ease,visibility 0s .25s}
 html[data-v="2"][data-hb=blur] .stage.focus .veil{visibility:visible;opacity:1;transition:opacity .25s ease}
 /* стикер на ховере — как её Web / Sticker / Hover (290:6781): обычная тень + белый ореол 4px, без пышного свечения */
 html[data-v="2"] .ropes-float .tag:is(:hover,:focus-visible){filter:drop-shadow(0 0 4px #fff)}
+/* фикс 07:20: размытие больше не заходит на кейсы — только первый экран, внизу плавно сходит на нет (без резкой границы) */
+/* раскрытая папка сдвигается внутрь окна плавно, вместе с раскрытием */
+html[data-v="2"] .h-fix .big{transition:transform .5s cubic-bezier(.22,1,.36,1),translate .5s cubic-bezier(.22,1,.36,1),opacity .22s var(--ease)}
+/* ховер папки: лого и глаза не размываются — это якорь экрана, глаза смотрят на папку; размыты только верёвки, бирки и другие папки */
+html[data-v="2"][data-hb=blur] .stage.focus :is(.name,.win){z-index:7}
