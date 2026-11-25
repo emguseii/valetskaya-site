@@ -38,7 +38,7 @@
   Object.assign(root.dataset, { role: 'window', folder: 'glass', footnav: 'off', aboutair: 'air', cnr: 'off' });
   /* Панель: строки идут в порядке блоков страницы, название — всегда слева в своей колонке (её правило 24.11) */
   const rowEl = label => { const r = document.createElement('div'); r.className = 'fitrow'; const l = document.createElement('span'); l.className = 'fitrow__l'; l.textContent = label; r.appendChild(l); pick.appendChild(r); return r; };
-  const row = (label, key, opts, def, reload) => { const r = rowEl(label); let cur = q.get(key) || def; root.dataset[key] = cur;
+  const row = (label, key, opts, def, reload) => { const r = rowEl(label); let cur = q.get(key) || (window.PROD_DEFAULTS || {})[key] || def; /* на проде — проверенные значения, тестовые новинки не попадают */ root.dataset[key] = cur;
     opts.forEach(([v, t]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.dataset[key] = v;
       const mark = () => r.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset[key] === cur)));
       b.addEventListener('click', () => { const u = new URL(location); u.searchParams.set(key, v);
@@ -50,6 +50,10 @@
   // Сравнение: вариант №1 (зафиксирован) / №2 (Figma 238:8845 + её комментарии 24.11 вечером). Читается при загрузке — кнопка перезагружает страницу
   row('Вариант', 'v', [['1', '№1'], ['2', '№2']], root.dataset.v || '1', true);
   // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
+  // 25.11 (её просьба: решения про плавность — тестом): что делает верёвка у раскрытой папки, что с фоном, ховер контактов
+  row('Верёвка у раскрытой папки', 'rc', [['attach', 'а · цепляется за край'], ['through', 'б · сквозь стекло'], ['hide', 'в · гаснет'], ['cut', 'вырез']], 'attach');
+  row('Ховер папки · остальное', 'hf', [['blur', 'размыть'], ['dim', 'приглушить'], ['none', 'как есть']], 'blur');
+  row('Контакты · ховер', 'cxh', [['png', 'как было'], ['tile', 'подложка как у ↺ ↑']], 'png');
   row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало']], root.dataset.skyTop, true);
     if (!window.PROD) { pick.classList.add('min'); x.setAttribute('aria-label', 'Развернуть панель'); document.body.appendChild(pick); } set(mode); // 25.11: панель свёрнута — не мешает проверять
 
@@ -165,11 +169,9 @@
       big.style.translate = (dx / k).toFixed(1) + 'px ' + (dy / k).toFixed(1) + 'px'; }).observe(f, { attributes: true, attributeFilter: ['class'] }); });
   // верёвка не просвечивает сквозь раскрытую папку: дыра в маске верёвок по её рамке
   { const mask = document.getElementById('ropeHide'), svgL = document.querySelector('.lines'); if (mask && svgL) {
-    const bigs = [...document.querySelectorAll('.folder .big')].map(b => { const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('fill', '#000'); r.setAttribute('rx', 24); r.setAttribute('filter', 'url(#holeSoft)'); mask.appendChild(r); return { b, r }; });
-    // 25.11: край выреза мягкий — верёвка плавно растворяется у раскрытой папки, а не обрубается
-    mask.insertAdjacentHTML('beforebegin', '<filter id="holeSoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter>');
+    const bigs = [...document.querySelectorAll('.folder .big')].map(b => { const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('fill', '#000'); r.setAttribute('rx', 24); mask.appendChild(r); return { b, r }; });
     const tk = () => { const sb = svgL.getBoundingClientRect(), k = sb.width / 1440 || 1;
-      bigs.forEach(({ b, r }) => { const on = b.closest('.folder.on'); if (!on) { r.setAttribute('width', 0); return; } const q = b.getBoundingClientRect();
+      bigs.forEach(({ b, r }) => { const on = b.closest('.folder.on') && root.dataset.rc === 'cut'; if (!on) { r.setAttribute('width', 0); return; } const q = b.getBoundingClientRect();
         r.setAttribute('x', ((q.left - sb.left) / k).toFixed(1)); r.setAttribute('y', ((q.top - sb.top) / k + 8).toFixed(1));
         r.setAttribute('width', (q.width / k).toFixed(1)); r.setAttribute('height', Math.max(0, q.height / k - 8).toFixed(1)); });
       requestAnimationFrame(tk); }; requestAnimationFrame(tk); } }

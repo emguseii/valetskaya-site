@@ -160,6 +160,15 @@ document.documentElement.classList.add('js');
       // когда узлы сдвигаются к центру, окно с глазами тоже чуть уменьшается (не меньше 86 %, от нижнего края),
       // чтобы верёвки не прилипали к его бокам (её правка 23.11)
       const win = $('.win'); if (win) { const ws = Math.min(1, K.l, K.r); win.style.transformOrigin = '50% 100%'; win.style.scale = ws < .999 ? ws.toFixed(3) : ''; } };
+    // 25.11 (тест, вариант «а»): у раскрытой папки конец верёвки плавно переезжает на ближайшую точку её края и держится за неё
+    const attach = (it, fx, fy) => { const on = root.dataset.rc === 'attach' && it.n.classList.contains('on') && it.n.classList.contains('folder');
+      it.ak = (it.ak || 0) + ((on ? 1 : 0) - (it.ak || 0)) * .18; if (it.ak < .002) { it.ak = 0; return { x: 0, y: 0 }; }
+      if (on) { const big = it.n.querySelector('.big'), sb = svg.getBoundingClientRect(), k = sb.width / 1440 || 1, b = big.getBoundingClientRect(), pts = it.r.pts, z = pts[pts.length - 1];
+        const e = { x: z.x + fx, y: z.y + fy }, L = (b.left - sb.left) / k + 14, R = (b.right - sb.left) / k - 14, T = (b.top - sb.top) / k + 30, B = (b.bottom - sb.top) / k - 14;
+        let tx = Math.min(R, Math.max(L, e.x)), ty = Math.min(B, Math.max(T, e.y));
+        if (tx === e.x && ty === e.y) { const d = [e.x - L, R - e.x, e.y - T, B - e.y], m = Math.min(...d); if (m === d[0]) tx = L; else if (m === d[1]) tx = R; else if (m === d[2]) ty = T; else ty = B; }
+        it.at = { x: tx - e.x, y: ty - e.y }; }
+      return it.at ? { x: it.at.x * it.ak, y: it.at.y * it.ak } : { x: 0, y: 0 }; };
     let running = false;
     const still = () => items.forEach(it => { it.n.style.translate = `${it.ox.toFixed(2)}px 0px`; if (it.r) stretch(it.p, it.r, it.ox, 0); });
     const prep = () => { spread(); items.forEach(it => { it.n.style.translate = `${it.ox.toFixed(2)}px 0px`; });
@@ -182,7 +191,7 @@ document.documentElement.classList.add('js');
           // 8.3 (23.11): папки сдвигаются только на целые пиксели экрана — иначе размытие передней стенки пересчитывается
           // на дробных сдвигах и граница «фото / стенка» дрожит. Бирки (без размытия) плывут плавно, как раньше.
           const fx = it.glass ? snap(x) : x, fy = it.glass ? snap(dy) : dy;
-          it.n.style.translate = `${fx.toFixed(3)}px ${fy.toFixed(3)}px`; if (it.r) stretch(it.p, it.r, fx, fy, bow); });
+          it.n.style.translate = `${fx.toFixed(3)}px ${fy.toFixed(3)}px`; if (it.r) { const at = attach(it, fx, fy); stretch(it.p, it.r, fx + at.x, fy + at.y, bow); } });
         requestAnimationFrame(loop); })(t0); };
     setTimeout(go, T.lines + 6 * T.step + T.line + 300);
   }
