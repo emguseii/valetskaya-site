@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="css/web.css?v=11242345">
 <link rel="stylesheet" href="css/modal.css?v=11230410">
 <!-- ТЕСТОВАЯ КОПИЯ (test/): варианты масштаба блоков, 23.11. Пути — от корня сайта через <base>. -->
-<script>/* настройки, которые web.js читает при загрузке; v — вариант для сравнения (1 — зафиксирован, 2 — Figma 238:8845 + комментарии) */ { const q = new URLSearchParams(location.search), d = document.documentElement, v = q.get('sky1'); d.dataset.style = 'old'; d.dataset.skyTop = v === null ? '.35' : v; d.dataset.v = q.get('v') === '2' ? '2' : '1'; d.classList.add('v2-boot', 'js'); /* 'js' сразу в <head>: узлы первого экрана скрыты с первого кадра (раньше мелькали до загрузки web.js) */
+<script>/* настройки, которые web.js читает при загрузке; v — вариант для сравнения (1 — зафиксирован, 2 — Figma 238:8845 + комментарии) */ { const q = new URLSearchParams(location.search), d = document.documentElement, v = q.get('sky1'); d.dataset.style = 'old'; d.dataset.skyTop = v === null ? '.35' : v; d.dataset.v = q.get('v') === '2' ? '2' : '1'; d.dataset.sm = ['now', 'lite', 'still'].includes(q.get('sm')) ? q.get('sm') : 'lite'; /* 25.11 тест плавности первого экрана */ d.classList.add('v2-boot', 'js'); /* 'js' сразу в <head>: узлы первого экрана скрыты с первого кадра (раньше мелькали до загрузки web.js) */
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; if (!location.hash) addEventListener('load', () => scrollTo(0, 0)); }
 /* «Обо мне» как в Figma 165:2635: положение [left, top] и наклон каждой карточки (порядок как в разметке) */
 window.PILE_LAYOUT = [[188, 130, -6], [540, 72, 2], [881, 210, 7], [965, 142, -6], [561, 388, -6], [903, 395, 6], [242, 366, 4]];
@@ -168,10 +168,10 @@ if (document.documentElement.dataset.v === '2') window.PILE_LAYOUT = [[279, 135,
 
 <script>/* из-за <base> якоря (#cases, #case-…) вели бы на корень — делаем их ссылками на эту же страницу */
 document.querySelectorAll('a[href^="#"]').forEach(a => { a.href = location.pathname + location.search + a.getAttribute('href'); });</script>
-<script src="js/sky.js?v=11230410"></script>
+<script src="js/sky.js?v=11251100"></script>
 <script src="js/eyes.js?v=11230410"></script>
 <script src="js/cases.js?v=11230410"></script>
-<script src="js/web.js?v=11251010"></script>
-<script src="test/fit.js?v=61"></script>
+<script src="js/web.js?v=11251100"></script>
+<script src="test/fit.js?v=62"></script>
 </body>
 </html>

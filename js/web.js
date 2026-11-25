@@ -184,16 +184,22 @@ document.documentElement.classList.add('js');
     // на load: шрифты и масштаб уже на месте, узлы ещё не начали появляться
     if (document.readyState === 'complete') prep(); else addEventListener('load', prep);
     addEventListener('resize', () => { clearTimeout(spread.t); spread.t = setTimeout(() => { spread(); if (!running) still(); }, 120); });
-    const go = () => { if (reduce || root.dataset.style === 'new') return; running = true; /* style=new (тест 24.11): первый экран без парения */ const t0 = performance.now();
-      (function loop(now) { const t = now / 1000, ramp = smooth(Math.min(1, (now - t0) / 2500));
-        const px = S() * (devicePixelRatio || 1), snap = v => Math.round(v * px) / px;
+    /* 25.11 тест плавности (data-sm): now — как на проде; lite — тот же рисунок движения, но масштаб не читается из CSS каждый кадр
+       и парение стоит на паузе, пока первый экран не виден; still — без парения (компромисс: конструкция неподвижна) */
+    const SM = root.dataset.sm || 'now', LITE = SM !== 'now';
+    let pxC = S() * (devicePixelRatio || 1), heroOn = true, loopRaf = 0, loopFn = null;
+    if (LITE) { addEventListener('resize', () => { pxC = S() * (devicePixelRatio || 1); });
+      new IntersectionObserver(es => { heroOn = es[es.length - 1].isIntersecting; if (heroOn && loopFn && !loopRaf) loopRaf = requestAnimationFrame(loopFn); }).observe(stage); }
+    const go = () => { if (reduce || root.dataset.style === 'new' || SM === 'still') return; running = true; /* style=new (тест 24.11): первый экран без парения */ const t0 = performance.now();
+      (loopFn = function loop(now) { loopRaf = 0; const t = now / 1000, ramp = smooth(Math.min(1, (now - t0) / 2500));
+        const px = LITE ? pxC : S() * (devicePixelRatio || 1), snap = v => Math.round(v * px) / px;
         items.forEach(it => { const w = 2 * Math.PI, dx = Math.sin(t * w / it.px + it.ph) * 3 * ramp, dy = Math.sin(t * w / it.py + it.ph * .7) * 3 * ramp,
             bow = Math.sin(t * w / it.pb + it.ph * 1.3) * 4 * ramp, x = it.ox + dx;
           // 8.3 (23.11): папки сдвигаются только на целые пиксели экрана — иначе размытие передней стенки пересчитывается
           // на дробных сдвигах и граница «фото / стенка» дрожит. Бирки (без размытия) плывут плавно, как раньше.
           const fx = it.glass ? snap(x) : x, fy = it.glass ? snap(dy) : dy;
           it.n.style.translate = `${fx.toFixed(3)}px ${fy.toFixed(3)}px`; if (it.r) stretch(it.p, it.r, fx, fy, bow); });
-        requestAnimationFrame(loop); })(t0); };
+        if (!LITE || heroOn) loopRaf = requestAnimationFrame(loop); })(t0); };
     setTimeout(go, T.lines + 6 * T.step + T.line + 300);
   }
 

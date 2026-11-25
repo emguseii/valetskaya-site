@@ -50,6 +50,8 @@
   Object.assign(root.dataset, { corners: 'sharp', cases: 'n1', cxb: 'mono', bigf: 'plain', caseb: 'glass', abouth: 'over', aboutbg: 'none' });
   // Сравнение: вариант №1 (зафиксирован) / №2 (Figma 238:8845 + её комментарии 24.11 вечером). Читается при загрузке — кнопка перезагружает страницу
   row('Вариант', 'v', [['1', '№1'], ['2', '№2']], root.dataset.v || '1', true);
+  // 25.11 тест плавности первого экрана (читается при загрузке — кнопка перезагружает): «без парения» — компромисс, конструкция неподвижна
+  row('Первый экран · плавность', 'sm', [['now', 'как на проде'], ['lite', 'облегчённо'], ['still', 'без парения']], root.dataset.sm || 'lite', true);
   // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
   // 25.11 (её просьба: решения про плавность — тестом): что делает верёвка у раскрытой папки, что с фоном, ховер контактов
   row('Верёвка раскрытой папки', 'rh', [['calm', 'как остальные'], ['accent', 'ярче (белая)']], 'calm');
@@ -84,6 +86,7 @@
 /* Верёвки не просвечивают сквозь стекло окна и папок: SVG-маска с «дырами» по их рамкам, дыры двигаются вместе с папками */
 (() => {
   const svg = document.querySelector('.lines'); if (!svg) return; const NS = 'http://www.w3.org/2000/svg';
+  if (document.documentElement.dataset.v === '2' && (document.documentElement.dataset.sm || 'now') !== 'now') return; // 25.11: в №2 маски нет (тест плавности); «как на проде» — пока для сравнения
   const defs = document.createElementNS(NS, 'defs'), mask = document.createElementNS(NS, 'mask');
   mask.id = 'ropeHide'; mask.setAttribute('maskUnits', 'userSpaceOnUse'); ['x', 'y', 'width', 'height'].forEach((k, i) => mask.setAttribute(k, [-2000, -2000, 6000, 6000][i]));
   const all = document.createElementNS(NS, 'rect'); [['x', -2000], ['y', -2000], ['width', 6000], ['height', 6000], ['fill', '#fff']].forEach(([k, v]) => all.setAttribute(k, v)); mask.appendChild(all);

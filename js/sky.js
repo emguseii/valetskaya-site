@@ -59,10 +59,12 @@ void main(){vec2 uv=gl_FragCoord.xy/R;float asp=R.x/R.y;
   const scale = Math.min(devicePixelRatio || 1, 2) * (innerWidth < 700 ? .5 : .6);
   const size = () => { cv.width = Math.round(innerWidth * scale); cv.height = Math.round(innerHeight * scale); gl.viewport(0, 0, cv.width, cv.height); };
   size(); addEventListener('resize', size);
-  const t0 = performance.now();
+  const t0 = performance.now(), LITE = root.dataset.sm && root.dataset.sm !== 'now'; let odd = false; // 25.11 тест плавности (data-sm)
   (function frame(now) {
+    const dd = Math.abs(target - den) + Math.abs(lowT - low);
     den += (target - den) * (reduce ? 1 : .06); low += (lowT - low) * (reduce ? 1 : .06);
     root.style.setProperty('--c', den.toFixed(3));
+    odd = !odd; if (LITE && odd && dd < .002) { requestAnimationFrame(frame); return; }
     if (den > .005 || low > .005) {
       gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, reduce ? 0 : (now - t0) / 1000);
       gl.uniform1f(uS, scrollY / innerHeight * .25); gl.uniform1f(uD, den); gl.uniform1f(uG, low); gl.uniform3fv(uL, pal.L); gl.uniform3fv(uH, pal.H);
