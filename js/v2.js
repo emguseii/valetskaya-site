@@ -52,7 +52,6 @@
   row('Вариант', 'v', [['1', '№1'], ['2', '№2']], root.dataset.v || '1', true);
   // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
   // 25.11 (её просьба: решения про плавность — тестом): что делает верёвка у раскрытой папки, что с фоном, ховер контактов
-  row('Длинная верёвка · изгиб', 'lr', [['arc', 'дуга вправо'], ['hook', 'крюк влево'], ['wave', 'волна (как сейчас)'], ['straight', 'прямая']], 'arc', true);
   row('Верёвка раскрытой папки', 'rh', [['calm', 'как остальные'], ['accent', 'ярче (белая)']], 'calm');
   root.dataset.rc = 'fade'; // её выбор 25.11: у раскрытой папки верёвка тает (вариант «г»)
   root.dataset.hf = 'blur'; // её выбор 25.11: при ховере папки остальное размыто
@@ -270,17 +269,9 @@
     const cx = r ? r.left + r.width / 2 + sx : a.x, top = r ? r.top + sy : a.y + 200, bot = r ? r.bottom + sy : b.y - 200;
     const k1 = Math.min(160, (top - a.y) / 2), k2 = Math.min(220, (b.y - bot) / 2), f = n => n.toFixed(1);
     // начало чуть извилистое, как было нарисовано (её правка 10:06): лёгкая S-волна ±18 px под окном, дальше — строго по оси
-    // изгиб начала — на примерке (её правка 10:20): wave — S-волна, arc — одна широкая дуга вправо, hook — лёгкий крюк влево, straight — прямо
-    const HH = top - a.y, mode = root.dataset.lr || 'arc', tail = ` L${f(cx)} ${f(bot)} C${f(cx)} ${f(bot + k2)} ${f(b.x)} ${f(b.y - k2)} ${f(b.x)} ${f(b.y)}`;
-    let d;
-    if (mode === 'wave') { const s1 = Math.min(150, HH / 3), s2 = Math.min(300, HH * .66);
-      d = `M${f(a.x)} ${f(a.y)} C${f(a.x)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1)} C${f(a.x + 18)} ${f(a.y + s1 * 1.6)} ${f(cx - 16)} ${f(a.y + s2 * .8)} ${f(cx - 16)} ${f(a.y + s2)} C${f(cx - 16)} ${f(a.y + s2 + (HH - s2) * .5)} ${f(cx)} ${f(top - (HH - s2) * .4)} ${f(cx)} ${f(top)}`; }
-    else if (mode === 'arc') { const L = Math.min(520, HH);
-      d = `M${f(a.x)} ${f(a.y)} C${f(a.x + 4)} ${f(a.y + L * .35)} ${f(cx + 46)} ${f(a.y + L * .45)} ${f(cx + 40)} ${f(a.y + L * .7)} C${f(cx + 36)} ${f(a.y + L * .88)} ${f(cx)} ${f(a.y + L * .9)} ${f(cx)} ${f(a.y + L)}` + (L < HH ? ` L${f(cx)} ${f(top)}` : ''); }
-    else if (mode === 'hook') { const L = Math.min(380, HH);
-      d = `M${f(a.x)} ${f(a.y)} C${f(a.x - 2)} ${f(a.y + L * .3)} ${f(cx - 34)} ${f(a.y + L * .5)} ${f(cx - 26)} ${f(a.y + L * .75)} C${f(cx - 20)} ${f(a.y + L * .92)} ${f(cx)} ${f(a.y + L * .9)} ${f(cx)} ${f(a.y + L)}` + (L < HH ? ` L${f(cx)} ${f(top)}` : ''); }
-    else d = `M${f(a.x)} ${f(a.y)} L${f(cx)} ${f(top)}`;
-    d += tail;
+    // начало чуть извилистое — S-волна ±18 px под окном, дальше строго по оси (её выбор 25.11, 10:32: «как было»)
+    const HH = top - a.y, s1 = Math.min(150, HH / 3), s2 = Math.min(300, HH * .66);
+    const d = `M${f(a.x)} ${f(a.y)} C${f(a.x)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1)} C${f(a.x + 18)} ${f(a.y + s1 * 1.6)} ${f(cx - 16)} ${f(a.y + s2 * .8)} ${f(cx - 16)} ${f(a.y + s2)} C${f(cx - 16)} ${f(a.y + s2 + (HH - s2) * .5)} ${f(cx)} ${f(top - (HH - s2) * .4)} ${f(cx)} ${f(top)} L${f(cx)} ${f(bot)} C${f(cx)} ${f(bot + k2)} ${f(b.x)} ${f(b.y - k2)} ${f(b.x)} ${f(b.y)}`;
     path.setAttribute('d', d); grad.setAttribute('y1', a.y); grad.setAttribute('y2', a.y + 420);
     path.style.strokeWidth = (1.5 * (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--s')) || 1)).toFixed(2); }; // толщина как у верёвок сцены (1,5 × масштаб)
   // 25.11: длинная верёвка тоже вырастает из глаз — вместе с остальными линиями (web.js: линии стартуют через 360 мс после загрузки)

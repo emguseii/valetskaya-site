@@ -418,3 +418,6 @@ html[data-v="2"] .v7 .stage.focus .lines path.on{stroke:url(#ropeFade)}
 .longrope__p{stroke:rgba(255,255,255,.55)}
 /* футер — поля 48 (Figma 243:8878) */
 html[data-v="2"] .foot{padding:0 48px 48px}
+/* при ховере папки длинная вертикальная верёвка тоже уходит в прозрачность, как остальные чужие линии */
+.longrope{transition:opacity .3s ease}
+html[data-v="2"]:has(.stage.focus) .longrope{opacity:.3}
