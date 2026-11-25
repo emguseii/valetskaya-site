@@ -1,0 +1,374 @@
+/* ТЕСТОВАЯ КОПИЯ · варианты масштаба блоков (23.11). Основной сайт не трогает.
+   Проблема (её слова): контакты по масштабу нравятся больше всего, блоки выше — «слишком огромные и не такие воздушные».
+   Причина: герой и контакты подстраиваются под высоту окна, а кейсы и «Обо мне» (zoom --sb) — только под ширину.
+   Варианты (html[data-fit]): now — как на сайте; A — по высоте окна; B — A + воздух; C — B ещё компактнее, в ритме контактов. */
+
+/* Во всех вариантах: кнопки контактов крупнее — подпись стилем Web/Title/Folder (Onest SemiBold 18) */
+.cx__btns{width:456px;gap:var(--s-8);margin-top:38px} /* промежуток — из системы отступов: 8 (было 12) */
+.cx__btn{height:64px;padding:0 12px 0 24px;border-radius:20px;font:600 18px/1 var(--text)}
+.cx__btn i{width:40px;height:40px;font-size:16px}
+.cx__btn svg{width:17px;height:17px}
+
+/* Кейсы разрежены по её разметке: по горизонтали x = 40, по вертикали 1,6x = 64 (оба значения — из системы отступов) */
+.cases__grid{gap:var(--s-40)}
+.files{gap:var(--s-40);margin-top:var(--s-64)}
+
+/* Окно с глазами — стекло (её выбор 24.11); верёвки под окном и папками скрыты маской (fit.js), сквозь стекло не просвечивают */
+
+/* Плавность папок: без «живого» размытия на плывущей папке — стекло нарисовано статично (размытая копия картинки
+   внутри передней стенки, JS), папка двигается цельным слоем на дробные пиксели, без округления */
+.smooth-float .h-fix .ic::before{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(255,255,255,.07)}
+.smooth-float .h-fix .ic__front{backdrop-filter:none;-webkit-backdrop-filter:none;overflow:hidden;isolation:isolate;background:rgba(214,226,255,.22)}
+.smooth-float .h-fix .ic__front::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.34),rgba(255,255,255,.1) 38%,rgba(255,255,255,.16) 70%,rgba(255,255,255,.24))}
+
+.smooth-float .ropes-float .node{will-change:transform}
+
+/* Футер без навигации: меню наверху и так всегда на экране */
+html[data-footnav=off] .foot__nav{display:none}
+
+/* Масштаб по блокам: у кейсов и «Обо мне» — свой zoom (fit.js), у контактов — множитель к --ck */
+.cases{zoom:var(--sbc,var(--sb,1))}
+.about{zoom:calc(var(--sba,var(--sb,1)) * var(--about-k,1))}
+
+/* Служебная панель — со шевроном «свернуть» (её правило) */
+.fitpick{position:fixed;left:16px;bottom:16px;z-index:90;display:flex;flex-wrap:wrap;align-items:center;gap:4px;max-width:min(720px,calc(100vw - 32px));padding:5px;border-radius:16px;
+  background:rgba(11,20,60,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);font:500 13px/1 var(--text);color:#fff}
+.fitpick span{padding:0 8px 0 4px;color:rgba(255,255,255,.6)}
+.fitpick button{height:32px;padding:0 12px;border-radius:12px;color:#fff}
+.fitpick button[aria-pressed=true]{background:#fff;color:var(--ink)}
+.fitpick .fitpick__x{width:32px;padding:0;font-size:16px;transition:transform .25s}
+.fitpick.min .fitpick__x{transform:rotate(180deg)}
+.fitpick.min > :not(.fitpick__x){display:none}
+.fitpick p{flex-basis:100%;padding:6px 8px 4px;color:rgba(255,255,255,.72);font-size:12px;line-height:1.4}
+
+/* ── Роль — в заголовке окна (её выбор 24.11) ── */
+html .tip{display:none}
+.win__top span{font:600 13px/1 var(--text)}
+
+ 
+
+/* ── Чипы без «грязи»: непрозрачные, без размытия поверх картинки. На белом и стекле — графит, на тёмно-синем — светлое стекло-плашка ── */
+.chip{background:var(--ink);color:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
+
+/* ── Кейс «4 A/B-теста»: карусель ниже заголовка — не наезжает (заголовок в узкой колонке занимает 5 строк) ── */
+.v7 .case--car .case__spin{top:48%;left:14%;width:72%}
+
+/* ── Первый экран: узлы раздвигаются не дальше ×1,1 — герой уменьшен до 70 %, большие сдвиги заворачивали верёвки в петли ── */
+:root{--spread-max:1.1}
+
+/* ── Воздух вокруг «Обо мне» (24.11): больше отступ сверху и до контактов; в варианте fade картинки контактов проявляются позже ── */
+html[data-aboutair=air] .v7 .about{padding-top:calc(var(--gap-screen) * 1.5)}
+html[data-aboutair=air] .cx{margin-top:var(--s-120)}
+
+/* ── Контакты: центр блока — посередине видимой части (между верхним меню 30 px и футером), а не всей секции (24.11) ── */
+.cx__core{top:calc(50% + 30px / 2)} /* 30 px — высота верхнего меню .bar */
+
+/* ── Футер: CV и «наверх» рядом — промежуток 8 из системы отступов (было 40 — общий gap футера) ── */
+
+/* ── «Обо мне»: стеклянная подложка — заливка как была у стеклянных карточек кейсов (синий 20 % + размытие + свечение) ── */
+  background:rgba(3,56,158,.2);backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);
+  box-shadow:inset 0 0 72px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.3)}
+
+/* ── Кейсы Ш3–Ш5 (24.11, «меньше букв и шума, вертикальнее»): заголовок в карточке скрыт — снаружи номер, короткое название{display:none;cursor:pointer}
+
+  
+
+  
+
+  
+
+/* ── «Обо мне» стеклом — по её макету Figma 165:2635: буквы — белый 10 % + эффект Glass (преломление, свет −45°).
+   В CSS: маска по её вектору заголовка, внутри размытый и высветленный фон; светлая кромка — тенью обёртки; блик сверху слева ── */
+.pile__glass{display:none}
+html[data-abouth=over] .v7 .pile__word{display:none}
+html[data-abouth=over] .v7 .pile__glass{display:block;position:absolute;left:373px;top:235px;width:695px;height:174px;z-index:1;pointer-events:none} /* место — как в Figma 165:2635 */
+.pile__glass i{position:absolute;inset:0;-webkit-mask:url(../assets/about-title.webp) center/100% 100% no-repeat;mask:url(../assets/about-title.webp) center/100% 100% no-repeat}
+.pile__glass .bd{background:linear-gradient(135deg,rgba(255,255,255,.45),rgba(255,255,255,.1) 30%,rgba(255,255,255,.08) 68%,rgba(150,195,255,.35));
+  backdrop-filter:blur(6px) saturate(1.15) brightness(1.12);-webkit-backdrop-filter:blur(6px) saturate(1.15) brightness(1.12)}
+.pile__glass .rim{background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(255,255,255,.35) 45%,rgba(190,220,255,.8));filter:url(#glassRim)}
+/* «Стекло поверх карточек» (её просьба 24.11, как в Figma 165:2635): заголовок — верхний слой, карточки уходят под него и видны сквозь буквы размытыми.
+   Стекло плотнее: сильнее размытие и подсветка, кромка ярче */
+html[data-abouth=over] .v7 .pile__glass{z-index:9999}
+html[data-abouth=over] .pile__glass .bd{background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.04) 30%,rgba(255,255,255,.03) 68%,rgba(150,195,255,.12)); /* 24.11 14:21: заголовок незаметнее — почти прозрачное стекло */
+  backdrop-filter:blur(4px) brightness(1.04);-webkit-backdrop-filter:blur(4px) brightness(1.04)}
+html[data-abouth=over] .pile__glass .rim{opacity:.4}
+
+/* ── «Навести порядок» — круглая стеклянная кнопка с иконкой «вернуть» (24.11) ── */
+.pile__tidy{width:48px;height:48px;padding:0;border-radius:50%;display:grid;place-items:center}
+.pile__tidy[hidden]{display:none}
+.pile__tidy svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s var(--ease)}
+.pile__tidy:hover svg{transform:rotate(-60deg)}
+.pile__tidy:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+
+/* ── Уголки на глазах (24.11 примерка): лаймовые / белые / прозрачные (белый 45 %) / синие / без ── */
+
+html[data-cnr=off] .cnr{display:none}
+
+/* ── Панель теста: строка на каждый переключатель, название слева в своей колонке ── */
+.fitpick{max-width:min(900px,calc(100vw - 32px))}
+.fitrow{display:flex;flex-wrap:nowrap;align-items:center;gap:4px;flex-basis:100%}
+.fitrow__l{flex:0 0 200px;padding:0 8px 0 4px;color:rgba(255,255,255,.6)}
+
+/* ── Маленькие кейсы в сетке Ш2 (24.11): та же сетка 12 колонок, по 4 колонки; дизайн как у больших карточек, меньше ── */
+
+
+/* ── Первый экран (24.11): папки пустые — без картинки кейса, только стекло; у окна с глазами нет кнопок TG и CV ── */
+.h-fix .ic__in{display:none}
+.h-fix .ic__back path{fill:rgba(255,255,255,.16);stroke:none}
+.h-fix .ic__front{background:linear-gradient(160deg,rgba(255,255,255,.42),rgba(255,255,255,.14) 45%,rgba(255,255,255,.22));box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 10px 24px rgba(10,30,90,.18)}
+.win__bot .pill{display:none}
+
+/* ── «Обо мне» крупнее (24.11): блок ×1,2; сцена 1440 всегда по центру, края не обрезают композицию ── */
+:root{--about-k:1.2}
+.v7 .pile{max-width:none;margin-left:calc(50% - 720px)}
+.about{overflow-x:clip}
+
+
+/* «Обо мне»: стеклянный заголовок крупно слева, под ним шесть фактов в сетке 3×2 с тонкими линиями; без игрушки и цветных карточек */
+
+/* ══ 24.11 днём: её правки ══ */
+/* окно с глазами и папки — без обводок */
+.v7 .win{box-shadow:inset 0 0 72px rgba(255,255,255,.12),0 18px 34px rgba(0,0,0,.22)}
+.h-fix .ic__back{filter:drop-shadow(0 9px 27px rgba(10,41,92,.22))}
+
+/* ховер папки: раскрытие одним плавным движением — папка растёт в большую, без «мигания»
+   (папки пустые, догружать нечего); живое размытие под большой папкой слабее — меньше работы на кадр */
+.h-fix .ic{transition:opacity .22s var(--ease),transform .5s cubic-bezier(.22,1,.36,1);will-change:transform,opacity}
+.h-fix .folder.on .ic{opacity:0;transform:scale(1.6);transition:opacity .18s var(--ease),transform .5s cubic-bezier(.22,1,.36,1)}
+.h-fix .big{transition:transform .5s cubic-bezier(.22,1,.36,1),opacity .22s var(--ease);will-change:transform,opacity}
+.h-fix .big::before{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.h-fix .folder__t,.h-fix .folder__m{transition:opacity .2s var(--ease)}
+@media (prefers-reduced-motion:reduce){.h-fix .ic,.h-fix .big{transition:opacity .15s}}
+/* раскрытая папка как в Figma 41:205: без лаймовой обводки, заголовок белый, акцент лаймом */
+html[data-bigf=plain] .h-fix .big__shape path{stroke:none}
+html[data-bigf=plain] .h-fix .big::before{box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),inset 0 0 24px rgba(255,255,255,.12)}
+html[data-bigf=plain] .h-fix .big__h{color:#fff}
+html[data-bigf=plain] .h-fix .big__h em{color:var(--lime)}
+
+/* ── Углы: острые (её Figma 222:3330) / скруглённые (217:2820) ── */
+html[data-corners=sharp] .v7 .tag__c{border-radius:0!important}
+html[data-corners=sharp] .v7 .card{border-radius:0!important}
+html[data-corners=sharp] .v7 .case,html[data-corners=sharp] .file,html[data-corners=sharp] .file__pv,html[data-corners=sharp] .file__pv img{border-radius:0!important}
+
+  
+
+/* ── Контакты · кнопки «иконки с подписью» по Figma 234:8018 (24.11 вечером): 4 колонки через 28, иконка 60 (белый 30 %), подпись IBM Plex Mono 13 капсом, 75 %.
+   Ховер (предложение, в Figma нет): колонка чуть приподнимается, подпись — белая ── */
+.cx__mono{display:none;justify-content:center;align-items:flex-start;gap:28px;margin-top:38px}
+html[data-cxb=mono] .cx__btns{display:none}
+html[data-cxb=mono] .cx__mono{display:flex}
+.cx__m{display:flex;flex-direction:column;align-items:center;gap:16px;min-width:60px;padding:0;background:none;color:rgba(255,255,255,.75);font:500 13px/1.3 var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:transform .3s var(--ease),color .2s var(--ease)}
+.cx__m img{width:60px;height:60px;display:block}
+.cx__m:hover{transform:translateY(-4px);color:#fff}
+.cx__m:focus-visible{outline:3px solid var(--lime);outline-offset:6px;border-radius:8px}
+@media (prefers-reduced-motion:reduce){.cx__m{transition:none}}
+
+/* ══ 24.11 вечером · по её фрейму Figma 238:8845 «NEW» и комментариям ══ */
+/* Кейсы NEW (n1): 2 колонки по 628 вокруг центральной оси (ширина контента 1256, как поля 132 на 1440).
+   Big: обложка (1×1 628 / 3×2 307,5×205 / 5×4 592,5×474, стекло 20 %, прямые углы как в Figma) → 32 → заголовок RT Obligat 44/0,92 (лайм — акцент) → 12 → мета IBM Plex Mono 13 капсом 75 %.
+   Small: обложка 302×226 с лаймовой меткой RT Obligat 28 сверху слева (отступ 16) → 25 → название RT Obligat 28/0,92; между строками 60 */
+.nc{display:none}
+html[data-cases=n1] .cases__grid,html[data-cases=n1] .files{display:none}
+html[data-cases=n1] .nc{display:grid;grid-template-columns:628px 628px;max-width:1256px;margin:0 auto;align-items:start;justify-content:center}
+.nc__big{display:flex;flex-direction:column;gap:32px;color:#fff;text-decoration:none}
+.nc__big--1{grid-column:1;grid-row:1;width:628px;justify-self:end}
+.nc__big--2{grid-column:2;grid-row:2;width:500px;justify-self:start;margin-top:-32px}
+.nc__big--3{grid-column:1;grid-row:3;width:592px;justify-self:end;margin-top:60px}
+.nc__cv{position:relative;display:block;overflow:hidden;background:rgba(255,255,255,.2);transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.nc__cv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.nc__cv--1x1{width:628px;height:628px}
+.nc__cv--3x2{width:307.5px;height:205px}
+.nc__cv--5x4{width:592.5px;height:474px}
+.nc__d{display:flex;flex-direction:column;gap:12px}
+.nc__h{font:400 44px/.92 var(--display);letter-spacing:-.04em;text-transform:uppercase}
+.nc__h em,.nc__g{font-style:normal;color:var(--lime)}
+.nc__m{font:500 13px/1.3 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.nc__big:hover .nc__cv{transform:translateY(-6px)}
+.nc__big:hover .nc__cv img{transform:scale(1.03)}
+.nc__big:focus-visible{outline:3px solid var(--lime);outline-offset:6px}
+.nc__more{grid-column:1;grid-row:4;justify-self:end;margin:88px 12px 0 0;padding-top:26px;font:500 13px/1.3 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.nc__small{grid-column:2;grid-row:4;margin-top:88px;display:flex;flex-direction:column;gap:60px}
+.nc__sm{display:flex;gap:25px;align-items:flex-start}
+.nc__scv{position:relative;flex:none;width:302px;height:226px;background:rgba(255,255,255,.2);overflow:hidden}
+.nc__scv img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.nc__g{position:absolute;left:16px;top:16px;font:400 28px/.86 var(--display);letter-spacing:-.04em;text-transform:uppercase;white-space:nowrap}
+.nc__sh{flex:1;padding-top:16px;font:400 28px/.92 var(--display);letter-spacing:-.04em;text-transform:uppercase;color:#fff}
+@media (prefers-reduced-motion:reduce){.nc__cv,.nc__cv img{transition:none}}
+
+/* Окно с глазами — стекло (Figma 234:8048): белый 10 %, размытие 25, тень 0 11 34 / 30 %; заголовок «Продуктовый дизайнер.app» Geist 12 */
+.v7 .win{background:rgba(255,255,255,.1);backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);box-shadow:0 11.45px 34.35px rgba(0,0,0,.3)}
+.win__top span{font:500 12px/1 Geist,var(--text)}
+.win__eyes::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 12px rgba(255,255,255,.5);pointer-events:none}
+
+/* Папка (компонент обновлён, Figma 41:236): передняя стенка выше (62 из 95), скругление 16, стекло 16 % с кромкой 20 % и внутренним свечением */
+.h-fix .ic__front,.smooth-float .h-fix .ic__front{top:33px;height:62px;border-radius:16px;background:rgba(255,255,255,.16);box-shadow:inset 0 0 18px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.2),0 9px 27px rgba(10,41,92,.22)}
+.smooth-float .h-fix .ic__front::after{display:none}
+
+/* Бирки: прямые углы, дырочка внутри (как на проде). Ховер — как на основном сайте (её решение 24.11, 21:27) */
+.v7 .tag__c{border-radius:0!important}
+
+/* «Навести порядок» — Web / Round Button / Replay (Figma 238:8138): круг 64, стекло 10 %, иконка replay 24 */
+.pile__tidy{width:64px;height:64px;background:rgba(255,255,255,.1);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.pile__tidy svg.replay{width:24px;height:24px;fill:#fff;stroke:none}
+
+
+
+/* ══ Вариант №2 (Figma 238:8845 + комментарии 24.11 вечером) ══ */
+/* верёвки — белое стекло: градиент с бликами (её эффект Glass в коде не повторить — мимикрия бликами), тоньше; у наведённой — ярче */
+html[data-v="2"] .v7 .lines path{stroke:url(#ropeGlass);stroke-width:1.5}
+html[data-v="2"] .v7 .lines path.on{stroke:#fff;stroke-width:1.8}
+html[data-v="2"] .tag__loop path{stroke:rgba(255,255,255,.75)}
+html[data-v="2"] .tag__loop .tag__back{stroke:rgba(255,255,255,.45)}
+/* дырочка бирок — тёмно-синяя точка, как во фрейме */
+html[data-v="2"] .v7:is(.h-fix,.h-old) .tag__hole{background:#0b3aa8;border:0;width:10px;height:10px;left:110px;top:12px}
+/* длинная верёвка во всю страницу: лежит под кейсами и карточками, над небом */
+.longrope{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
+.longrope__p{fill:none;stroke:url(#longGlass);stroke-width:1.5;stroke-linecap:round}
+html[data-v="2"] .cases,html[data-v="2"] .about,html[data-v="2"] .cx{position:relative;z-index:1}
+html[data-v="2"] .stage{position:relative;z-index:2}
+/* карточка, на которой висит верёвка: дырочка сверху по центру, не таскается */
+.card__hole{position:absolute;left:50%;top:12px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#0b3aa8}
+html[data-v="2"] .card--hung{padding-top:34px;cursor:default}
+/* контакты: текст и кнопки на 40 ниже (её комментарий) */
+html[data-v="2"] .cx__core{top:calc(50% + 30px / 2 + 40px)}
+
+/* ══ Вариант №2 · правки по комментариям 24.11, 22:20–22:37 ══ */
+/* статистика: кейс 490 (обложка 1×1 490), кейс сдвинут ниже; карусель — через 52 под ней */
+html[data-v="2"] .nc__big--1{width:490px;margin-top:84px}
+html[data-v="2"] .nc__big--1 .nc__cv--1x1{width:490px;height:490px}
+html[data-v="2"] .nc__big--2{margin-top:52px}
+/* мелкие кейсы: подпись «кейсы поменьше» над колонкой (−40), лаймовые метки слева от оси (отступ 12), без меток на обложках */
+html[data-v="2"] .nc__more{grid-column:2;grid-row:3;justify-self:start;margin:658px 0 0;padding:0;text-box:trim-both cap alphabetic}
+html[data-v="2"] .nc__small{grid-column:2;grid-row:3;margin-top:707px}
+html[data-v="2"] .nc__sm{position:relative}
+.nc__g2{position:absolute;right:calc(100% + 12px);top:0;font:400 28px/.86 var(--display);letter-spacing:-.04em;text-transform:uppercase;color:var(--lime);white-space:nowrap}
+html[data-v="2"] .nc__sh{padding-top:0}
+/* ховер мелких кейсов (оба варианта): обложка приподнимается, картинка чуть крупнее — как у больших */
+.nc__scv{transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.nc__scv img{transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.nc__sm:hover .nc__scv{transform:translateY(-6px)}
+.nc__sm:hover .nc__scv img{transform:scale(1.03)}
+@media (prefers-reduced-motion:reduce){.nc__scv,.nc__scv img{transition:none}}
+/* «Обо мне»: карточка на верёвке — бирка (Figma 243:8893): прямые углы, лайм, подпись по центру, тень; качается на дырочке */
+html[data-v="2"] #pile .card--hung{width:360px!important;padding:32px 14px 16px;text-align:center;box-shadow:0 29px 50px -18px rgba(0,20,69,.55);transform-origin:50% 17px}
+html[data-v="2"] .card--hung .card__l{font:500 12px/1 var(--mono);color:#4a4a45}
+html[data-v="2"] .card--hung ul{margin-top:6px;text-align:left;font:400 16.95px/1.4 var(--text)}
+/* «пошатай»: карточки чуть покачиваются, каждая в своём ритме; при перетаскивании — стоят */
+@keyframes cardSway{from{rotate:-.7deg;translate:0 -2px}to{rotate:.7deg;translate:0 2px}}
+@keyframes hungSway{from{rotate:-1.8deg}to{rotate:1.8deg}}
+html[data-v="2"] #pile :is(.card,.toy){animation:cardSway 4.6s ease-in-out infinite alternate}
+html[data-v="2"] #pile :is(.card,.toy):nth-child(2n){animation-duration:5.4s;animation-delay:-1.3s}
+html[data-v="2"] #pile :is(.card,.toy):nth-child(3n){animation-duration:3.9s;animation-delay:-2.1s}
+html[data-v="2"] #pile .card--hung{animation:hungSway 3.6s ease-in-out infinite alternate}
+html[data-v="2"] #pile :is(.card,.toy).grab{animation:none}
+html[data-v="2"] .pile__glass{transition:opacity .5s ease}
+@media (prefers-reduced-motion:reduce){html[data-v="2"] #pile :is(.card,.toy){animation:none}}
+
+/* Большие кейсы по обновлённым компонентам Case / Big (Figma 238:8737 и соседние, 24.11 23:26): сначала заголовок и мета, под ними (через 32) обложка */
+html[data-v="2"] .nc__d{order:-1}
+
+
+/* ══ Вариант №2 · 25.11 ночью: кейсы по Figma 230:4427, «Обо мне» по 252:10056, кнопки 270:5745/5787 ══ */
+/* Кейсы: всё привязано к центральной оси (центр блока = ось и длинная верёвка). Координаты — как во фрейме, от верха статистики */
+html[data-v="2"] .nc{display:block;position:relative;max-width:none;height:2501px;margin-top:84px}
+html[data-v="2"] .nc > *{position:absolute;margin:0}
+html[data-v="2"] .nc__big--1{left:calc(50% - 490px);top:0;width:490px}
+html[data-v="2"] .nc__big--2{left:50%;top:695px;width:500px}
+html[data-v="2"] .nc__big--3{left:calc(50% - 592px);top:1145px;width:592px}
+html[data-v="2"] .nc__more{left:50%;top:1824px;padding:0;justify-self:auto}
+html[data-v="2"] .nc__small{display:none}
+/* мелкие: три разные композиции (Figma 238:8769, 255:10428, 270:5597); между блоками названий 154 */
+.nc2s{display:none}
+html[data-v="2"] .nc2s{display:flex;align-items:flex-start;cursor:pointer}
+html[data-v="2"] .nc2s--mw{top:1873px;left:calc(50% - 25px);gap:4px}
+html[data-v="2"] .nc2s--ad{top:2099px;left:calc(50% - 394px);gap:8px}
+html[data-v="2"] .nc2s--subs{top:2377px;left:calc(50% - 41px);gap:4px}
+.nc2s__tx{display:flex;align-items:flex-start}
+.nc2s__lime,.nc2s__t{font:400 28px/.92 var(--display);letter-spacing:-1.12px;text-transform:uppercase;text-box:trim-both cap alphabetic;white-space:nowrap}
+.nc2s__lime{color:var(--lime);text-align:right}
+.nc2s__t{color:#fff}
+.nc2s--mw .nc2s__lime{width:25px}.nc2s--mw .nc2s__t{width:178px}
+.nc2s--ad .nc2s__lime{width:31px}.nc2s--ad .nc2s__t{width:91px}
+.nc2s--subs .nc2s__lime{width:41px}.nc2s--subs .nc2s__t{width:111px}
+.nc2s__cv{position:relative;display:block;flex:none;overflow:hidden;transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.nc2s__cv img{display:block;width:100%;height:100%;transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.nc2s--mw .nc2s__cv{width:302px;height:226px}
+.nc2s--ad .nc2s__cv{width:355px;height:124px}
+.nc2s--subs .nc2s__cv{width:221px;height:124px}
+.nc2s:hover .nc2s__cv{transform:translateY(-6px)}
+.nc2s:hover .nc2s__cv img{transform:scale(1.03)}
+@media (prefers-reduced-motion:reduce){.nc2s__cv,.nc2s__cv img{transition:none}}
+
+/* «Обо мне» (Figma 252:10056): буквы ПОД карточками — белые 20 % со «стеклом», размытие --tb (12 → 0 шагами, fit.js); на резкости 0 сверху ещё слой */
+html[data-v="2"] .v7 .pile__glass{z-index:1;--tb:12px}
+html[data-v="2"] .pile__glass .bd{background:linear-gradient(135deg,rgba(255,255,255,.34),rgba(255,255,255,.16) 38%,rgba(255,255,255,.22) 70%,rgba(205,228,255,.32));
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);filter:blur(var(--tb));transition:filter .45s ease}
+html[data-v="2"] .pile__glass .rim{filter:url(#glassRim) blur(var(--tb));opacity:.25;transition:filter .45s ease,opacity .45s ease}
+html[data-v="2"] .pile__glass .hi{background:rgba(255,255,255,.06);opacity:0;transition:opacity .45s ease}
+html[data-v="2"] .pile__glass.sharp .rim{opacity:.55}
+html[data-v="2"] .pile__glass.sharp .hi{opacity:1}
+/* бирка на верёвке: 360 во фрейме = 319 у нас (масштаб блока 0,885), текст 17 → 15 */
+html[data-v="2"] #pile .card--hung{width:319px!important}
+html[data-v="2"] .card--hung ul{font-size:15px}
+
+/* Круглые кнопки ↺ и ↑ (Figma 270:5745, 270:5760): стекло — белый 10 %, блик сверху слева (свет −45°) и радужная кайма; ховер — 20 %.
+   Вариант «только на ховере» (270:5787, 270:5796): в покое просто 10 %, стекло проявляется при наведении */
+html[data-v="2"] :is(.pile__tidy,.foot__up){background:rgba(255,255,255,.1);color:#fff;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.6),inset -1px -1px 1px rgba(255,255,255,.2),inset 2.5px 0 3px -1px rgba(255,90,150,.5),inset -2.5px 0 3px -1px rgba(80,170,255,.55),inset 0 -2.5px 3px -1px rgba(255,210,90,.45),inset 0 2.5px 3px -1px rgba(120,255,220,.4);
+  transition:background .25s ease,box-shadow .3s ease}
+html[data-v="2"] :is(.pile__tidy,.foot__up):hover{background:rgba(255,255,255,.2);color:#fff}
+
+/* фикс 25.11 03:10: размытие не было видно — CSS сначала размывает слой, а потом обрезает его маской букв, и края оставались резкими.
+   Теперь размывается весь контейнер надписи (после маски), поэтому без backdrop-filter внутри (в размытом родителе он не работает) */
+html[data-v="2"] .v7 .pile__glass{filter:blur(var(--tb));transition:filter .45s ease}
+html[data-v="2"] .pile__glass .bd{backdrop-filter:none;-webkit-backdrop-filter:none;filter:none}
+html[data-v="2"] .pile__glass .rim{filter:url(#glassRim)}
+
+/* ↺ ближе к карточкам: было ~100 от нижней карточки до кнопки, стало 60 (её правка 25.11 03:15) */
+html[data-v="2"] .pile__tidy{margin-top:-34px}
+
+/* ══ Правки 25.11, 04:02 ══ */
+/* обложки v4: белый 20 % уже внутри картинок — у коробок фона нет (кроме медиастены) */
+html[data-v="2"] .nc__cv{background:none}
+html[data-v="2"] .nc__cv img{object-fit:cover}
+html[data-v="2"] .nc2s__cv img{object-fit:cover}
+html[data-v="2"] .nc2s--mw .nc2s__cv{background:rgba(255,255,255,.2)}
+/* ADD по Figma 255:10428: обложка 198×124 (картинка по центру), затем лайм 31 и название 91, шаг 8; ряд от оси −237 */
+html[data-v="2"] .nc2s--ad{left:calc(50% - 237px)}
+html[data-v="2"] .nc2s--ad .nc2s__cv{width:198px;height:124px}
+/* круглые кнопки ↺ и ↑ (Figma 270:5745 / 270:5796): в покое белый 10 % без радуги; на ховере — та же заливка 10 % + радужное стекло */
+html[data-v="2"] :is(.pile__tidy,.foot__up){background:rgba(255,255,255,.1);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+html[data-v="2"] :is(.pile__tidy,.foot__up):hover{background:rgba(255,255,255,.1);color:#fff;
+  box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.6),inset -1px -1px 1px rgba(255,255,255,.2),inset 2.5px 0 3px -1px rgba(255,90,150,.5),inset -2.5px 0 3px -1px rgba(80,170,255,.55),inset 0 -2.5px 3px -1px rgba(255,210,90,.45),inset 0 2.5px 3px -1px rgba(120,255,220,.4)}
+html[data-v="2"] .foot__up{width:40px;height:40px;display:grid;place-items:center;border-radius:50%;filter:none}
+html[data-v="2"] .foot__up svg{width:24px;height:24px;fill:#fff}
+/* карточку на верёвке можно тащить: схватили — не качается, длинной верёвки нет; ↺ возвращает */
+html[data-v="2"] #pile .card--hung{cursor:grab}
+html[data-v="2"] #pile .card--hung.free{animation:none}
+html[data-v="2"] #pile .card--hung.free .card__hole{opacity:.35}
+.longrope{transition:opacity .35s ease}
+.longrope.off{opacity:0}
+/* баг ↺ (её запись 03:40): кнопка стоит на −34 и уходила ПОД слой #pile — при перетаскивании её перекрывало. Теперь всегда поверх */
+html[data-v="2"] .pile__tidy{position:relative;z-index:60}
+
+/* ══ Правки 25.11, 05:30 ══ */
+/* ховер папок без «растворения» остальных (её компоненты 290:6225): раньше остальные узлы размывались filter: blur поверх стекла
+   с backdrop-filter — браузер пересчитывал это каждый кадр, отсюда лаги и мигание */
+html[data-v="2"] .stage.focus .node:not(.on),html[data-v="2"] .v7 .stage.focus .node:not(.on){opacity:1;filter:none}
+html[data-v="2"] .stage.focus .lines path:not(.on),html[data-v="2"] .v7:is(.h-fix,.h-old) .stage.focus .lines path:not(.on){filter:none;opacity:1}
+/* лого ниже: до окна 40, как во фрейме 290:6454 */
+html[data-v="2"] .name{top:126px}
+/* футер по Figma 243:8877: высота 120, снизу 24, кнопка ↑ 40 */
+html[data-v="2"]{--foot-h:120px}
+html[data-v="2"] .foot{height:120px;padding:0 24px 24px;align-items:flex-end}
+/* раскрытая папка: картинка 328×175 у нижнего края (Figma 290:6321 — Header 54 + Image 175, контент с y 37) */
+html[data-v="2"] .h-fix .big__pv{left:0;top:91px;width:328px;height:175px;border-radius:0 0 25px 25px}
+html[data-v="2"] .big__full{display:block;width:100%;height:100%;object-fit:cover}
+
+/* ══ Правки 25.11, 07:00 ══ */
+/* ховер папки (её идея): размыт весь фон одним слоем под раскрытой папкой; узлы 4 < слой 6 < раскрытая папка 8 */
+html[data-v="2"] .veil{position:absolute;inset:-300px;z-index:6;pointer-events:none;visibility:hidden;opacity:0;
+  background:rgba(8,32,120,.06);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:opacity .25s ease,visibility 0s .25s}
+html[data-v="2"][data-hb=blur] .stage.focus .veil{visibility:visible;opacity:1;transition:opacity .25s ease}
+/* стикер на ховере — как её Web / Sticker / Hover (290:6781): обычная тень + белый ореол 4px, без пышного свечения */
+html[data-v="2"] .ropes-float .tag:is(:hover,:focus-visible){filter:drop-shadow(0 0 4px #fff)}

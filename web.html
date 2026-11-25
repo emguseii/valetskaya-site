@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="smooth-float">
 <head>
 <meta charset="utf-8"><link rel="icon" href="data:,">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Валентина Валецкая · Web</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&family=Geist:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/tokens.css?v=11230410">
 <link rel="stylesheet" href="css/web.css?v=11242345">
 <link rel="stylesheet" href="css/modal.css?v=11230410">
+<script>/* прод = вариант №2 (её выбор 25.11); панели вариантов нет */ { const d = document.documentElement; d.dataset.style = 'old'; d.dataset.skyTop = '.35'; d.dataset.v = '2'; window.PROD = true;
+window.PILE_LAYOUT = [[279, 135, -6], [560, 84, 4], [858, 150, 7], [953, 178, -9.2], [570, 324, -8.2], [865, 323, 13.1], [324, 313, 6.3]]; }</script>
+<link rel="stylesheet" href="css/v2.css?v=11250700">
 </head>
 <body class="v7">
 <div class="sky" aria-hidden="true"></div>
@@ -17,7 +20,7 @@
 <header class="bar">
   <a class="bar__hi" href="#top">Hi, I&nbsp;am..</a>
   <nav class="bar__nav" aria-label="Разделы"><a href="#cases">Кейсы</a><a href="#about">Обо мне</a><a href="#contacts">Контакты</a></nav>
-  <a class="bar__cv" href="cv.pdf" target="_blank" rel="noopener">CV ↓</a>
+  <a class="bar__cv" href="cv.pdf" target="_blank" rel="noopener">CV ↗</a>
 </header>
 
 <main>
@@ -36,10 +39,12 @@
     </svg>
 
     <img class="name" src="assets/hero-name-v7.webp" alt="Валентина Валецкая" width="1438" height="393">
+    <div class="tip"><img src="assets/tooltip.webp" alt="Product Designer" width="800" height="463"></div>
 
     <div class="win">
-      <div class="win__top"><i></i><i></i><i></i><span>Валя.app — Product Designer</span></div>
-      <div class="win__eyes"><img id="eyes" src="assets/eyes/center-relaxed.webp" alt="Глаза Вали следят за курсором" width="1172" height="294"></div>
+      <div class="win__top"><i></i><i></i><i></i><span>Валя.app</span></div>
+      <div class="win__eyes"><img id="eyes" src="assets/eyes/center-relaxed.webp" alt="Глаза Вали следят за курсором" width="1172" height="294"><b class="cnr"></b></div>
+      <div class="win__bot"><a class="pill" href="https://t.me/emgusei" target="_blank" rel="noopener">TG ↗</a><a class="pill" href="cv.pdf" target="_blank" rel="noopener">CV ↓</a></div>
     </div>
 
     <!-- Папки: стекло, внутри — кусочки кейса. При наведении папка раскрывается в большую -->
@@ -81,25 +86,25 @@
     <a class="case" href="#case-stat">
       <h2 class="case__h"><em>NEW статистика</em> на&nbsp;web и&nbsp;с&nbsp;нуля на&nbsp;mobile</h2>
       <img class="case__img" src="assets/case1-card.webp" alt="Экраны новой статистики сообществ" loading="lazy">
-      <ul class="chips"><li class="chip">Июн — Дек 2024</li><li class="chip">WEB</li><li class="chip">Mobile</li></ul>
+      <ul class="chips"><li class="chip">Mobile</li></ul>
           </a>
     <a class="case" href="#case-path">
       <h2 class="case__h"><em>+16%</em> оформленных сообществ авторами</h2>
       <img class="case__img case__img--2" src="assets/case2-card.webp" alt="Карточки онбординга нового автора" loading="lazy">
-      <ul class="chips"><li class="chip">Мар — Июл 2025</li><li class="chip">WEB</li><li class="chip">Mobile</li></ul>
+      <ul class="chips"><li class="chip">Mobile</li></ul>
           </a>
     <a class="case case--car" href="#case-car">
       <h2 class="case__h"><em>4 A/B‑теста:</em> почему iOS и&nbsp;Android реагировали по‑разному</h2>
       <div class="case__spin"><img class="case__img case__img--3" src="assets/carousel-card.webp" alt="Карусель «Авторы для вас»" loading="lazy"><video class="case__video" muted loop playsinline preload="none" data-src="assets/carousel-spin.mp4"></video></div>
-      <ul class="chips"><li class="chip">2025 — 2026</li><li class="chip">iOS</li><li class="chip">Android</li></ul>
+      <ul class="chips"><li class="chip">iOS</li><li class="chip">Android</li></ul>
           </a>
   </div>
 
   <!-- Другие работы — без заголовка, файлами -->
   <div class="files">
-    <button class="file" type="button" data-locked><span class="file__pv"><img src="assets/subs-card.webp" alt=""><span class="chip">в процессе</span></span>
+    <button class="file" type="button" data-locked><span class="file__pv"><img src="assets/subs-card.webp" alt=""><span class="chip">В процессе</span></span>
       <b class="file__t">Подписчики.case</b><span class="file__m">4 шага → 1</span><span class="plate"><b>Кейс в процессе</b>Дописываю. Расскажу на&nbsp;созвоне</span></button>
-    <button class="file" type="button" data-locked><span class="file__pv file__pv--ad"><b>AD</b><span class="chip">в процессе</span></span>
+    <button class="file" type="button" data-locked><span class="file__pv file__pv--ad"><b>AD</b><span class="chip">В процессе</span></span>
       <b class="file__t">Рекламный баннер.case</b><span class="file__m">запуск за&nbsp;3&nbsp;недели</span><span class="plate"><b>Кейс в процессе</b>Дописываю. Расскажу на&nbsp;созвоне</span></button>
     <button class="file" type="button" data-locked><span class="file__pv"><img src="assets/cover-nda.webp" alt="" class="file__nda"><span class="chip">NDA</span></span>
       <b class="file__t">Кое-что для профиля.case</b><span class="file__m">2026, ещё не&nbsp;вышел</span><span class="plate"><b>Под NDA</b>Покажу на&nbsp;созвоне без&nbsp;записи</span></button>
@@ -110,16 +115,16 @@
 <section class="about" id="about" aria-labelledby="about-h">
   <h2 class="vh" id="about-h">Обо мне</h2>
   <div class="pile" id="pile">
-    <img class="pile__title" src="assets/about-title.webp" alt="" aria-hidden="true"><b class="pile__word" aria-hidden="true">Обо мне</b><div class="pile__glass" aria-hidden="true"><i class="bd"></i><i class="rim"></i></div>
+    <img class="pile__title" src="assets/about-title.webp" alt="" aria-hidden="true"><b class="pile__word" aria-hidden="true">Обо мне</b>
     <article class="card card--white" style="left:120px;top:140px;width:300px"><span class="card__l">ВКонтакте · май 2024 — окт 2026</span><b class="card__h">2,5 года во&nbsp;ВКонтакте</b><p>Команда опыта автора в&nbsp;сообществах</p></article>
     <article class="card card--lime" style="left:470px;top:110px;width:320px"><span class="card__l">что делала</span><ul><li>Вела задачи от&nbsp;гипотезы до&nbsp;A/B‑теста</li><li>Собрала библиотеку компонентов, её&nbsp;переиспользуют другие команды</li><li>Интервью, юзабилити-тесты, ~400&nbsp;респондентов</li></ul></article>
     <img class="toy" src="assets/web-obj-flower.webp" alt="Керамическая баночка-клоун, сделала сама" draggable="false" style="left:880px;top:120px;width:94px;--r:-7deg">
     <article class="card card--sky" style="left:1110px;top:150px;width:260px"><span class="card__l">после работы</span><p>Леплю из&nbsp;глины, танцую контемп и&nbsp;снимаю на&nbsp;плёнку</p></article>
     <article class="card card--paper" style="left:560px;top:470px;width:320px"><span class="card__l">курсы</span><p>Визуализация данных · Большая практика · Типографика и&nbsp;вёрстка · Немодерируемые исследования</p></article>
-    <article class="card card--ink" style="left:1000px;top:420px;width:290px"><span class="card__l">сильная сторона</span><b class="card__h">Системное мышление</b><p>Мои решения потом берут другие команды</p></article>
+    <article class="card card--ink" style="left:1000px;top:420px;width:290px"><span class="card__l">сильная сторона</span><b class="card__h">Системное мышление</b><p>Мои решения переносят в другие продукты</p></article>
     <article class="card card--white" style="left:150px;top:560px;width:290px"><span class="card__l">образование</span><p>Uprock School · 2024<br>Contented · 2022–2023<br>НИ&nbsp;ТПУ · 2017–2022</p></article>
   </div>
-  <button class="pile__tidy" type="button" hidden aria-label="Навести порядок" title="Навести порядок"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4 4.5v4h4"/></svg></button>
+  <button class="pile__tidy" type="button" hidden>Навести порядок</button>
 </section>
 
 <!-- 4 · КОНТАКТЫ — её лист, ровные язычки ↗, облако с травой снизу -->
@@ -129,12 +134,11 @@
   <div class="cx__fx" aria-hidden="true"></div>
   <div class="cx__core">
     <h2 class="cx__h" id="contacts-h">Let’s work<br>together</h2>
-    <!-- кнопки контактов по Figma 234:8018 «Button / Contacts» (её выбор 24.11): иконка 60 + подпись моно-капсом -->
-    <div class="cx__mono">
-      <a class="cx__m" href="https://t.me/emgusei" target="_blank" rel="noopener"><img src="assets/contacts/Telegram.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Telegram.png" alt="" width="60" height="60"><span>Telegram</span></a>
-      <a class="cx__m" href="https://www.linkedin.com/in/vvalentin%D0%B5/" target="_blank" rel="noopener"><img src="assets/contacts/Linkedin.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Linkedin.png" alt="" width="60" height="60"><span>LinkedIn</span></a>
-      <button class="cx__m" type="button" data-copy-btn="valentine.valetskaya@gmail.com" aria-label="Почта: скопировать адрес valentine.valetskaya@gmail.com" title="Скопировать почту"><img src="assets/contacts/Email.svg?v=3" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Email.png" alt="" width="60" height="60"><span>Почта</span></button>
-      <a class="cx__m" href="cv.pdf" target="_blank" rel="noopener"><img src="assets/contacts/CV.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/CV.png" alt="" width="60" height="60"><span>Резюме</span></a>
+    <div class="cx__btns">
+      <a class="cx__btn" href="https://t.me/emgusei" target="_blank" rel="noopener">Telegram <i aria-hidden="true">↗</i></a>
+      <button class="cx__btn" type="button" data-copy-btn="valentine.valetskaya@gmail.com" aria-label="Скопировать почту valentine.valetskaya@gmail.com">Почта <i aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg></i></button>
+      <a class="cx__btn" href="https://www.linkedin.com/in/vvalentin%D0%B5/" target="_blank" rel="noopener">LinkedIn <i aria-hidden="true">↗</i></a>
+      <a class="cx__btn" href="cv.pdf" target="_blank" rel="noopener">Резюме <i aria-hidden="true">↗</i></a>
     </div>
   </div>
 </section>
@@ -146,8 +150,6 @@
   <p class="foot__meta">© 2026 Валентина Валецкая · Нидерланды<br>Шрифт <a href="https://www.rieslingtype.com/" target="_blank" rel="noopener">RT&nbsp;Obligat — Riesling Type</a></p>
   <a class="foot__up" href="#top" aria-label="Наверх">↑</a>
 </footer>
-<!-- кромка стеклянного заголовка «Обо мне»: форма минус сжатая форма = светлый контур -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="glassRim" x="-5%" y="-5%" width="110%" height="110%"><feMorphology in="SourceAlpha" operator="erode" radius="1.6" result="e"/><feComposite in="SourceGraphic" in2="e" operator="out"/></filter></svg>
 
 <!-- Кейс — на весь экран, со своим адресом (#case-…), «назад» закрывает -->
 <div class="case-modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-h" hidden>
@@ -162,5 +164,6 @@
 <script src="js/eyes.js?v=11230410"></script>
 <script src="js/cases.js?v=11230410"></script>
 <script src="js/web.js?v=11242345"></script>
+<script src="js/v2.js?v=11250700"></script>
 </body>
 </html>

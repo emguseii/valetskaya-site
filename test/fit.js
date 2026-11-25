@@ -50,8 +50,10 @@
   // Сравнение: вариант №1 (зафиксирован) / №2 (Figma 238:8845 + её комментарии 24.11 вечером). Читается при загрузке — кнопка перезагружает страницу
   row('Вариант', 'v', [['1', '№1'], ['2', '№2']], root.dataset.v || '1', true);
   // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
+  // №2: при наведении на папку — фон размыт одним слоем (её идея 25.11) или как есть
+  row('Ховер папки · фон', 'hb', [['blur', 'размыть'], ['none', 'как есть']], 'blur');
   row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало']], root.dataset.skyTop, true);
-    document.body.appendChild(pick); set(mode);
+    if (!window.PROD) document.body.appendChild(pick); set(mode);
 
   // «Обо мне» стеклом (Figma 165:2635): форма букв — её вектор about-title.webp как маска, внутри — размытый и подсвеченный фон
   document.getElementById('pile').insertAdjacentHTML('afterbegin', '<div class="pile__glass" aria-hidden="true"><i class="bd"></i><i class="rim"></i></div>');
@@ -150,12 +152,49 @@
     sm('mw', 'mediawall-v4', '20<br>26', 'Медиастена<br>профиля<br>(NDA)') +
     sm('ad', 'ad-v4', '20<br>26<br><br><br>DS', 'компо-<br>нент<br>для<br>марке-<br>тинга', true) +
     sm('subs', 'subs-v4', '20<br>25<br><br><br>WIP', 'дизайн<br>лифтинг<br>раздела<br>подпис-<br>чиков'));
+  // Первый блок по её компонентам (Figma 290:6454 Folders / Default, 25.11): кадр 1520 → наша сцена 1440 (сдвиг −40 по x, +14 по y,
+  // чтобы окно встало на своё место). Папки — пустые стеклянные 120×95 с новыми подписями, бирки и верёвки — как во фрейме
+  // лого — её компонент Web/Logo/Имя (Figma 41:91) векторами: рукописная фамилия с обводкой 1px цветом фона
+  { const nm = document.querySelector('.name'); if (nm) nm.src = 'assets/hero-name-v8.svg'; }
+  // ховер папки: один размытый слой между узлами и раскрытой папкой — дешевле, чем размывать каждый узел отдельно
+  document.getElementById('stage')?.insertAdjacentHTML('beforeend', '<i class="veil" aria-hidden="true"></i>');
+  // верёвка не просвечивает сквозь раскрытую папку: дыра в маске верёвок по её рамке
+  { const mask = document.getElementById('ropeHide'), svgL = document.querySelector('.lines'); if (mask && svgL) {
+    const bigs = [...document.querySelectorAll('.folder .big')].map(b => { const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('fill', '#000'); r.setAttribute('rx', 24); mask.appendChild(r); return { b, r }; });
+    const tk = () => { const sb = svgL.getBoundingClientRect(), k = sb.width / 1440 || 1;
+      bigs.forEach(({ b, r }) => { const on = b.closest('.folder.on'); if (!on) { r.setAttribute('width', 0); return; } const q = b.getBoundingClientRect();
+        r.setAttribute('x', ((q.left - sb.left) / k).toFixed(1)); r.setAttribute('y', ((q.top - sb.top) / k + 8).toFixed(1));
+        r.setAttribute('width', (q.width / k).toFixed(1)); r.setAttribute('height', Math.max(0, q.height / k - 8).toFixed(1)); });
+      requestAnimationFrame(tk); }; requestAnimationFrame(tk); } }
+  { const F = (x, y) => [x - 40, y + 14];
+    const pos = { f1: [142, 630, -4], f3: [1160, 256, -5], f2: [838, 702, 7], t1: [45, 267, -4], t3: [1097, 517, 4], t2: [518, 663, -6] };
+    for (const [id, [l, t, r]] of Object.entries(pos)) { const n = document.getElementById(id); if (!n) continue;
+      n.style.left = l + 'px'; n.style.top = t + 'px'; if (id[0] === 't') n.style.setProperty('--r', r + 'deg'); else n.style.rotate = r + 'deg'; }
+    const fm = document.querySelector('#f1 .folder__m'); if (fm) fm.textContent = 'NEW раздел';
+    const bh = (id, html) => { const b = document.querySelector('#' + id + ' .big__h'); if (b) b.innerHTML = html; };
+    // картинка раскрытой папки — её экспорт из компонента (Figma 290:6321 и др.): 328×175 внизу папки
+    for (const [id, img] of [['f1', 'folder-stat'], ['f2', 'folder-path'], ['f3', 'folder-car']]) { const pv = document.querySelector('#' + id + ' .big__pv');
+      if (pv) pv.innerHTML = '<img class="big__full" src="assets/' + img + '.webp" alt="" loading="lazy">'; }
+    bh('f1', '<em>Редизайн</em> раздела на&nbsp;web и&nbsp;mobile'); bh('f3', '<em>4 A/B‑теста</em> реком блока в&nbsp;ленте');
+    // верёвки — её кривые из фрейма (одна чуть опущена, чтобы раскрытая «Статистика» не перекрывала верхнюю линию)
+    const R = { t1: ['matrix(.9382 -.3461 .3461 .9382 198.9531 247.1182)', 'M0 27.586C60.511-4.986 134.313-17.589 156.847 40.139 210.553 177.725-48.902 250.232 41.914 332.958 99.928 385.805 138.791 261.893 232.567 341.993 300.649 400.146 346.464 364.072 356.523 354.139'],
+      t2: ['translate(656.6641 447)', 'M77.334 0C162.334 112.5-72.264 134.6 23.336 233'],
+      f3: ['translate(828 285.6592)', 'M0 166.841C324 401.341 241.5-76.659 421.5 10.841'],
+      f1: ['matrix(-.8776 .4793 .4793 .8776 714.6836 444.7695)', 'M0 11.087C54.239 106.231 113.553-16.745 183.595 1.974 253.328 20.611 260.181 96.308 337.237 98.663 371.947 99.723 434.631 80.882 436.04 21.916'],
+      f2: ['matrix(.9382 -.3461 .3461 .9382 755.6328 450.6348)', 'M.39 0C91.848 149.379-95.727 194.15 74.773 314.15'],
+      t3: ['translate(802.5 454)', 'M0 0C21 47.167 70.5 132.469 163 126 322 114.881 340-94 455.5 71.5'] };
+    for (const [id, [tr, d]] of Object.entries(R)) { const p = document.querySelector('.lines path[data-to="' + id + '"]'); if (!p) continue;
+      p.setAttribute('transform', 'translate(-40 14) ' + tr); p.setAttribute('d', d); } }
   // ↑ в футере — иконка arrow_up_outline_24 (Figma 270:5797) вместо символа
   const up = document.querySelector('.foot__up'); if (up) up.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.9999 3C12.2651 3.00006 12.5195 3.10549 12.707 3.29298L20.707 11.2932C21.0973 11.6837 21.0973 12.3168 20.707 12.7073C20.3165 13.0978 19.6834 13.0977 19.2929 12.7073L12.9999 6.41416V20.0005C12.9999 20.5527 12.5521 21.0004 11.9999 21.0005C11.4476 21.0005 10.9999 20.5528 10.9999 20.0005V6.41416L4.70696 12.7073C4.31647 13.0978 3.68343 13.0977 3.29289 12.7073C2.90237 12.3168 2.90237 11.6837 3.29289 11.2932L11.2929 3.29298L11.3661 3.22657C11.5441 3.0808 11.7679 3 11.9999 3Z"/></svg>';
   // 2) карточка, на которой висит верёвка: дырочка сверху, не таскается
   const card = document.querySelector('#pile .card--lime'); if (!card) return;
   card.insertAdjacentHTML('afterbegin', '<i class="card__hole" aria-hidden="true"></i>'); card.classList.add('card--hung');
   // её идея 25.11: карточку на верёвке тоже можно тащить — схватили, она перестаёт качаться и верёвка исчезает; ↺ возвращает всё
+  // слои «Обо мне» (её правка 25.11): «курсы» (кремовая) над «образованием» (белая), игрушка над голубой «после работы»
+  const pileItems = [...document.querySelectorAll('#pile .card, #pile .toy')];
+  const zfix = () => { const z = [10, 11, 14, 13, 17, 15, 16]; pileItems.forEach((el, i) => { if (z[i] != null) el.style.zIndex = z[i]; }); };
+  zfix(); document.querySelector('.pile__tidy')?.addEventListener('click', () => setTimeout(zfix, 50));
   const free = on => { card.classList.toggle('free', on); svg.classList.toggle('off', on); if (!on) setTimeout(draw, 950); };
   card.addEventListener('pointerdown', e => { if (e.button > 0) return; free(true); });
   document.querySelector('.pile__tidy')?.addEventListener('click', () => free(false));
@@ -164,6 +203,7 @@
   document.body.prepend(svg);
   const path = svg.querySelector('path'), grad = svg.querySelector('#longGlass');
   const draw = () => { const win = document.querySelector('.win'), hole = card.querySelector('.card__hole'); if (!win || !hole) return;
+    svg.setAttribute('height', 0); svg.setAttribute('width', 0); // иначе верёвка сама держит высоту страницы → лишний отступ под футером после ↺
     const W = document.documentElement.scrollWidth, H = document.documentElement.scrollHeight, sy = scrollY, sx = scrollX;
     svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     const w = win.getBoundingClientRect(), h = hole.getBoundingClientRect();
