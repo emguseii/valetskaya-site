@@ -1,0 +1,14 @@
+{
+  "syntax": true,
+  "all_11_asset_paths_loaded": true,
+  "all_9_manual_states": true,
+  "two_center_variants": true,
+  "all_8_pointer_sectors": true,
+  "center_dead_zone": true,
+  "blink_returns_latest_direction": true,
+  "cycle_start_stop": true,
+  "guide_toggle": true,
+  "visibility_cleanup": true,
+  "validation_environment": "Node VM with DOM and image-loading adapters; not a live browser render",
+  "live_browser_render_checked": false
+}

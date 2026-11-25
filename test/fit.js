@@ -71,7 +71,7 @@
   document.querySelector('.cx__btns').insertAdjacentHTML('afterend', `<div class="cx__mono">
     <a class="cx__m" href="${href('Telegram')}" target="_blank" rel="noopener"><img src="assets/contacts/Telegram.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Telegram.png" alt="" width="60" height="60"><span>Telegram</span></a>
     <a class="cx__m" href="${href('LinkedIn')}" target="_blank" rel="noopener"><img src="assets/contacts/Linkedin.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Linkedin.png" alt="" width="60" height="60"><span>LinkedIn</span></a>
-    <button class="cx__m" type="button" data-copy-proxy2 title="Скопировать почту"><img src="assets/contacts/Email.svg" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Email.png" alt="" width="60" height="60"><span>Почта</span></button>
+    <button class="cx__m" type="button" data-copy-proxy2 title="Скопировать почту"><img src="assets/contacts/Email.svg?v=2" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Email.png" alt="" width="60" height="60"><span>Почта</span></button>
     <a class="cx__m" href="${href('Резюме')}" target="_blank" rel="noopener"><img src="assets/contacts/CV.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/CV.png" alt="" width="60" height="60"><span>Резюме</span></a></div>`);
   document.querySelector('[data-copy-proxy2]').addEventListener('click', () => mailBtn && mailBtn.click());
 

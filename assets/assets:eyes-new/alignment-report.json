@@ -1,0 +1,364 @@
+{
+  "display_size" : [
+    586,
+    147
+  ],
+  "frames" : [
+    {
+      "crop_in_bounds" : true,
+      "landmark_method" : "manual visible inner eye corners; approximate source coordinates",
+      "reference_inner_corners" : [
+        [
+          414,
+          180
+        ],
+        [
+          758,
+          180
+        ]
+      ],
+      "rotation_degrees" : -0.18074318440902826,
+      "scale" : 1.0851681021534574,
+      "size" : [
+        1172,
+        294
+      ],
+      "source" : "IMG_4006.HEIC",
+      "source_inner_corners" : [
+        [
+          466,
+          183
+        ],
+        [
+          783,
+          182
+        ]
+      ],
+      "state" : "center"
+    },
+    {
+      "crop_in_bounds" : true,
+      "landmark_method" : "manual visible inner eye corners; approximate source coordinates",
+      "reference_inner_corners" : [
+        [
+          414,
+          180
+        ],
+        [
+          758,
+          180
+        ]
+      ],
+      "rotation_degrees" : -0.5422151649463538,
+      "scale" : 1.0851249096641011,
+      "size" : [
+        1172,
+        294
+      ],
+      "source" : "IMG_3981.heic",
+      "source_inner_corners" : [
+        [
+          469,
+          180
+        ],
+        [
+          786,
+          177
+        ]
+      ],
+      "state" : "center-relaxed"
+    },
+    {
+      "crop_in_bounds" : true,
+      "landmark_method" : "manual visible inner eye corners; approximate source coordinates",
+      "reference_inner_corners" : [
+        [
+          414,
+          180
+        ],
+        [
+          758,
+          180
+        ]
+      ],
+      "rotation_degrees" : 0,
+      "scale" : 1.0990415335463259,
+      "size" : [
+        1172,
+        294
+      ],
+      "source" : "IMG_4005.HEIC",
+      "source_inner_corners" : [
+        [
+          470,
+          176
+        ],
+        [
+          783,
+          176
+        ]
+      ],
+      "state" : "closed"
+    },
+    {
+      "crop_in_bounds" : true,
+      "landmark_method" : "manual visible inner eye corners; approximate source coordinates",
+      "reference_inner_corners" : [
+        [
+          414,
+          180
+        ],
+        [
+          758,
+          180
+        ]
+      ],
+      "rotation_degrees" : -0.90080280873529073,
+      "scale" : 1.0816273139324142,
+      "size" : [
+        1172,
+        294
+      ],
+      "source" : "IMG_3992.HEIC",
+      "source_inner_corners" : [
+        [
+          471,
+          199
+        ],
+        [
+          789,
+          194
+        ]
+      ],
+      "state" : "up"
+    },
+    {
+      "crop_in_bounds" : true,
+      "landmark_method" : "manual visible inner eye corners; approximate source coordinates",
+      "reference_inner_corners" : [
+        [
+          414,
+          180
+        ],
+        [
+          758,
+          180
+        ]
+      ],
+      "rotation_degrees" : -0.17362304283848734,
+      "scale" : 1.0424194563036582,
+      "size" : [
+        1172,
+        294
+      ],
+      "source" : "IMG_3987.HEIC",
+      "source_inner_corners" : [
+        [
+          455,
+          189
+        ],
+        [
+          785,
+          188
+        ]
+      ],
+      "state" : "left"
+    },
+    {
+      "crop_in_bounds" : true,
+      "landmark_method" : "manual visible inner eye corners; approximate source coordinates",
+      "reference_inner_corners" : [
+        [
+          414,
+          180
+        ],
+        [
+          758,
+          180
+        ]
+      ],
+      "rotation_degrees" : -0.91812300233505784,
+      "scale" : 1.1024225489274309,
+      "size" : [
+        1172,
+        294
+      ],
+      "source" : "IMG_3986.HEIC",
+      "source_inner_corners" : [
+        [
+          474,
+          182
+        ],
+        [
+          786,
+          177
+        ]
+      ],
+      "state" : "right"
+    },
+    {
+      "crop_in_bounds" : true,
+      "landmark_method" : "manual visible inner eye corners; approximate source coordinates",
+      "reference_inner_corners" : [
+        [
+          414,
+          180
+        ],
+        [
+          758,
+          180
+        ]
+      ],
+      "rotation_degrees" : -0.89517371021107439,
+      "scale" : 1.0748687984372975,
+      "size" : [
+        1172,
+        294
+      ],
+      "source" : "IMG_3993.HEIC",
+      "source_inner_corners" : [
+        [
+          465,
+          195
+        ],
+        [
+          785,
+          190
+        ]
+      ],
+      "state" : "up-left"
+    },
+    {
+      "crop_in_bounds" : true,
+      "landmark_method" : "manual visible inner eye corners; approximate source coordinates",
+      "reference_inner_corners" : [
+        [
+          414,
+          180
+        ],
+        [
+          758,
+          180
+        ]
+      ],
+      "rotation_degrees" : -0.90650314394805342,
+      "scale" : 1.088471348337944,
+      "size" : [
+        1172,
+        294
+      ],
+      "source" : "IMG_3994.HEIC",
+      "source_inner_corners" : [
+        [
+          472,
+          190
+        ],
+        [
+          788,
+          185
+        ]
+      ],
+      "state" : "up-right"
+    },
+    {
+      "crop_in_bounds" : true,
+      "landmark_method" : "manual visible inner eye corners; approximate source coordinates",
+      "reference_inner_corners" : [
+        [
+          414,
+          180
+        ],
+        [
+          758,
+          180
+        ]
+      ],
+      "rotation_degrees" : 0.81150068371187778,
+      "scale" : 0.97440650779242532,
+      "size" : [
+        1172,
+        294
+      ],
+      "source" : "IMG_4001.HEIC",
+      "source_inner_corners" : [
+        [
+          551,
+          203
+        ],
+        [
+          904,
+          208
+        ]
+      ],
+      "state" : "down"
+    },
+    {
+      "crop_in_bounds" : true,
+      "landmark_method" : "manual visible inner eye corners; approximate source coordinates",
+      "reference_inner_corners" : [
+        [
+          414,
+          180
+        ],
+        [
+          758,
+          180
+        ]
+      ],
+      "rotation_degrees" : -0.16277166299312978,
+      "scale" : 0.9772687836275995,
+      "size" : [
+        1172,
+        294
+      ],
+      "source" : "IMG_3988.HEIC",
+      "source_inner_corners" : [
+        [
+          554,
+          218
+        ],
+        [
+          906,
+          217
+        ]
+      ],
+      "state" : "down-left"
+    },
+    {
+      "crop_in_bounds" : true,
+      "landmark_method" : "manual visible inner eye corners; approximate source coordinates",
+      "reference_inner_corners" : [
+        [
+          414,
+          180
+        ],
+        [
+          758,
+          180
+        ]
+      ],
+      "rotation_degrees" : -0.49250173376333478,
+      "scale" : 0.98563693824934351,
+      "size" : [
+        1172,
+        294
+      ],
+      "source" : "IMG_3989.HEIC",
+      "source_inner_corners" : [
+        [
+          557,
+          222
+        ],
+        [
+          906,
+          219
+        ]
+      ],
+      "state" : "down-right"
+    }
+  ],
+  "target_size" : [
+    1172,
+    294
+  ]
+}
