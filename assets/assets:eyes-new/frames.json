@@ -1,0 +1,100 @@
+{
+  "display_width": 586,
+  "display_height": 147,
+  "asset_width": 1172,
+  "asset_height": 294,
+  "coordinate_system": "viewer_screen",
+  "default_center": "center",
+  "alternate_center": "center-relaxed",
+  "processing": "generative localized retouch; whole-frame geometric export registered to manually marked inner eye corners",
+  "frames": {
+    "center": {
+      "label": "Прямо · открытый взгляд",
+      "source": "IMG_4006.HEIC",
+      "webp": "webp/center.webp",
+      "png": "png/center.png",
+      "webp_1x": "webp-1x/center.webp",
+      "png_1x": "png-1x/center.png"
+    },
+    "center-relaxed": {
+      "label": "Прямо · вариант с прищуром",
+      "source": "IMG_3981.heic",
+      "webp": "webp/center-relaxed.webp",
+      "png": "png/center-relaxed.png",
+      "webp_1x": "webp-1x/center-relaxed.webp",
+      "png_1x": "png-1x/center-relaxed.png"
+    },
+    "closed": {
+      "label": "Закрытые глаза",
+      "source": "IMG_4005.HEIC",
+      "webp": "webp/closed.webp",
+      "png": "png/closed.png",
+      "webp_1x": "webp-1x/closed.webp",
+      "png_1x": "png-1x/closed.png"
+    },
+    "up": {
+      "label": "Вверх",
+      "source": "IMG_3992.HEIC",
+      "webp": "webp/up.webp",
+      "png": "png/up.png",
+      "webp_1x": "webp-1x/up.webp",
+      "png_1x": "png-1x/up.png"
+    },
+    "left": {
+      "label": "Влево",
+      "source": "IMG_3987.HEIC",
+      "webp": "webp/left.webp",
+      "png": "png/left.png",
+      "webp_1x": "webp-1x/left.webp",
+      "png_1x": "png-1x/left.png"
+    },
+    "right": {
+      "label": "Вправо",
+      "source": "IMG_3986.HEIC",
+      "webp": "webp/right.webp",
+      "png": "png/right.png",
+      "webp_1x": "webp-1x/right.webp",
+      "png_1x": "png-1x/right.png"
+    },
+    "up-left": {
+      "label": "Вверх-влево",
+      "source": "IMG_3993.HEIC",
+      "webp": "webp/up-left.webp",
+      "png": "png/up-left.png",
+      "webp_1x": "webp-1x/up-left.webp",
+      "png_1x": "png-1x/up-left.png"
+    },
+    "up-right": {
+      "label": "Вверх-вправо",
+      "source": "IMG_3994.HEIC",
+      "webp": "webp/up-right.webp",
+      "png": "png/up-right.png",
+      "webp_1x": "webp-1x/up-right.webp",
+      "png_1x": "png-1x/up-right.png"
+    },
+    "down": {
+      "label": "Вниз",
+      "source": "IMG_4001.HEIC",
+      "webp": "webp/down.webp",
+      "png": "png/down.png",
+      "webp_1x": "webp-1x/down.webp",
+      "png_1x": "png-1x/down.png"
+    },
+    "down-left": {
+      "label": "Вниз-влево",
+      "source": "IMG_3988.HEIC",
+      "webp": "webp/down-left.webp",
+      "png": "png/down-left.png",
+      "webp_1x": "webp-1x/down-left.webp",
+      "png_1x": "png-1x/down-left.png"
+    },
+    "down-right": {
+      "label": "Вниз-вправо",
+      "source": "IMG_3989.HEIC",
+      "webp": "webp/down-right.webp",
+      "png": "png/down-right.png",
+      "webp_1x": "webp-1x/down-right.webp",
+      "png_1x": "png-1x/down-right.png"
+    }
+  }
+}
