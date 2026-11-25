@@ -408,14 +408,5 @@ html[data-v="2"][data-cxh=tile] .cx__m::before{content:"";position:absolute;left
 html[data-v="2"][data-cxh=tile] .cx__m:is(:hover,:focus-visible)::before{opacity:1}
 /* «г · тает у папки»: обводка открытой верёвки — градиент к прозрачности у папки (ropeFade в fit.js) */
 html[data-v="2"][data-rc=fade] .v7 .stage.focus .lines path.on{stroke:url(#ropeFade)}
-/* контакты «стекло по форме» (тест): вектор + кромка и радужная кайма внутри формы; на ховере ярче */
-.cx__g{display:none}
-html[data-v="2"][data-cxh=glass] .cx__m img{display:none}
-html[data-v="2"][data-cxh=glass] .cx__g{display:block;width:60px;height:60px;overflow:visible;filter:drop-shadow(0 6px 14px rgba(4,20,80,.18))}
-.cx__gf{fill:rgba(255,255,255,.3);transition:fill .3s ease}
-.cx__gr{fill:none;stroke:url(#cxRim);stroke-width:2.4;opacity:.85;transition:stroke-width .3s ease,opacity .3s ease}
-.cx__gp,.cx__gb{fill:none;stroke-width:2;opacity:0;transition:opacity .3s ease}
-.cx__gp{stroke:rgba(255,90,150,.9)}.cx__gb{stroke:rgba(80,170,255,.95)}
-html[data-v="2"][data-cxh=glass] .cx__m:is(:hover,:focus-visible) .cx__gf{fill:rgba(255,255,255,.42)}
-html[data-v="2"][data-cxh=glass] .cx__m:is(:hover,:focus-visible) .cx__gr{opacity:1;stroke-width:3}
-html[data-v="2"][data-cxh=glass] .cx__m:is(:hover,:focus-visible) :is(.cx__gp,.cx__gb){opacity:.55}
+/* лого ближе к глазам (её правка 322:7296): до окна ~24 вместо ~40 */
+html[data-v="2"] .name{top:160px}
