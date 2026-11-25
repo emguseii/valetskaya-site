@@ -53,8 +53,9 @@
     const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('in-view', e.isIntersecting)), { rootMargin: '100px' });
     KINDS.forEach(k => document.querySelectorAll(k.sel).forEach(el => io.observe(el))); }
 
+  const SHOW = !window.PROD && new URLSearchParams(location.search).has('glass');
   const apply = m => { Object.values(KEY).forEach(c => root.classList.remove(c)); root.classList.add(KEY[m]);
-    const u = new URL(location); u.searchParams.set('glass', m); history.replaceState(null, '', u);
+    if (SHOW) { const u = new URL(location); u.searchParams.set('glass', m); history.replaceState(null, '', u); } // 25.11 12:50: раньше дописывало ?glass= в адрес всегда → после обновления панель появлялась и на проде
     $$sw.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.m === m)));
     note.hidden = !(m === 'liquid' && !canLiquid); };
 
@@ -69,7 +70,7 @@
     <button type="button" data-m="flat"><span>Фон 20&nbsp;%</span><small>старые браузеры · &lt;1&nbsp;%</small></button>
     <em class="glasspick__note" hidden>Этот браузер не умеет жидкое стекло — открой в Chrome</em>
     <i>доли: десктоп, Россия, Statcounter, июнь 2026</i>`;
-  if (new URLSearchParams(location.search).has('glass')) document.body.appendChild(sw); // панель «Стекло в браузерах» — только по ?glass= (стекло на проде, 25.11)
+  if (SHOW) document.body.appendChild(sw); // панель «Стекло в браузерах» — служебная: только на тесте и только по ?glass= (на проде — никогда, её правка 25.11 12:48)
   const $$sw = [...sw.querySelectorAll('button[data-m]')], note = sw.querySelector('.glasspick__note');
   // шеврон: свернуть/развернуть панель, состояние запоминается в браузере
   const fold = sw.querySelector('.glasspick__fold'), setFold = v => { sw.classList.toggle('is-folded', v);

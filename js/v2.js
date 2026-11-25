@@ -32,7 +32,7 @@
   const lab = document.createElement('span'); lab.textContent = 'ТЕСТ'; const desc = document.createElement('p');
   pick.append(x, lab);
   const set = m => { mode = m; pick.querySelectorAll('[data-f]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.f === m))); desc.textContent = P[m].desc;
-    const u = new URL(location); u.searchParams.set('fit', m); history.replaceState(null, '', u);
+    if (!window.PROD) { const u = new URL(location); u.searchParams.set('fit', m); history.replaceState(null, '', u); } // 25.11 12:50: на проде адрес чистый (раньше дописывался ?fit=A)
     dispatchEvent(new Event('resize')); }; // web.js пересчитает своё, затем over() — своё; герой заново раздвинет узлы
   // 24.11: масштаб выбран — A (по высоте окна); варианты «Сейчас» и B убраны из панели
   // Закреплённые решения (развилки убраны): роль в заголовке окна, папки — стекло, футер без меню, кейсы Ш2, больше воздуха у «Обо мне», уголков на глазах нет
