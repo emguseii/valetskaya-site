@@ -50,6 +50,8 @@
   Object.assign(root.dataset, { corners: 'sharp', cases: 'n1', cxb: 'mono', bigf: 'plain', caseb: 'glass', abouth: 'over', aboutbg: 'none' });
   // Сравнение: вариант №1 (зафиксирован) / №2 (Figma 238:8845 + её комментарии 24.11 вечером). Читается при загрузке — кнопка перезагружает страницу
   row('Вариант', 'v', [['1', '№1'], ['2', '№2']], root.dataset.v || '1', true);
+  // 25.11 тест плавности первого экрана (читается при загрузке — кнопка перезагружает): «без парения» — компромисс, конструкция неподвижна
+  row('Первый экран · плавность', 'sm', [['now', 'как на проде'], ['lite', 'облегчённо'], ['still', 'без парения']], root.dataset.sm || 'lite', true);
   // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
   // 25.11 (её просьба: решения про плавность — тестом): что делает верёвка у раскрытой папки, что с фоном, ховер контактов
   row('Верёвка раскрытой папки', 'rh', [['calm', 'как остальные'], ['accent', 'ярче (белая)']], 'calm');
@@ -84,6 +86,7 @@
 /* Верёвки не просвечивают сквозь стекло окна и папок: SVG-маска с «дырами» по их рамкам, дыры двигаются вместе с папками */
 (() => {
   const svg = document.querySelector('.lines'); if (!svg) return; const NS = 'http://www.w3.org/2000/svg';
+  if (document.documentElement.dataset.v === '2' && (document.documentElement.dataset.sm || 'now') !== 'now') return; // 25.11: в №2 маски нет (тест плавности); «как на проде» — пока для сравнения
   const defs = document.createElementNS(NS, 'defs'), mask = document.createElementNS(NS, 'mask');
   mask.id = 'ropeHide'; mask.setAttribute('maskUnits', 'userSpaceOnUse'); ['x', 'y', 'width', 'height'].forEach((k, i) => mask.setAttribute(k, [-2000, -2000, 6000, 6000][i]));
   const all = document.createElementNS(NS, 'rect'); [['x', -2000], ['y', -2000], ['width', 6000], ['height', 6000], ['fill', '#fff']].forEach(([k, v]) => all.setAttribute(k, v)); mask.appendChild(all);
@@ -182,8 +185,13 @@
         let lo = 0, hi = L; for (let u = 0; u <= L; u += 12) if (inside(u)) { hi = u; lo = Math.max(0, u - 12); break; }
         if (hi < L) for (let i = 0; i < 6; i++) { const mid = (lo + hi) / 2; if (inside(mid)) hi = mid; else lo = mid; }
         const k = Math.hypot(m.a, m.b) || 1, a = p.getPointAtLength(Math.max(0, hi - FADE / k + 4 / k)), e = p.getPointAtLength(Math.min(L, hi + 4 / k));
-        g.setAttribute('x1', a.x.toFixed(1)); g.setAttribute('y1', a.y.toFixed(1)); g.setAttribute('x2', e.x.toFixed(1)); g.setAttribute('y2', e.y.toFixed(1)); }
-      requestAnimationFrame(tf); }; requestAnimationFrame(tf); } }
+        const key = [a.x, a.y, e.x, e.y].map(v => v.toFixed(1)).join();
+        if (key !== tfKey) { tfKey = key; tfSame = 0; g.setAttribute('x1', a.x.toFixed(1)); g.setAttribute('y1', a.y.toFixed(1)); g.setAttribute('x2', e.x.toFixed(1)); g.setAttribute('y2', e.y.toFixed(1)); } else tfSame++; }
+      // lite: когда папка раскрылась и всё замерло (10 кадров без изменений) — больше не пересчитываем
+      if (LITE_F && tfSame > 10) { tfRaf = 0; tfSame = 0; return; }
+      if (LITE_F && !document.querySelector('.folder.on')) { tfRaf = 0; return; } tfRaf = requestAnimationFrame(tf); };
+    const LITE_F = (document.documentElement.dataset.sm || 'now') !== 'now'; let tfKey = '', tfSame = 0, tfRaf = requestAnimationFrame(tf);
+    if (LITE_F) document.querySelectorAll('.folder').forEach(f => new MutationObserver(() => { if (f.classList.contains('on') && !tfRaf) tfRaf = requestAnimationFrame(tf); }).observe(f, { attributes: true, attributeFilter: ['class'] })); } }
   { const F = (x, y) => [x - 40, y + 14];
     const pos = { f1: [142, 630, -4], f3: [1160, 256, -5], f2: [838, 702, 7], t1: [45, 267, -4], t3: [1097, 517, 4], t2: [518, 663, -6] };
     for (const [id, [l, t, r]] of Object.entries(pos)) { const n = document.getElementById(id); if (!n) continue;
@@ -237,7 +245,7 @@
   // 25.11 (крит, её запись): у нижнего края экрана раскрытая папка сдвигается вверх и «убегала» из-под курсора → закрылась → открылась → дёрганье.
   // Теперь «зона» папки = маленькая папка с подписью ∪ раскрытая папка (+10 px). Пока курсор в этой зоне — папка открыта, вышел — закрывается
   { let px = -1, py = -1; const inR = (r, m) => px >= r.left - m && px <= r.right + m && py >= r.top - m && py <= r.bottom + m;
-    window.folderHover = f => inR(f.getBoundingClientRect(), 6) || (f.classList.contains('on') && inR(f.querySelector('.big').getBoundingClientRect(), 10));
+    window.folderHover = f => inR((f.querySelector('.ic') || f).getBoundingClientRect(), 0) || (f.classList.contains('on') && inR(f.querySelector('.big').getBoundingClientRect(), 0)); // 25.11 11:10: без полей — зона = маленькая папка ∪ раскрытая
     addEventListener('pointermove', e => { px = e.clientX; py = e.clientY; const f = document.querySelector('.folder.on');
       if (f && e.pointerType === 'mouse' && !window.folderHover(f)) window.closeFolder?.(); }, { passive: true }); }
   // ↑ в футере — иконка arrow_up_outline_24 (Figma 270:5797) вместо символа
@@ -270,8 +278,10 @@
     const k1 = Math.min(160, (top - a.y) / 2), k2 = Math.min(220, (b.y - bot) / 2), f = n => n.toFixed(1);
     // начало чуть извилистое, как было нарисовано (её правка 10:06): лёгкая S-волна ±18 px под окном, дальше — строго по оси
     // начало чуть извилистое — S-волна ±18 px под окном, дальше строго по оси (её выбор 25.11, 10:32: «как было»)
-    const HH = top - a.y, s1 = Math.min(150, HH / 3), s2 = Math.min(300, HH * .66);
-    const d = `M${f(a.x)} ${f(a.y)} C${f(a.x)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1)} C${f(a.x + 18)} ${f(a.y + s1 * 1.6)} ${f(cx - 16)} ${f(a.y + s2 * .8)} ${f(cx - 16)} ${f(a.y + s2)} C${f(cx - 16)} ${f(a.y + s2 + (HH - s2) * .5)} ${f(cx)} ${f(top - (HH - s2) * .4)} ${f(cx)} ${f(top)} L${f(cx)} ${f(bot)} C${f(cx)} ${f(bot + k2)} ${f(b.x)} ${f(b.y - k2)} ${f(b.x)} ${f(b.y)}`;
+    // 25.11 12:16 (её правка): волна только под окном — к нижнему стикеру первого экрана верёвка уже на оси, дальше строго прямая
+    const nodesB = Math.max(...[...document.querySelectorAll('.stage .node')].map(n => n.getBoundingClientRect().bottom + sy).filter(Number.isFinite), a.y + 300);
+    const HH = top - a.y, s1 = Math.min(150, HH / 3), e = Math.min(top, Math.max(a.y + s1 + 80, nodesB)), m = (e - a.y - s1) * .5;
+    const d = `M${f(a.x)} ${f(a.y)} C${f(a.x)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1)} C${f(a.x + 18)} ${f(a.y + s1 + m)} ${f(cx)} ${f(e - m)} ${f(cx)} ${f(e)} L${f(cx)} ${f(bot)} C${f(cx)} ${f(bot + k2)} ${f(b.x)} ${f(b.y - k2)} ${f(b.x)} ${f(b.y)}`;
     path.setAttribute('d', d); grad.setAttribute('y1', a.y); grad.setAttribute('y2', a.y + 420);
     path.style.strokeWidth = (1.5 * (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--s')) || 1)).toFixed(2); }; // толщина как у верёвок сцены (1,5 × масштаб)
   // 25.11: длинная верёвка тоже вырастает из глаз — вместе с остальными линиями (web.js: линии стартуют через 360 мс после загрузки)

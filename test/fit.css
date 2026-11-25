@@ -425,7 +425,7 @@ html[data-v="2"]:has(.stage.focus) .longrope{opacity:.3}
 /* ══ Правки 25.11, 11:10 · ховер папки: тайминги и «одно за другим» ══
    Правила интерфейсной анимации (Material, web.dev, SAP Fiori, Atlassian): переходы состояния 200–300 мс, выход быстрее входа (~75 %),
    кривая с замедлением — движение начинается сразу и мягко садится. Вход 240 мс, выход 180 мс. */
-html[data-v="2"]{--m-in:240ms cubic-bezier(.22,1,.36,1);--m-out:180ms cubic-bezier(.22,1,.36,1)}
+html[data-v="2"]{--ease-out:cubic-bezier(.23,1,.32,1);--m-in:240ms var(--ease-out);--m-out:180ms var(--ease-out)}
 /* выход (возврат в покой) — переходы на обычном состоянии */
 html[data-v="2"][data-hf=blur] .v7 .stage .node{transition:filter var(--m-out),opacity var(--m-out)}
 html[data-v="2"] .v7:is(.h-fix,.h-old) .stage .lines path{transition:opacity var(--m-out)}

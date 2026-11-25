@@ -112,7 +112,7 @@ document.documentElement.classList.add('js');
   /* 25.11 11:10 (тест): тайминги по правилам интерфейсной анимации — вход 240 мс с замедлением, выход 180 мс (≈75 % входа),
      держится в CSS (--m-in / --m-out, test/fit.css). Пока папка открыта и пока закрывается, остальные узлы не реагируют —
      следующее действие начинается только после окончания предыдущего (её правка: иначе бирки менялись под размытием) */
-  const SEQ = !window.PROD, OUT = 180; let closingT, px0 = -1, py0 = -1;
+  const SEQ = true /* 25.11 13:00: на проде тоже (её правка) */, OUT = 180; let closingT, px0 = -1, py0 = -1;
   if (SEQ) addEventListener('pointermove', e => { px0 = e.clientX; py0 = e.clientY; }, { passive: true });
   const busy = () => SEQ && stage.matches('.focus,.closing');
   const open = n => { clearTimeout(offT); if (dragging || cur === n) return; if (SEQ && stage.classList.contains('closing')) return;
