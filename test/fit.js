@@ -51,9 +51,7 @@
   row('Вариант', 'v', [['1', '№1'], ['2', '№2']], root.dataset.v || '1', true);
   // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
   row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало']], root.dataset.skyTop, true);
-  // №2: круглые кнопки (↺ в «Обо мне», ↑ в футере) — стекло всегда или только на ховере (её альтернатива, Figma 270:5787 / 270:5796)
-  row('Кнопки ↺ ↑ · стекло', 'gb', [['always', 'всегда'], ['hover', 'только на ховере']], 'always');
-  document.body.appendChild(pick); set(mode);
+    document.body.appendChild(pick); set(mode);
 
   // «Обо мне» стеклом (Figma 165:2635): форма букв — её вектор about-title.webp как маска, внутри — размытый и подсвеченный фон
   document.getElementById('pile').insertAdjacentHTML('afterbegin', '<div class="pile__glass" aria-hidden="true"><i class="bd"></i><i class="rim"></i></div>');
@@ -71,7 +69,7 @@
   document.querySelector('.cx__btns').insertAdjacentHTML('afterend', `<div class="cx__mono">
     <a class="cx__m" href="${href('Telegram')}" target="_blank" rel="noopener"><img src="assets/contacts/Telegram.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Telegram.png" alt="" width="60" height="60"><span>Telegram</span></a>
     <a class="cx__m" href="${href('LinkedIn')}" target="_blank" rel="noopener"><img src="assets/contacts/Linkedin.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Linkedin.png" alt="" width="60" height="60"><span>LinkedIn</span></a>
-    <button class="cx__m" type="button" data-copy-proxy2 title="Скопировать почту"><img src="assets/contacts/Email.svg?v=2" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Email.png" alt="" width="60" height="60"><span>Почта</span></button>
+    <button class="cx__m" type="button" data-copy-proxy2 title="Скопировать почту"><img src="assets/contacts/Email.svg?v=3" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/Email.png" alt="" width="60" height="60"><span>Почта</span></button>
     <a class="cx__m" href="${href('Резюме')}" target="_blank" rel="noopener"><img src="assets/contacts/CV.png" alt="" width="60" height="60"><img class="cx__mh" src="assets/contacts/hover/CV.png" alt="" width="60" height="60"><span>Резюме</span></a></div>`);
   document.querySelector('[data-copy-proxy2]').addEventListener('click', () => mailBtn && mailBtn.click());
 
@@ -137,9 +135,11 @@
   if (lines) { const d = lines.querySelector('defs') || lines.insertBefore(document.createElementNS(NS, 'defs'), lines.firstChild);
     d.insertAdjacentHTML('beforeend', '<linearGradient id="ropeGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".18" stop-color="#fff" stop-opacity=".35"/><stop offset=".42" stop-color="#e9f2ff" stop-opacity=".55"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/><stop offset=".6" stop-color="#cfe0ff" stop-opacity=".35"/><stop offset=".85" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity=".3"/></linearGradient>'); }
   // 3) обложка онбординга
-  const ob = document.querySelector('.nc__big--3 img'); if (ob) ob.src = 'assets/cases/onboarding-v2.webp';
+  const ob = document.querySelector('.nc__big--3 img'); if (ob) ob.src = 'assets/cases/onboarding-v4.webp';
   // обложка статистики (кейс стал 490) и мелкие кейсы по её новой вёрстке (Figma 230:4446, 24.11 22:37): метки слева от оси, порядок NDA → DS → WIP
-  const st = document.querySelector('.nc__big--1 img'); if (st) st.src = 'assets/cases/stat-v2.webp';
+  const st = document.querySelector('.nc__big--1 img'); if (st) st.src = 'assets/cases/stat-v4.webp';
+  // её новые обложки x5 (25.11), сжаты до 2x webp; фон 20 % уже внутри картинок
+  const car = document.querySelector('.nc__big--2 img'); if (car) car.src = 'assets/cases/carousel-v4.webp';
   // мелкие кейсы по её новой вёрстке (Figma 230:4427, 25.11): у каждого своя композиция, все привязаны к центральной оси;
   // лаймовые год и тип — слева от оси, название — от оси вправо; между блоками названий 154
   const sm = (mod, img, lime, h, coverFirst) => { const cv = `<span class="nc2s__cv"><img src="assets/cases/${img}.webp" alt="" loading="lazy"></span>`;
@@ -147,13 +147,18 @@
     return `<div class="nc2s nc2s--${mod}">${coverFirst ? cv + '<span class="nc2s__tx">' + tx + '</span>' : '<span class="nc2s__tx">' + tx + '</span>' + cv}</div>`; };
   const more = document.querySelector('.nc__more'); if (more) more.textContent = 'кейсы поменьше';
   const nc = document.querySelector('.nc'); if (nc) nc.insertAdjacentHTML('beforeend',
-    sm('mw', 'mediawall-v3', '20<br>26', 'Медиастена<br>профиля<br>(NDA)') +
-    sm('ad', 'ad-v3', '20<br>26<br><br><br>DS', 'компо-<br>нент<br>для<br>марке-<br>тинга', true) +
-    sm('subs', 'subs-v3', '20<br>25<br><br>WIP', 'дизайн<br>лифтинг<br>раздела<br>подпис-<br>чиков'));
+    sm('mw', 'mediawall-v4', '20<br>26', 'Медиастена<br>профиля<br>(NDA)') +
+    sm('ad', 'ad-v4', '20<br>26<br><br><br>DS', 'компо-<br>нент<br>для<br>марке-<br>тинга', true) +
+    sm('subs', 'subs-v4', '20<br>25<br><br><br>WIP', 'дизайн<br>лифтинг<br>раздела<br>подпис-<br>чиков'));
+  // ↑ в футере — иконка arrow_up_outline_24 (Figma 270:5797) вместо символа
+  const up = document.querySelector('.foot__up'); if (up) up.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.9999 3C12.2651 3.00006 12.5195 3.10549 12.707 3.29298L20.707 11.2932C21.0973 11.6837 21.0973 12.3168 20.707 12.7073C20.3165 13.0978 19.6834 13.0977 19.2929 12.7073L12.9999 6.41416V20.0005C12.9999 20.5527 12.5521 21.0004 11.9999 21.0005C11.4476 21.0005 10.9999 20.5528 10.9999 20.0005V6.41416L4.70696 12.7073C4.31647 13.0978 3.68343 13.0977 3.29289 12.7073C2.90237 12.3168 2.90237 11.6837 3.29289 11.2932L11.2929 3.29298L11.3661 3.22657C11.5441 3.0808 11.7679 3 11.9999 3Z"/></svg>';
   // 2) карточка, на которой висит верёвка: дырочка сверху, не таскается
   const card = document.querySelector('#pile .card--lime'); if (!card) return;
   card.insertAdjacentHTML('afterbegin', '<i class="card__hole" aria-hidden="true"></i>'); card.classList.add('card--hung');
-  card.addEventListener('pointerdown', e => e.stopImmediatePropagation(), { capture: true });
+  // её идея 25.11: карточку на верёвке тоже можно тащить — схватили, она перестаёт качаться и верёвка исчезает; ↺ возвращает всё
+  const free = on => { card.classList.toggle('free', on); svg.classList.toggle('off', on); if (!on) setTimeout(draw, 950); };
+  card.addEventListener('pointerdown', e => { if (e.button > 0) return; free(true); });
+  document.querySelector('.pile__tidy')?.addEventListener('click', () => free(false));
   const svg = document.createElementNS(NS, 'svg'); svg.classList.add('longrope'); svg.setAttribute('aria-hidden', 'true');
   svg.innerHTML = '<defs><linearGradient id="longGlass" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".25" stop-color="#fff" stop-opacity=".3"/><stop offset=".5" stop-color="#fff" stop-opacity=".8"/><stop offset=".75" stop-color="#fff" stop-opacity=".3"/><stop offset="1" stop-color="#fff" stop-opacity=".75"/></linearGradient></defs><path class="longrope__p"/>';
   document.body.prepend(svg);
@@ -193,8 +198,9 @@
       const t = Math.max(0, Math.min(1, (f - f0) / Math.max(.05, N - f0))), step = Math.round(t * STEPS);
       word.style.setProperty('--tb', (MAX * (1 - step / STEPS)).toFixed(0) + 'px'); word.classList.toggle('sharp', step === STEPS); word.dataset.step = step; };
     const tick = () => { if (!q) q = requestAnimationFrame(reveal); };
-    pile.addEventListener('pointerdown', e => { if (e.target.closest('.card, .toy') && tidy) tidy.hidden = false; }); // первое касание — кнопка ↺
-    pile.addEventListener('pointermove', e => { if (e.buttons) tick(); }); pile.addEventListener('pointerup', () => setTimeout(reveal, 300));
+    // кнопка ↺: касание карточки = начало перемещения, кнопка появляется сразу и больше не прячется до нажатия на неё
+    pile.addEventListener('pointerdown', e => { if (e.target.closest('.card, .toy') && tidy) tidy.hidden = false; }, true);
+    pile.addEventListener('pointermove', e => { if (e.buttons) { if (tidy) tidy.hidden = false; tick(); } }); pile.addEventListener('pointerup', () => setTimeout(reveal, 300));
     tidy?.addEventListener('click', () => setTimeout(() => { reveal(); tidy.hidden = true; }, 950));
     addEventListener('scroll', () => { if (f0 === null) tick(); }, { passive: true }); addEventListener('resize', tick); }
 })();
