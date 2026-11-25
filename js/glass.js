@@ -69,7 +69,7 @@
     <button type="button" data-m="flat"><span>Фон 20&nbsp;%</span><small>старые браузеры · &lt;1&nbsp;%</small></button>
     <em class="glasspick__note" hidden>Этот браузер не умеет жидкое стекло — открой в Chrome</em>
     <i>доли: десктоп, Россия, Statcounter, июнь 2026</i>`;
-  document.body.appendChild(sw);
+  if (new URLSearchParams(location.search).has('glass')) document.body.appendChild(sw); // панель «Стекло в браузерах» — только по ?glass= (стекло на проде, 25.11)
   const $$sw = [...sw.querySelectorAll('button[data-m]')], note = sw.querySelector('.glasspick__note');
   // шеврон: свернуть/развернуть панель, состояние запоминается в браузере
   const fold = sw.querySelector('.glasspick__fold'), setFold = v => { sw.classList.toggle('is-folded', v);
