@@ -377,7 +377,6 @@ html.v2-boot .stage{visibility:hidden}
 /* ховер папки: размыты только другие папки и бирки, чужие линии приглушены; лого и глаза резкие.
    Размытие каждого узла — дёшево: внутри узлов больше нет backdrop-filter (папки в покое — полупрозрачная заливка) */
 html[data-v="2"][data-hf=blur] .v7 .stage.focus .node:not(.on){filter:blur(5px);opacity:.9;transition:filter .3s ease,opacity .3s ease}
-html[data-v="2"][data-hf=dim] .v7 .stage.focus .node:not(.on){opacity:.4;transition:opacity .3s ease}
 html[data-v="2"]:not([data-hf=none]) .v7:is(.h-fix,.h-old) .stage.focus .lines path:not(.on){filter:none;opacity:.3;transition:opacity .3s ease}
 /* раскрытая папка — эффекты её компонента (Figma 290:6676): тень 0 9 27 синяя 22 %, белый ореол 6, внутреннее свечение, размытие фона 34, заливка 12 % */
 html[data-v="2"] .h-fix .big::before{backdrop-filter:blur(34px);-webkit-backdrop-filter:blur(34px);background:rgba(255,255,255,.12);box-shadow:inset 0 0 18px rgba(255,255,255,.15)}
@@ -409,3 +408,14 @@ html[data-v="2"][data-cxh=tile] .cx__m::before{content:"";position:absolute;left
 html[data-v="2"][data-cxh=tile] .cx__m:is(:hover,:focus-visible)::before{opacity:1}
 /* «г · тает у папки»: обводка открытой верёвки — градиент к прозрачности у папки (ropeFade в fit.js) */
 html[data-v="2"][data-rc=fade] .v7 .stage.focus .lines path.on{stroke:url(#ropeFade)}
+/* контакты «стекло по форме» (тест): вектор + кромка и радужная кайма внутри формы; на ховере ярче */
+.cx__g{display:none}
+html[data-v="2"][data-cxh=glass] .cx__m img{display:none}
+html[data-v="2"][data-cxh=glass] .cx__g{display:block;width:60px;height:60px;overflow:visible;filter:drop-shadow(0 6px 14px rgba(4,20,80,.18))}
+.cx__gf{fill:rgba(255,255,255,.3);transition:fill .3s ease}
+.cx__gr{fill:none;stroke:url(#cxRim);stroke-width:2.4;opacity:.85;transition:stroke-width .3s ease,opacity .3s ease}
+.cx__gp,.cx__gb{fill:none;stroke-width:2;opacity:0;transition:opacity .3s ease}
+.cx__gp{stroke:rgba(255,90,150,.9)}.cx__gb{stroke:rgba(80,170,255,.95)}
+html[data-v="2"][data-cxh=glass] .cx__m:is(:hover,:focus-visible) .cx__gf{fill:rgba(255,255,255,.42)}
+html[data-v="2"][data-cxh=glass] .cx__m:is(:hover,:focus-visible) .cx__gr{opacity:1;stroke-width:3}
+html[data-v="2"][data-cxh=glass] .cx__m:is(:hover,:focus-visible) :is(.cx__gp,.cx__gb){opacity:.55}

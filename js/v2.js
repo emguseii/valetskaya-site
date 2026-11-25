@@ -52,8 +52,8 @@
   // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
   // 25.11 (её просьба: решения про плавность — тестом): что делает верёвка у раскрытой папки, что с фоном, ховер контактов
   row('Верёвка у раскрытой папки', 'rc', [['fade', 'г · тает у папки'], ['attach', 'а · цепляется за край'], ['through', 'б · сквозь стекло'], ['hide', 'в · гаснет'], ['cut', 'вырез']], 'fade');
-  row('Ховер папки · остальное', 'hf', [['blur', 'размыть'], ['dim', 'приглушить'], ['none', 'как есть']], 'blur');
-  row('Контакты · ховер', 'cxh', [['png', 'как было'], ['tile', 'подложка как у ↺ ↑']], 'png');
+  root.dataset.hf = 'blur'; // её выбор 25.11: при ховере папки остальное размыто
+  row('Контакты · ховер', 'cxh', [['png', 'как было'], ['tile', 'подложка как у ↺ ↑'], ['glass', 'стекло по форме']], 'glass');
   row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало']], root.dataset.skyTop, true);
     if (!window.PROD) { pick.classList.add('min'); x.setAttribute('aria-label', 'Развернуть панель'); document.body.appendChild(pick); } set(mode); // 25.11: панель свёрнута — не мешает проверять
 
@@ -170,11 +170,17 @@
   // 25.11 (её идея, вариант «г»): у раскрытой папки верёвка не обрезается, а тает — та же обводка, но с прозрачностью к концу у папки.
   // Без масок и фильтров: градиент вдоль верёвки (от окна к папке), координаты обновляются, пока папка открыта
   { const svgL = document.querySelector('.lines'); if (svgL) {
-    svgL.insertAdjacentHTML('afterbegin', '<defs><linearGradient id="ropeFade" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".45" stop-color="#fff" stop-opacity=".9"/><stop offset=".72" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>');
-    const g = svgL.querySelector('#ropeFade');
-    const tf = () => { const p = root.dataset.rc === 'fade' && svgL.querySelector('path.on');
-      if (p) { const L = p.getTotalLength(), a = p.getPointAtLength(0), b = p.getPointAtLength(L), rev = p.classList.contains('rev'), s = rev ? b : a, e = rev ? a : b;
-        g.setAttribute('x1', s.x.toFixed(1)); g.setAttribute('y1', s.y.toFixed(1)); g.setAttribute('x2', e.x.toFixed(1)); g.setAttribute('y2', e.y.toFixed(1)); }
+    // для каждой папки своё место: ищем вдоль верёвки точку, где она входит под раскрытую папку, и гасим её на 70 px до этой точки
+    svgL.insertAdjacentHTML('afterbegin', '<defs><linearGradient id="ropeFade" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>');
+    const g = svgL.querySelector('#ropeFade'), FADE = 70, PAD = 6;
+    const tf = () => { const p = root.dataset.rc === 'fade' && svgL.querySelector('path.on'), big = p && document.querySelector('.folder.on .big');
+      if (p && big) { const L = p.getTotalLength(), rev = p.classList.contains('rev'), m = p.getScreenCTM(), b = big.getBoundingClientRect();
+        const inside = l => { const q = p.getPointAtLength(l), sp = new DOMPoint(q.x, q.y).matrixTransform(m);
+          return sp.x > b.left - PAD && sp.x < b.right + PAD && sp.y > b.top + 30 - PAD && sp.y < b.bottom + PAD; };
+        const at = u => rev ? L - u : u; let hit = L;
+        for (let u = 0; u <= L; u += 6) if (inside(at(u))) { hit = u; break; }
+        const k = m.a ? Math.hypot(m.a, m.b) : 1, a = p.getPointAtLength(at(Math.max(0, hit - FADE / k))), e = p.getPointAtLength(at(hit));
+        g.setAttribute('x1', a.x.toFixed(1)); g.setAttribute('y1', a.y.toFixed(1)); g.setAttribute('x2', e.x.toFixed(1)); g.setAttribute('y2', e.y.toFixed(1)); }
       requestAnimationFrame(tf); }; requestAnimationFrame(tf); } }
   // верёвка не просвечивает сквозь раскрытую папку: дыра в маске верёвок по её рамке
   { const mask = document.getElementById('ropeHide'), svgL = document.querySelector('.lines'); if (mask && svgL) {
@@ -218,6 +224,13 @@
         p.setAttribute('d', startAtWin ? d0 + ` L${f(c.x)} ${f(c.y)}` : `M${f(c.x)} ${f(c.y)} L` + d0.replace(/^M\s*/, '')); }); } }
   // 25.11: петля бирки входит в дырочку — часть верёвки поверх белой карточки видна (раньше белая на белом, казалось — зазор)
   document.querySelectorAll('.tag__loop').forEach(l => l.insertAdjacentHTML('beforeend', '<path class="tag__in" d="M112.4 0C112.2 4 113.6 9.6 115 15.5"/>'));
+  // 25.11 (тест «стекло по форме»): иконки контактов — её векторы (Figma 318:7038) инлайном. Стекло без фильтров и без постоянной перерисовки:
+  // заливка 30 % + кромка по контуру (свет −45°: ярко сверху слева) + радужная кайма (розовая/голубая со сдвигом), всё внутри формы
+  { const P = {"Telegram": "M51.4993 10.5L7.24928 27.5C4.74928 28.5 4.74928 30.5 6.99928 31.25L18.2493 34.75L22.4993 48C22.9993 49.5 23.4993 50 24.7493 50C25.7493 50 26.2493 49.5 26.9993 48.75L32.4993 43.5L43.9993 52C45.9993 53.25 47.4993 52.5 47.9993 50L55.4993 14.75C56.2493 11.75 54.2493 10.25 51.4993 11.5V10.5ZM20.7493 34L44.7493 19C45.9993 18.25 46.9993 18.75 45.9993 19.5L25.4993 38L24.7493 46.5L20.7493 34Z", "Linkedin": "M7.48673 20.6489H17.1168V52.2477H7.48673V20.6489ZM12.3018 5C13.7783 5 15.1944 5.58656 16.2385 6.63065C17.2826 7.67474 17.8692 9.09083 17.8692 10.5674C17.8692 12.044 17.2826 13.4601 16.2385 14.5041C15.1944 15.5482 13.7783 16.1348 12.3018 16.1348C10.8252 16.1348 9.40912 15.5482 8.36503 14.5041C7.32094 13.4601 6.73438 12.044 6.73438 10.5674C6.73438 9.09083 7.32094 7.67474 8.36503 6.63065C9.40912 5.58656 10.8252 5 12.3018 5ZM23.4366 20.6489H32.7657V25.163C34.2704 22.4545 37.5808 19.7461 42.6968 19.7461C52.9287 19.7461 54.7344 26.3668 54.7344 35.094V52.2477H45.1043V37.2006C45.1043 33.5893 45.1043 28.7743 39.9883 28.7743C34.8723 28.7743 33.9695 32.6865 33.9695 36.8997V52.2477H23.4366V20.6489Z", "Email": "M45.1416 19C49.3543 19.0002 52.7694 22.4153 52.7695 26.6279V44.4277C52.7694 48.6404 49.3543 52.0554 45.1416 52.0557H14.6279C10.4152 52.0555 7.00016 48.6405 7 44.4277V26.6279C7.00016 22.4152 10.4152 19.0002 14.6279 19H45.1416ZM29.8848 36.9854L10.543 26L29.8848 40.9141L50.2266 26L29.8848 36.9854Z", "CV": "M30.54 39.9236C28.8218 48.9564 24.5018 52.9327 18.0218 52.9327C9.82364 52.9327 4.76727 45.9127 4.76727 34.4745C4.76727 22.9873 9.92182 15.82 18.1691 15.82C24.7473 15.82 29.7055 20.4345 30.54 28.2891H24.5018C23.52 24.1164 21.7036 22.2018 18.3164 22.2018C13.6527 22.2018 10.9036 26.7673 10.9036 34.5236C10.9036 42.0345 13.6036 46.5509 18.12 46.5509C21.4091 46.5509 23.4218 44.6855 24.5018 39.9236H30.54ZM45.8464 52H40.1028L30.3828 16.7527H36.8628L43.0973 43.6545L49.3809 16.7527H55.6646L45.8464 52Z"};
+    document.body.insertAdjacentHTML('beforeend', '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="cxRim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".45" stop-color="#fff" stop-opacity=".15"/><stop offset=".8" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#fff" stop-opacity=".55"/></linearGradient></defs></svg>');
+    document.querySelectorAll('.cx__m').forEach((m, i) => { const img = m.querySelector('img:not(.cx__mh)'); if (!img) return;
+      const key = Object.keys(P).find(k => img.getAttribute('src').includes(k)); if (!key) return; const d = P[key], id = 'cxc' + i;
+      img.insertAdjacentHTML('afterend', `<svg class="cx__g" viewBox="0 0 60 60" width="60" height="60" aria-hidden="true"><defs><clipPath id="${id}"><path d="${d}"/></clipPath></defs><path class="cx__gf" d="${d}"/><g clip-path="url(#${id})"><path class="cx__gp" d="${d}" transform="translate(1.2 0)"/><path class="cx__gb" d="${d}" transform="translate(-1.2 0)"/><path class="cx__gr" d="${d}"/></g></svg>`); }); }
   // ↑ в футере — иконка arrow_up_outline_24 (Figma 270:5797) вместо символа
   const up = document.querySelector('.foot__up'); if (up) up.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.9999 3C12.2651 3.00006 12.5195 3.10549 12.707 3.29298L20.707 11.2932C21.0973 11.6837 21.0973 12.3168 20.707 12.7073C20.3165 13.0978 19.6834 13.0977 19.2929 12.7073L12.9999 6.41416V20.0005C12.9999 20.5527 12.5521 21.0004 11.9999 21.0005C11.4476 21.0005 10.9999 20.5528 10.9999 20.0005V6.41416L4.70696 12.7073C4.31647 13.0978 3.68343 13.0977 3.29289 12.7073C2.90237 12.3168 2.90237 11.6837 3.29289 11.2932L11.2929 3.29298L11.3661 3.22657C11.5441 3.0808 11.7679 3 11.9999 3Z"/></svg>';
   // 2) карточка, на которой висит верёвка: дырочка сверху, не таскается
