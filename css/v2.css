@@ -408,3 +408,13 @@ html[data-v="2"][data-cxh=tile] .cx__m:is(:hover,:focus-visible)::before{opacity
 html[data-v="2"] .v7 .stage.focus .lines path.on{stroke:url(#ropeFade)}
 /* лого ближе к глазам (её правка 322:7296): до окна ~24 вместо ~40 */
 html[data-v="2"] .name{top:160px}
+
+/* ══ Правки 25.11, 10:10 ══ */
+/* верёвки без «стекла» (градиент пересчитывался при каждом сдвиге): ровный полупрозрачный белый — так, как ей понравилось на ?glass=flat */
+html[data-v="2"] .v7 .lines path{stroke:rgba(255,255,255,.55);stroke-width:1.5}
+html[data-v="2"] .v7 .lines path.on{stroke:rgba(255,255,255,.55);stroke-width:1.5}
+html[data-v="2"][data-rh=accent] .v7 .lines path.on{stroke:#fff;stroke-width:1.8}
+html[data-v="2"] .v7 .stage.focus .lines path.on{stroke:url(#ropeFade)}
+.longrope__p{stroke:rgba(255,255,255,.55)}
+/* футер — поля 48 (Figma 243:8878) */
+html[data-v="2"] .foot{padding:0 48px 48px}

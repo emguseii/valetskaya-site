@@ -52,6 +52,7 @@
   row('Вариант', 'v', [['1', '№1'], ['2', '№2']], root.dataset.v || '1', true);
   // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
   // 25.11 (её просьба: решения про плавность — тестом): что делает верёвка у раскрытой папки, что с фоном, ховер контактов
+  row('Верёвка раскрытой папки', 'rh', [['calm', 'как остальные'], ['accent', 'ярче (белая)']], 'calm');
   root.dataset.rc = 'fade'; // её выбор 25.11: у раскрытой папки верёвка тает (вариант «г»)
   root.dataset.hf = 'blur'; // её выбор 25.11: при ховере папки остальное размыто
   row('Контакты · ховер', 'cxh', [['png', 'как было'], ['tile', 'подложка как у ↺ ↑']], 'tile');
@@ -173,14 +174,14 @@
   { const svgL = document.querySelector('.lines'); if (svgL) {
     // для каждой папки своё место: вдоль верёвки ищем точку, где она входит в форму раскрытой папки (сама форма .big__shape, не прямоугольник),
     // и гасим её резко — 100 % → 0 % на последних 8 px экрана до этой точки, без длинного градиента
-    svgL.insertAdjacentHTML('afterbegin', '<defs><linearGradient id="ropeFade" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>');
+    svgL.insertAdjacentHTML('afterbegin', '<defs><linearGradient id="ropeFade" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>');
     const g = svgL.querySelector('#ropeFade'), FADE = 8;
     const tf = () => { const p = svgL.querySelector('path.on'), shape = p && document.querySelector('.folder.on .big__shape path');
       if (p && shape) { const L = p.getTotalLength(), m = p.getScreenCTM(), sm = shape.getScreenCTM().inverse(), pt = shape.ownerSVGElement.createSVGPoint();
         const inside = l => { const q = p.getPointAtLength(l), sp = new DOMPoint(q.x, q.y).matrixTransform(m).matrixTransform(sm); pt.x = sp.x; pt.y = sp.y; return shape.isPointInFill(pt); };
         let lo = 0, hi = L; for (let u = 0; u <= L; u += 12) if (inside(u)) { hi = u; lo = Math.max(0, u - 12); break; }
         if (hi < L) for (let i = 0; i < 6; i++) { const mid = (lo + hi) / 2; if (inside(mid)) hi = mid; else lo = mid; }
-        const k = Math.hypot(m.a, m.b) || 1, a = p.getPointAtLength(Math.max(0, hi - FADE / k)), e = p.getPointAtLength(hi);
+        const k = Math.hypot(m.a, m.b) || 1, a = p.getPointAtLength(Math.max(0, hi - FADE / k + 4 / k)), e = p.getPointAtLength(Math.min(L, hi + 4 / k));
         g.setAttribute('x1', a.x.toFixed(1)); g.setAttribute('y1', a.y.toFixed(1)); g.setAttribute('x2', e.x.toFixed(1)); g.setAttribute('y2', e.y.toFixed(1)); }
       requestAnimationFrame(tf); }; requestAnimationFrame(tf); } }
   { const F = (x, y) => [x - 40, y + 14];
@@ -214,6 +215,10 @@
       svgL.querySelectorAll('path[data-to]').forEach(p => { const m = p.transform.baseVal.consolidate()?.matrix || svgL.createSVGMatrix(), L = p.getTotalLength(), N = 72;
         let pts = []; for (let i = 0; i <= N; i++) { const q = p.getPointAtLength(L * i / N); pts.push(new DOMPoint(q.x, q.y).matrixTransform(m)); }
         if (Math.hypot(pts[0].x - W.x, pts[0].y - W.y) > Math.hypot(pts[N].x - W.x, pts[N].y - W.y)) pts.reverse();
+        // начало — ровно на нижнем крае окна (маски больше нет: верёвка не заходит под стекло окна)
+        { const WB = { l: (wr.left - sr.left) / k, r: (wr.right - sr.left) / k, t: (wr.top - sr.top) / k, b: (wr.bottom - sr.top) / k };
+          const inW = q => q.x > WB.l && q.x < WB.r && q.y > WB.t && q.y < WB.b - .5; const o = pts.findIndex(q => !inW(q));
+          if (o > 0) { let a = pts[o - 1], b = pts[o]; for (let i = 0; i < 12; i++) { const mid = new DOMPoint((a.x + b.x) / 2, (a.y + b.y) / 2); if (inW(mid)) a = mid; else b = mid; } pts = [b, ...pts.slice(o)]; } }
         const back = document.querySelector('#' + p.dataset.to + ' .ic__back path');
         if (back) { const bm = back.getScreenCTM().inverse(), bp = back.ownerSVGElement.createSVGPoint();
           const inside = q => { const s2 = new DOMPoint(q.x, q.y).matrixTransform(S).matrixTransform(bm); bp.x = s2.x; bp.y = s2.y; return back.isPointInFill(bp); };
@@ -223,7 +228,9 @@
           const hit = pts.findIndex((q, i) => i > 4 && inside(q));
           if (hit > 0) { let a = pts[hit - 1], b = pts[hit];
             for (let i = 0; i < 12; i++) { const mid = new DOMPoint((a.x + b.x) / 2, (a.y + b.y) / 2); if (inside(mid)) b = mid; else a = mid; }
-            pts = pts.slice(0, hit); pts.push(b); } }
+            // и чуть заходим за край (10 px сцены) — за размытым стеклом папки конец почти не виден, зато нет «обрубыша» (её правка 10:06)
+            const pv = pts[hit - 1], dx = b.x - pv.x, dy = b.y - pv.y, dl = Math.hypot(dx, dy) || 1;
+            pts = pts.slice(0, hit); pts.push(b, new DOMPoint(b.x + dx / dl * 10, b.y + dy / dl * 10)); } }
         p.removeAttribute('transform'); p.classList.remove('rev'); p.setAttribute('d', curve(pts)); }); } }
   // 25.11: петля бирки входит в дырочку — часть верёвки поверх белой карточки видна (раньше белая на белом, казалось — зазор)
   document.querySelectorAll('.tag__loop').forEach(l => l.insertAdjacentHTML('beforeend', '<path class="tag__in" d="M112.4 0C112.2 4 113.6 9.6 115 15.5"/>'));
@@ -261,7 +268,9 @@
     const nc = document.querySelector('.nc'), r = nc ? nc.getBoundingClientRect() : null;
     const cx = r ? r.left + r.width / 2 + sx : a.x, top = r ? r.top + sy : a.y + 200, bot = r ? r.bottom + sy : b.y - 200;
     const k1 = Math.min(160, (top - a.y) / 2), k2 = Math.min(220, (b.y - bot) / 2), f = n => n.toFixed(1);
-    const d = `M${f(a.x)} ${f(a.y)} C${f(a.x)} ${f(a.y + k1)} ${f(cx)} ${f(top - k1)} ${f(cx)} ${f(top)} L${f(cx)} ${f(bot)} C${f(cx)} ${f(bot + k2)} ${f(b.x)} ${f(b.y - k2)} ${f(b.x)} ${f(b.y)}`;
+    // начало чуть извилистое, как было нарисовано (её правка 10:06): лёгкая S-волна ±18 px под окном, дальше — строго по оси
+    const s1 = Math.min(150, (top - a.y) / 3), s2 = Math.min(300, (top - a.y) * .66);
+    const d = `M${f(a.x)} ${f(a.y)} C${f(a.x)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1 * .5)} ${f(a.x + 18)} ${f(a.y + s1)} C${f(a.x + 18)} ${f(a.y + s1 * 1.6)} ${f(cx - 16)} ${f(a.y + s2 * .8)} ${f(cx - 16)} ${f(a.y + s2)} C${f(cx - 16)} ${f(a.y + s2 + (top - a.y - s2) * .5)} ${f(cx)} ${f(top - (top - a.y - s2) * .4)} ${f(cx)} ${f(top)} L${f(cx)} ${f(bot)} C${f(cx)} ${f(bot + k2)} ${f(b.x)} ${f(b.y - k2)} ${f(b.x)} ${f(b.y)}`;
     path.setAttribute('d', d); grad.setAttribute('y1', a.y); grad.setAttribute('y2', a.y + 420);
     path.style.strokeWidth = (1.5 * (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--s')) || 1)).toFixed(2); }; // толщина как у верёвок сцены (1,5 × масштаб)
   // 25.11: длинная верёвка тоже вырастает из глаз — вместе с остальными линиями (web.js: линии стартуют через 360 мс после загрузки)
