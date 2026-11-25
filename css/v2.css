@@ -407,3 +407,5 @@ html[data-v="2"][data-cxh=tile] .cx__m::before{content:"";position:absolute;left
   background:rgba(255,255,255,.1);opacity:0;transition:opacity .25s ease;pointer-events:none;
   box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.6),inset -1px -1px 1px rgba(255,255,255,.2),inset 2.5px 0 3px -1px rgba(255,90,150,.5),inset -2.5px 0 3px -1px rgba(80,170,255,.55),inset 0 -2.5px 3px -1px rgba(255,210,90,.45),inset 0 2.5px 3px -1px rgba(120,255,220,.4)}
 html[data-v="2"][data-cxh=tile] .cx__m:is(:hover,:focus-visible)::before{opacity:1}
+/* «г · тает у папки»: обводка открытой верёвки — градиент к прозрачности у папки (ropeFade в fit.js) */
+html[data-v="2"][data-rc=fade] .v7 .stage.focus .lines path.on{stroke:url(#ropeFade)}

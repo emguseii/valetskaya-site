@@ -51,7 +51,7 @@
   row('Вариант', 'v', [['1', '№1'], ['2', '№2']], root.dataset.v || '1', true);
   // Первый экран · облака (web.js читает при загрузке — кнопка перезагружает страницу)
   // 25.11 (её просьба: решения про плавность — тестом): что делает верёвка у раскрытой папки, что с фоном, ховер контактов
-  row('Верёвка у раскрытой папки', 'rc', [['attach', 'а · цепляется за край'], ['through', 'б · сквозь стекло'], ['hide', 'в · гаснет'], ['cut', 'вырез']], 'attach');
+  row('Верёвка у раскрытой папки', 'rc', [['fade', 'г · тает у папки'], ['attach', 'а · цепляется за край'], ['through', 'б · сквозь стекло'], ['hide', 'в · гаснет'], ['cut', 'вырез']], 'fade');
   row('Ховер папки · остальное', 'hf', [['blur', 'размыть'], ['dim', 'приглушить'], ['none', 'как есть']], 'blur');
   row('Контакты · ховер', 'cxh', [['png', 'как было'], ['tile', 'подложка как у ↺ ↑']], 'png');
   row('Первый экран · облака', 'sky1', [['.6', 'как сейчас'], ['.35', 'меньше'], ['.15', 'мало']], root.dataset.skyTop, true);
@@ -167,6 +167,15 @@
       let dx = 0, dy = 0; if (l < M) dx = M - l; else if (l + w > innerWidth - M) dx = innerWidth - M - (l + w);
       if (t < TOP) dy = TOP - t; else if (t + h > innerHeight - M) dy = innerHeight - M - (t + h);
       big.style.translate = (dx / k).toFixed(1) + 'px ' + (dy / k).toFixed(1) + 'px'; }).observe(f, { attributes: true, attributeFilter: ['class'] }); });
+  // 25.11 (её идея, вариант «г»): у раскрытой папки верёвка не обрезается, а тает — та же обводка, но с прозрачностью к концу у папки.
+  // Без масок и фильтров: градиент вдоль верёвки (от окна к папке), координаты обновляются, пока папка открыта
+  { const svgL = document.querySelector('.lines'); if (svgL) {
+    svgL.insertAdjacentHTML('afterbegin', '<defs><linearGradient id="ropeFade" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".45" stop-color="#fff" stop-opacity=".9"/><stop offset=".72" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>');
+    const g = svgL.querySelector('#ropeFade');
+    const tf = () => { const p = root.dataset.rc === 'fade' && svgL.querySelector('path.on');
+      if (p) { const L = p.getTotalLength(), a = p.getPointAtLength(0), b = p.getPointAtLength(L), rev = p.classList.contains('rev'), s = rev ? b : a, e = rev ? a : b;
+        g.setAttribute('x1', s.x.toFixed(1)); g.setAttribute('y1', s.y.toFixed(1)); g.setAttribute('x2', e.x.toFixed(1)); g.setAttribute('y2', e.y.toFixed(1)); }
+      requestAnimationFrame(tf); }; requestAnimationFrame(tf); } }
   // верёвка не просвечивает сквозь раскрытую папку: дыра в маске верёвок по её рамке
   { const mask = document.getElementById('ropeHide'), svgL = document.querySelector('.lines'); if (mask && svgL) {
     const bigs = [...document.querySelectorAll('.folder .big')].map(b => { const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('fill', '#000'); r.setAttribute('rx', 24); mask.appendChild(r); return { b, r }; });
